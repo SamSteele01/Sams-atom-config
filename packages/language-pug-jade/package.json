@@ -1,0 +1,79 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/apm-install-dir-117117-6946-1om081s.4trmsu4n29"
+    ]
+  ],
+  "_from": "../d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+  "_id": "language-pug-jade@0.2.0",
+  "_inCache": true,
+  "_location": "/language-pug-jade",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+  "_shasum": "5dd9a155ae19f12e1b03999184533d71dd5d93b5",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117117-6946-10z973r.prhnqm2t9/package.tgz",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/apm-install-dir-117117-6946-1om081s.4trmsu4n29",
+  "author": {
+    "name": "Seth Mcleod",
+    "email": "me@sethmcleod.com",
+    "url": "https://sethmcleod.com"
+  },
+  "bugs": {
+    "url": "https://github.com/sethmcleod/language-pug/issues"
+  },
+  "dependencies": {},
+  "description": "🐶 Pug and Jade syntax highlighting",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=0.50.0"
+  },
+  "homepage": "https://github.com/sethmcleod/language-pug#readme",
+  "keywords": [
+    "atom",
+    "pug",
+    "jade",
+    "language"
+  ],
+  "license": "MIT",
+  "name": "language-pug-jade",
+  "optionalDependencies": {},
+  "readme": "# language-pug-jade\n\n[![Atom Package Manager](https://img.shields.io/badge/apm-v0.2.0-green.svg)](https://atom.io/packages/language-pug-jade)\n\n[Pug](https://github.com/pugjs) _and_ **Jade** syntax highlighting for Atom, because name changes are confusing. Adapted from [atom-jade](https://github.com/devongovett/atom-jade) by [devongovett](https://github.com/devongovett).\n\nFeel free to submit PRs 👍\n\n## Change log\n\n### 0.2.0 (thanks [sneakertack](https://github.com/sneakertack))\n\n- Fix the `begin` regexes for existing filter rules so that bracketed arguments pass as vaild.\n- Add support for `babel`, `markdown-it`, and `scss` filters.\n- Makes `less` filter properly highlight less syntax.\n\n### 0.1.0 - 0.1.2\n\n- Readme and package description updates\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sethmcleod/language-pug.git"
+  },
+  "version": "0.2.0",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [],
+    "extensions": {
+      ".json": [
+        "package.json"
+      ]
+    },
+    "folders": []
+  }
+}

@@ -1,0 +1,118 @@
+'.source.js':
+  'Import React':
+    'prefix': 'imr'
+    'body': "import React from 'react';"
+  'Import Component React':
+    'prefix': 'imrc'
+    'body': "import React, { Component } from 'react';"
+  'Stateless Component':
+    'prefix': 'sl'
+    'body': """
+      const ${1} = () => (
+        ${2}
+      );
+
+      export default ${1};
+    """
+  'Export Default':
+    'prefix': 'ed'
+    'body': 'export default ${1};'
+  'class React component es6':
+    'prefix': 'rcc'
+    'body': """
+    class ${1} extends Component {
+      render() {
+        return (
+          ${2}
+        );
+      }
+    }
+
+    export default ${1};
+    """
+  'componentWillMount':
+    'prefix': 'cwm'
+    'body': """
+    componentWillMount() {
+      ${1}
+    }
+    """
+  'componentDidMount':
+    'prefix': 'cdm'
+    'body': """
+    componentDidMount() {
+      ${1}
+    }
+    """
+  'componentWillUnmount':
+    'prefix': 'cwum'
+    'body': """
+    componentWillUnmount() {
+      ${1}
+    }
+    """
+  'componentWillUpdate':
+    'prefix': 'cwu'
+    'body': """
+    componentWillUpdate() {
+      ${1}
+    }
+    """
+  'componentDidUpdate':
+    'prefix': 'cdu'
+    'body': """
+    componentDidUpdate() {
+      ${1}
+    }
+    """
+  'return':
+    'prefix': 'r'
+    'body': 'return ${1};'
+  'Redux Reducer':
+    'prefix': 'rrd'
+    'body': """
+    export default (state = INITIAL_STATE, action) => {
+      switch (action.type) {
+        case ${1}:
+        default:
+          return state;
+      }
+    };
+    """
+  'INITIAL_STATE':
+    'prefix': 'ins'
+    'body': """
+    const INITIAL_STATE = {
+      ${1}
+    };
+    """
+  'Redux Types':
+    'prefix': 'rt'
+    'body': """
+    export const ${1} = '${1}';
+    """
+  'Import React-Native':
+    'prefix': 'imrn'
+    'body': "import { ${1} } from 'react-native';"
+  'React-Native Text and View':
+    'prefix': 'rnvt'
+    'body': """
+    import {
+      View,
+      Text
+    } from 'react-native';
+    """
+  'React-Native scene':
+    'prefix': 'rnsc'
+    'body': """
+    <Scene
+      key="${1}"
+      title="${2}"
+      component={${3}}
+    />
+    """
+  'React-Router route':
+    'prefix': 'rrr'
+    'body': """
+    <Route path="${1}" component={${2}} />
+    """

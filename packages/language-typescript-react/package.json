@@ -1,0 +1,69 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/apm-install-dir-1171118-26640-1emwd05.82jpi1wcdi"
+    ]
+  ],
+  "_from": "../d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+  "_id": "language-typescript-react@0.1.1",
+  "_inCache": true,
+  "_location": "/language-typescript-react",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+  "_shasum": "4b522deb971397f86f0b9935bee4d0cfe0305a47",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-1171118-26640-81jz5n.rggxob6gvi/package.tgz",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/apm-install-dir-1171118-26640-1emwd05.82jpi1wcdi",
+  "bugs": {
+    "url": "https://github.com/deankevorkian/language-typescript-react/issues"
+  },
+  "dependencies": {},
+  "description": "TypeScriptReact (TSX) language support in Atom",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=1.19.1",
+    "node": "*"
+  },
+  "homepage": "https://atom.io/packages/language-typescript-react",
+  "license": "MIT",
+  "name": "language-typescript-react",
+  "optionalDependencies": {},
+  "readme": "# TypeScriptReact (TSX) language support in Atom\n<!--[![macOS Build Status](https://travis-ci.org/atom/language-typescript.svg?branch=master)](https://travis-ci.org/atom/language-typescript)\n[![Windows Build Status](https://ci.appveyor.com/api/projects/status/ktooccwna96ssiyr/branch/master?svg=true)](https://ci.appveyor.com/project/Atom/language-javascript-dijf8/branch/master)-->\n[![Dependency Status](https://david-dm.org/atom/language-typescript.svg)](https://david-dm.org/atom/language-typescript)\n\nAdds syntax highlighting and snippets for TypeScriptReact (TSX) in Atom.\n\nOriginally [created with a util from atom-typescript](https://github.com/TypeStrong/atom-typescript/blob/master/scripts/grammar.ts) and [converted to JSON](https://atom.io/packages/cson) from the [Microsoft TypeScriptReact TextMate grammar](https://github.com/Microsoft/TypeScript-TmLanguage).\n\nContributions are greatly appreciated. Please fork this repository and open a pull request to add snippets, make grammar tweaks, etc.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deankevorkian/language-typescript-react.git"
+  },
+  "version": "0.1.1",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [],
+    "extensions": {
+      ".json": [
+        "package.json"
+      ]
+    },
+    "folders": []
+  }
+}

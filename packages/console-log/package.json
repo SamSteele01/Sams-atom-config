@@ -1,0 +1,92 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-118515-8170-1e5fbu1.yuf2f39pb9"
+    ]
+  ],
+  "_from": "../d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+  "_id": "console-log@1.10.0",
+  "_inCache": true,
+  "_location": "/console-log",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+  "_shasum": "570c9171f554a060287a2b175addaeb71687dfb9",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118515-8170-de8d8a.bgz625u3di/package.tgz",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-118515-8170-1e5fbu1.yuf2f39pb9",
+  "author": {
+    "name": "Vishwam Sankar"
+  },
+  "bugs": {
+    "url": "https://github.com/vishysank/console-log-atom/issues"
+  },
+  "dependencies": {},
+  "description": "A console.log generator, console.log cleaner (deconsoler)",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/vishysank/console-log-atom#readme",
+  "keywords": [
+    "console.log",
+    "console",
+    "console-log",
+    "debugging",
+    "debug",
+    "JSON.Stringify",
+    "deconsoler",
+    "clean console.log",
+    "clean logging",
+    "remove logging",
+    "remove console.log"
+  ],
+  "license": "MIT",
+  "main": "./lib/console-log",
+  "name": "console-log",
+  "optionalDependencies": {},
+  "readme": "[![Build Status](https://travis-ci.org/vishysank/console-log-atom.svg?branch=master&style=flat-square)](https://travis-ci.org/vishysank/console-log-atom)\n[![apm](https://img.shields.io/apm/l/console-log.svg?style=flat-square)](https://atom.io/packages/console-log)\n[![apm](https://img.shields.io/apm/v/console-log.svg?style=flat-square)](https://atom.io/packages/console-log)\n[![apm](https://img.shields.io/apm/dm/console-log.svg?style=flat-square)](https://atom.io/packages/console-log)\n# console-log package\n\nconsole-log is a simple  and smart helper function that makes logging and debugging easy.\n**New Config options added**\n\n## Features (click for demo)\n### Basic Logging\n* ```ctrl-l``` (OSX) or ```ctrl-alt-l``` (Linux/Windows) - [Generates a console.log with identifier if text/variable is selected, and empty console.log if no text is selected.](https://raw.githubusercontent.com/vishysank/console-log-atom/master/assets/console-log-demo.gif)\n* ```ctrl-o``` (OSX) or ```ctrl-alt-o``` (Linux/Windows) - [Generates a console.log with text/variable within a JSON.stringify method.](https://raw.githubusercontent.com/vishysank/console-log-atom/master/assets/console-log-stringify-demo.gif)\n\n### Smart Object Logging (Incremental improvements in works)\n* [If selected text is the variable being defined to create an object, places console.log after object has been created to prevent any code breaks.](https://raw.githubusercontent.com/vishysank/console-log-atom/master/assets/console-log-object-demo.gif)\n\n### Smart Function Logging (Early release still in works)\n* [If function name is selected, places console.log after function has been created. If param is selected, places the console.log statement within the param](https://raw.githubusercontent.com/vishysank/console-log-atom/master/assets/console-log-function-demo.gif)\n\n### Smart Conditionals Logging (early release)\n* [if a variable used in a definition of the conditional in an if statement is logged, the insert is placed on the line above the if statement and a 'CONDITION PASSED' insert in the if statement, so that the logging is not lost if the condition doesn't pass, and there is clear validation if the condition passed. For subsequent chained conditionals, insert is placed within the conditional.](https://raw.githubusercontent.com/vishysank/console-log-atom/master/assets/console-log-conditional-demo.gif)\n\n### Logging Cleanup\n* ```ctrl-shift-D``` - [clean out all the lines that contain console.log statements in the file.](https://raw.githubusercontent.com/vishysank/console-log-atom/master/assets/deconsoler-demo.gif)\n\n### Identifier Styling (Chrome Dev Tools only)\n**Note:- This functionality will only work for selected text**\n* ```ctrl-alt-c``` (plain insert) or ```ctrl-alt-s``` (JSON.stringify insert) - [For logging in the chrome dev tools console, you can choose to enable text styling for the identifier](https://raw.githubusercontent.com/vishysank/console-log-atom/master/assets/styling-demo.png)\n\n## Installation\nYou can install this package from the CLI or from the Editor.\n* CLI - ```apm install console-log```\n* Editor - ```Atom > Preferences > Install > Search for console-log in Packages```\n\n## Configurations\n\n* **Include semi-colons :** Choose whether you want to include semi-colons at end of console.log function. Depending on the linting standard you use, you can choose to include semicolons. **Defaults to no semi-colons**\n* **Define Identifier case :** Choose whether to retain case of selected text when creating identifier. **Defaults to creating an identifier in capital case of selected text**\n* **Include background style for identifier:** For logging in the chrome dev tools console, you can choose to enable background styling for the identifier **defaults to none**\n* **Include text style for identifier:** For logging in the chrome dev tools console, you can choose to enable text styling for the identifier **defaults to none**\n* **Include String TEST for identification if no text selected:** Rather than include a dumb ```console.log()``` insert, if you can select to have ```console.log('TEST')``` inserted, which will show up as the code run past it.\n\n## Languages Supported\n* Javascript\n\n## Coming soon !\n* Support for single line es6 arrow functions\n* **code contributions are welcome.**\n\n## Help me help you !\n\nIf you see any bugs in this package or if you have any additional features that you would like, please add an issue to this repo and I will look to resolve it.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vishysank/console-log-atom.git"
+  },
+  "version": "1.10.0",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [],
+    "extensions": {
+      ".coffee": [
+        "lib/config.coffee",
+        "lib/console-log.coffee",
+        "lib/contextMenu.coffee",
+        "lib/insertProps.coffee",
+        "lib/methods.coffee"
+      ],
+      ".json": [
+        "package.json"
+      ]
+    },
+    "folders": []
+  }
+}

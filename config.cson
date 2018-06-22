@@ -1,0 +1,27 @@
+"*":
+  core:
+    closeDeletedFileTabs: true
+    disabledPackages: [
+      "language-vue-component"
+      "language-pug-jade"
+      "react"
+    ]
+    telemetryConsent: "limited"
+    themes: [
+      "one-dark-ui"
+      "babel-react-syntax"
+    ]
+  editor:
+    fontSize: 15
+    preferredLineLength: 100
+    showIndentGuide: true
+    softWrapAtPreferredLineLength: true
+  "exception-reporting":
+    userId: "e230802c-0ef7-4ef2-b08e-27acb3e58209"
+  "language-babel":
+    disableWhenNoBabelrcFileInPath: false
+  "linter-ui-default": {}
+  pigments: {}
+  "tree-view": {}
+  welcome:
+    showOnStartup: false

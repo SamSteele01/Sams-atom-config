@@ -1,0 +1,317 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11855-31377-fyq8yp.fgizw4gqfr"
+    ]
+  ],
+  "_from": "../d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+  "_id": "dockerletion@0.2.0",
+  "_inCache": true,
+  "_location": "/dockerletion",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+  "_shasum": "4a28c70b0ed66f4590b10bb1da08edbbc6bff718",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11855-31377-a6fitl.xj6nryhkt9/package.tgz",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11855-31377-fyq8yp.fgizw4gqfr",
+  "bugs": {
+    "url": "https://github.com/wingyplus/dockerletion/issues"
+  },
+  "dependencies": {
+    "atom-package-dependencies": "latest"
+  },
+  "description": "A autocompletion docker instructions for Atom text editor",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/wingyplus/dockerletion#readme",
+  "keywords": [],
+  "license": "MIT",
+  "main": "./lib/dockerletion",
+  "name": "dockerletion",
+  "optionalDependencies": {},
+  "providedServices": {
+    "autocomplete.provider": {
+      "versions": {
+        "2.0.0": "provider"
+      }
+    }
+  },
+  "readme": "# dockerletion (docker + autocompletion)\n\nA autocompletion docker instructions for Atom text editor\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wingyplus/dockerletion.git"
+  },
+  "version": "0.2.0",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [
+      {
+        "name": "ansi",
+        "version": "0.3.1",
+        "path": "node_modules/ansi/lib/ansi.js"
+      },
+      {
+        "name": "atom-package-dependencies",
+        "version": "1.0.3",
+        "path": "node_modules/atom-package-dependencies/index.js"
+      },
+      {
+        "name": "debug",
+        "version": "0.7.4",
+        "path": "node_modules/debug/lib/debug.js"
+      },
+      {
+        "name": "glob",
+        "version": "3.1.21",
+        "path": "node_modules/glob/glob.js"
+      },
+      {
+        "name": "graceful-fs",
+        "version": "1.2.3",
+        "path": "node_modules/graceful-fs/graceful-fs.js"
+      },
+      {
+        "name": "inherits",
+        "version": "1.0.2",
+        "path": "node_modules/inherits/inherits.js"
+      },
+      {
+        "name": "lru-cache",
+        "version": "2.0.4",
+        "path": "node_modules/lru-cache/lib/lru-cache.js"
+      },
+      {
+        "name": "minimatch",
+        "version": "0.2.14",
+        "path": "node_modules/minimatch/minimatch.js"
+      },
+      {
+        "name": "npmlog",
+        "version": "0.1.1",
+        "path": "node_modules/npmlog/log.js"
+      },
+      {
+        "name": "read-package-json",
+        "version": "0.1.13",
+        "path": "node_modules/read-package-json/read-json.js"
+      },
+      {
+        "name": "semver",
+        "version": "1.1.4",
+        "path": "node_modules/semver/semver.js"
+      },
+      {
+        "name": "shelljs",
+        "version": "0.3.0",
+        "path": "node_modules/shelljs/shell.js"
+      },
+      {
+        "name": "sigmund",
+        "version": "1.0.1",
+        "path": "node_modules/sigmund/sigmund.js"
+      },
+      {
+        "name": "slide",
+        "version": "1.1.6",
+        "path": "node_modules/slide/lib/slide.js"
+      },
+      {
+        "name": "tmp",
+        "version": "0.0.24",
+        "path": "node_modules/tmp/lib/tmp.js"
+      },
+      {
+        "name": "witwip",
+        "version": "1.0.4",
+        "path": "node_modules/witwip/witwip.js"
+      }
+    ],
+    "extensions": {
+      ".coffee": [
+        "lib/dockerfile-instructions.coffee",
+        "lib/dockerletion.coffee",
+        "lib/provider.coffee"
+      ],
+      ".js": [
+        "node_modules/ansi/examples/beep/index.js",
+        "node_modules/ansi/examples/clear/index.js",
+        "node_modules/ansi/examples/cursorPosition.js",
+        "node_modules/ansi/examples/progress/index.js",
+        "node_modules/ansi/lib/ansi.js",
+        "node_modules/ansi/lib/newlines.js",
+        "node_modules/atom-package-dependencies/index.js",
+        "node_modules/debug/debug.js",
+        "node_modules/debug/index.js",
+        "node_modules/debug/lib/debug.js",
+        "node_modules/glob/examples/g.js",
+        "node_modules/glob/examples/usr-local.js",
+        "node_modules/glob/glob.js",
+        "node_modules/graceful-fs/graceful-fs.js",
+        "node_modules/inherits/inherits.js",
+        "node_modules/lru-cache/lib/lru-cache.js",
+        "node_modules/minimatch/minimatch.js",
+        "node_modules/npmlog/example.js",
+        "node_modules/npmlog/log.js",
+        "node_modules/read-package-json/read-json.js",
+        "node_modules/semver/semver.js",
+        "node_modules/semver/test.js",
+        "node_modules/shelljs/global.js",
+        "node_modules/shelljs/make.js",
+        "node_modules/shelljs/scripts/generate-docs.js",
+        "node_modules/shelljs/scripts/run-tests.js",
+        "node_modules/shelljs/shell.js",
+        "node_modules/shelljs/src/cat.js",
+        "node_modules/shelljs/src/cd.js",
+        "node_modules/shelljs/src/chmod.js",
+        "node_modules/shelljs/src/common.js",
+        "node_modules/shelljs/src/cp.js",
+        "node_modules/shelljs/src/dirs.js",
+        "node_modules/shelljs/src/echo.js",
+        "node_modules/shelljs/src/error.js",
+        "node_modules/shelljs/src/exec.js",
+        "node_modules/shelljs/src/find.js",
+        "node_modules/shelljs/src/grep.js",
+        "node_modules/shelljs/src/ln.js",
+        "node_modules/shelljs/src/ls.js",
+        "node_modules/shelljs/src/mkdir.js",
+        "node_modules/shelljs/src/mv.js",
+        "node_modules/shelljs/src/popd.js",
+        "node_modules/shelljs/src/pushd.js",
+        "node_modules/shelljs/src/pwd.js",
+        "node_modules/shelljs/src/rm.js",
+        "node_modules/shelljs/src/sed.js",
+        "node_modules/shelljs/src/tempdir.js",
+        "node_modules/shelljs/src/test.js",
+        "node_modules/shelljs/src/to.js",
+        "node_modules/shelljs/src/toEnd.js",
+        "node_modules/shelljs/src/which.js",
+        "node_modules/sigmund/bench.js",
+        "node_modules/sigmund/sigmund.js",
+        "node_modules/slide/index.js",
+        "node_modules/slide/lib/async-map-ordered.js",
+        "node_modules/slide/lib/async-map.js",
+        "node_modules/slide/lib/bind-actor.js",
+        "node_modules/slide/lib/chain.js",
+        "node_modules/slide/lib/slide.js",
+        "node_modules/tmp/domain-test.js",
+        "node_modules/tmp/lib/tmp.js",
+        "node_modules/tmp/test.js",
+        "node_modules/witwip/witwip.js"
+      ],
+      ".json": [
+        "node_modules/ansi/package.json",
+        "node_modules/atom-package-dependencies/package.json",
+        "node_modules/debug/package.json",
+        "node_modules/glob/package.json",
+        "node_modules/graceful-fs/package.json",
+        "node_modules/inherits/package.json",
+        "node_modules/lru-cache/package.json",
+        "node_modules/minimatch/package.json",
+        "node_modules/npmlog/package.json",
+        "node_modules/read-package-json/package.json",
+        "node_modules/semver/package.json",
+        "node_modules/shelljs/.documentup.json",
+        "node_modules/shelljs/package.json",
+        "node_modules/sigmund/package.json",
+        "node_modules/slide/package.json",
+        "node_modules/tmp/package.json",
+        "node_modules/witwip/package.json",
+        "package.json"
+      ]
+    },
+    "folders": [
+      {
+        "paths": [
+          "node_modules/atom-package-dependencies"
+        ],
+        "dependencies": {
+          "shelljs": "0.3.x",
+          "tmp": "0.0.24",
+          "witwip": "1.0.x"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/glob/examples",
+          "node_modules/glob",
+          "node_modules/glob/test"
+        ],
+        "dependencies": {
+          "graceful-fs": "~1.2.0",
+          "inherits": "1",
+          "minimatch": "~0.2.11"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/minimatch",
+          "node_modules/minimatch/test"
+        ],
+        "dependencies": {
+          "lru-cache": "2",
+          "sigmund": "~1.0.0"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/npmlog",
+          "node_modules/npmlog/test"
+        ],
+        "dependencies": {
+          "ansi": "~0.3.0"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/read-package-json",
+          "node_modules/read-package-json/test",
+          "node_modules/read-package-json/test/fixtures"
+        ],
+        "dependencies": {
+          "glob": "~3.1.9",
+          "graceful-fs": "~1.2",
+          "lru-cache": "~2.0.0",
+          "npmlog": "0",
+          "semver": "1.x",
+          "slide": "~1.1.3"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/witwip",
+          "node_modules/witwip/test",
+          "node_modules/witwip/test/local/carmen",
+          "node_modules/witwip/test/local/chief"
+        ],
+        "dependencies": {
+          "debug": "~0.7.0",
+          "read-package-json": "~0.1.5"
+        }
+      }
+    ]
+  }
+}

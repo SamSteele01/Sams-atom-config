@@ -1,0 +1,74 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117814-28875-1t4537u.g6gremte29/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117814-28875-1t4537u.g6gremte29/package.tgz",
+        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117814-28875-1t4537u.g6gremte29/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/apm-install-dir-117814-28875-9rd9qh.mm2tymn29"
+    ]
+  ],
+  "_from": "../d-117814-28875-1t4537u.g6gremte29/package.tgz",
+  "_id": "react-es6-snippets@0.3.0",
+  "_inCache": true,
+  "_location": "/react-es6-snippets",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117814-28875-1t4537u.g6gremte29/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117814-28875-1t4537u.g6gremte29/package.tgz",
+    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117814-28875-1t4537u.g6gremte29/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-117814-28875-1t4537u.g6gremte29/package.tgz",
+  "_shasum": "3c8a79b548ebf705a5f8108a2c7160c682cb660a",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117814-28875-1t4537u.g6gremte29/package.tgz",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/apm-install-dir-117814-28875-9rd9qh.mm2tymn29",
+  "bugs": {
+    "url": "https://github.com/netguru/atom-react-es6-snippets/issues"
+  },
+  "dependencies": {},
+  "description": "React ES6 snippets for atom",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/netguru/atom-react-es6-snippets#readme",
+  "keywords": [
+    "react",
+    "ES6",
+    "babel",
+    "snippets"
+  ],
+  "license": "MIT",
+  "name": "react-es6-snippets",
+  "optionalDependencies": {},
+  "readme": "# react-es6-snippets package\n\nReact ES6 snippets for atom\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netguru/atom-react-es6-snippets.git"
+  },
+  "version": "0.3.0",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [],
+    "extensions": {
+      ".json": [
+        "package.json"
+      ]
+    },
+    "folders": []
+  }
+}

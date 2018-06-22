@@ -1,0 +1,73 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/apm-install-dir-117114-11715-1yd55gh.2qgnxc4n29"
+    ]
+  ],
+  "_from": "../d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+  "_id": "atom-vue@0.6.0",
+  "_inCache": true,
+  "_location": "/atom-vue",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+  "_shasum": "cb734e2a7b944ba84c52c09f671adddbd7984196",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/d-117114-11715-oxsp93.q1qvj3v7vi/package.tgz",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gp/T/apm-install-dir-117114-11715-1yd55gh.2qgnxc4n29",
+  "bugs": {
+    "url": "https://github.com/code4mk/atom-vue/issues"
+  },
+  "dependencies": {},
+  "description": "Vue Snippet >> atom-vue by @code4mk",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/code4mk/atom-vue#readme",
+  "keywords": [
+    "vue",
+    "vue-snippet",
+    "laravel"
+  ],
+  "license": "MIT",
+  "name": "atom-vue",
+  "optionalDependencies": {},
+  "readme": "<p align=\"center\" ><img src=\"images/atom-vue.png\"></p>\n\n#  ⚛️ Vue snippet for Vue , Laravel & Atom Lovers\n\nInstall:\n```ssh\n\napm install atom-vue\n```\n\nDoc : [wiki page](https://github.com/code4mk/atom-vue/wiki)\n\nMian Features:\n\n  - vue Snippet\n\n\n  Main Feature ❤️\n\n\n  | Name  |  snippet |\n  |---|---|\n  |  vue all |  v- |\n  | vue function| v-function |\n  | blade space| v-bs |\n  | new line | v-n |\n\nVersion:\n\n  - Atom-vue = 0.2.0\n\n\n\n  Another package which helps you   ❤️\n\n  ```ssh\n\n  apm install atom-axios\n  ```\n\n  ```ssh\n\n  apm install atom-vue-router\n  ```\n\n\n---\n* [@code4mk](https://twitter.com/code4mk) // ~  [Hello Laravel](https://twitter.com/hellolaravelbd)\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/code4mk/atom-vue.git"
+  },
+  "version": "0.6.0",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [],
+    "extensions": {
+      ".json": [
+        "package.json"
+      ]
+    },
+    "folders": []
+  }
+}
