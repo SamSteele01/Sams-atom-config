@@ -33,8 +33,7 @@
   "linter-eslint":
     autofix:
       fixOnSave: true
-  "linter-ui-default":
-    panelHeight: 300
+  "linter-ui-default": {}
   pigments: {}
   "prettier-atom":
     formatOnSaveOptions:
