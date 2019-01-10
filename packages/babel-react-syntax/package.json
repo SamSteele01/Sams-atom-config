@@ -1,47 +1,17 @@
 {
-  "_from": "https://www.atom.io/api/packages/babel-react-syntax/versions/1.2.0/tarball",
-  "_id": "babel-react-syntax@1.2.0",
-  "_inBundle": false,
-  "_integrity": "sha512-tIsIZty/y22eAtwM2VXQ+ahRLCUmaIS0uidD1BUJnAi38IM/XPG+FM6lLxZ2iKdVdhLvqUKV0CjnZWbTAdAzTg==",
-  "_location": "/babel-react-syntax",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "remote",
-    "raw": "https://www.atom.io/api/packages/babel-react-syntax/versions/1.2.0/tarball",
-    "rawSpec": "https://www.atom.io/api/packages/babel-react-syntax/versions/1.2.0/tarball",
-    "saveSpec": "https://www.atom.io/api/packages/babel-react-syntax/versions/1.2.0/tarball",
-    "fetchSpec": "https://www.atom.io/api/packages/babel-react-syntax/versions/1.2.0/tarball"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
-  ],
-  "_resolved": "https://www.atom.io/api/packages/babel-react-syntax/versions/1.2.0/tarball",
-  "_shasum": "5f4e7af55f865794dc75f28ec0ad2ea2f4d056af",
-  "_spec": "https://www.atom.io/api/packages/babel-react-syntax/versions/1.2.0/tarball",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11909-15636-8inrkp.kcki",
-  "bugs": {
-    "url": "https://github.com/iMasterAle/babel-react-syntax/issues"
-  },
-  "bundleDependencies": false,
-  "deprecated": false,
+  "name": "babel-react-syntax",
+  "theme": "syntax",
+  "version": "1.2.0",
   "description": "A simple colorful for Babel ES6 Javascript",
-  "engines": {
-    "atom": ">=1.0.0 <2.0.0"
-  },
-  "homepage": "https://github.com/iMasterAle/babel-react-syntax#readme",
   "keywords": [
     "syntax",
     "theme",
     "babel",
     "react"
   ],
+  "repository": "https://github.com/iMasterAle/babel-react-syntax",
   "license": "MIT",
-  "name": "babel-react-syntax",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/iMasterAle/babel-react-syntax.git"
-  },
-  "theme": "syntax",
-  "version": "1.2.0"
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  }
 }
