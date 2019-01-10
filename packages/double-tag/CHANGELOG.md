@@ -1,3 +1,33 @@
+## 1.7.0
+_December 19, 2018_
+* Fix jsx syntax when using tree sitter
+* Fix redo for start tag sync
+
+## 1.6.1
+_December 15, 2018_
+* Fix html syntax when using tree sitter
+
+## 1.5.0
+_May 8, 2018_
+* Add Laravel Blade to default scopes
+
+## 1.4.1
+_May 1, 2018_
+* Improve logic for making sure current tag is complete before searching for match
+
+## 1.4.0
+_April 27, 2018_
+* Fix bug when adding inner tag that is similar to it's parent
+
+## 1.3.0
+_April 26, 2018_
+* Changed `allowEndTagSync` config default to false
+* Added erb and php to default enabled scopes
+
+## 1.2.0
+_April 24, 2018_
+* Removed deprecated `undo` option from `setTextInBufferRange`
+
 ## 1.1.0
 _November 3, 2017_
 * Added option to disable end tag syncing

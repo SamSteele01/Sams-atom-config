@@ -1,10 +1,21 @@
 "*":
+  "atom-ide-ui":
+    "atom-ide-code-format":
+      formatOnSave: true
   core:
     closeDeletedFileTabs: true
     disabledPackages: [
       "language-vue-component"
-      "language-pug-jade"
-      "react"
+      "linter-pylama"
+      "linter"
+      "go-plus"
+      "language-typescript-react"
+      "atom-typescript"
+      "language-typescript"
+      "jslint"
+    ]
+    packagesWithKeymapsDisabled: [
+      "minimap"
     ]
     telemetryConsent: "limited"
     themes: [
@@ -12,16 +23,23 @@
       "babel-react-syntax"
     ]
   editor:
-    fontSize: 15
-    preferredLineLength: 100
+    fontSize: 13
     showIndentGuide: true
     softWrapAtPreferredLineLength: true
   "exception-reporting":
     userId: "e230802c-0ef7-4ef2-b08e-27acb3e58209"
   "language-babel":
     disableWhenNoBabelrcFileInPath: false
-  "linter-ui-default": {}
+  "linter-eslint":
+    autofix:
+      fixOnSave: true
+  "linter-ui-default":
+    panelHeight: 300
   pigments: {}
+  "prettier-atom":
+    formatOnSaveOptions:
+      enabled: true
+      isDisabledIfNoConfigFile: true
   "tree-view": {}
   welcome:
     showOnStartup: false

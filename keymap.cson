@@ -32,3 +32,4 @@
 # http://flight-manual.atom.io/using-atom/sections/basic-customization/#_cson
 'atom-text-editor':
   'ctrl-j': 'editor:toggle-soft-wrap'
+  'cmd-m': 'minimap:toggle'

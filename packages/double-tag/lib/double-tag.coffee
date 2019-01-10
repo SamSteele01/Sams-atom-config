@@ -31,7 +31,7 @@ class DoubleTag
 
   findTag: (@cursor) ->
     return if @editor.hasMultipleCursors()
-    return unless @cursorInHtmlTag()
+    return unless @cursorInHtmlTag() || @cursorInTreeSitterTag()
 
     if @findStartTag()
       return if @tagShouldBeIgnored()
@@ -59,6 +59,9 @@ class DoubleTag
   copyNewTagToEnd: ->
     return if @editor.hasMultipleCursors()
     newTag = @editor.getTextInBufferRange(@startMarker.getBufferRange())
+    oldTag = @editor.getTextInBufferRange(@endMarker.getBufferRange())
+    # ran undo
+    return @reset() if newTag == oldTag
     # remove space after new tag, but allow blank new tag
     origTagLength = newTag.length
     if origTagLength
@@ -66,11 +69,8 @@ class DoubleTag
       return @reset() unless matches
       newTag = matches[0]
     newTagLength = newTag.length
-    @editor.setTextInBufferRange(
-      @endMarker.getBufferRange(),
-      newTag,
-      undo: 'skip'
-    )
+    @editor.setTextInBufferRange(@endMarker.getBufferRange(), newTag)
+    @editor.buffer.groupLastChanges()
     # reset if a space was added
     @reset() unless origTagLength != null and newTagLength != null and
                     origTagLength == newTagLength
@@ -85,11 +85,8 @@ class DoubleTag
       return @reset() unless matches
       newTag = matches[0]
     newTagLength = newTag.length
-    @editor.setTextInBufferRange(
-      @startMarker.getBufferRange(),
-      newTag,
-      undo: 'skip'
-    )
+    @editor.setTextInBufferRange(@startMarker.getBufferRange(), newTag)
+    @editor.buffer.groupLastChanges()
     # reset if a space was added
     @reset() unless origTagLength != null and newTagLength != null and
                     origTagLength == newTagLength
@@ -147,7 +144,7 @@ class DoubleTag
     return unless @frontOfStartTag
 
     @setBackOfStartTag()
-    return unless @backOfStartTag
+    return unless @backOfStartTag and @tagIsComplete()
 
     @startTagRange = new Range(@frontOfStartTag, @backOfStartTag)
     return unless @cursorIsInStartTag()
@@ -218,14 +215,23 @@ class DoubleTag
     true
 
   cursorInHtmlTag: ->
-    scopeDescriptor = @cursor?.getScopeDescriptor()
-    return unless scopeDescriptor
-
-    scopes = scopeDescriptor.getScopesArray()
-    return unless scopes and scopes.length
-
+    scopes = getScopes(@cursor)
+    return unless scopes?.length
     tagScopeRegex = /meta\.tag|tag\.\w+(\.\w+)?\.html/
     scopes.some (scope) -> tagScopeRegex.test(scope)
+
+  cursorInTreeSitterTag: ->
+    htmlScope = /entity\.name\.tag/
+    scopes = getScopes(@cursor)
+    return unless scopes?.length
+    return true if htmlScope.test(scopes[scopes.length - 1])
+
+    leftPosition = [@cursor.getBufferRow(), @cursor.getBufferColumn() - 1]
+    scopeDescriptor = @editor.scopeDescriptorForBufferPosition(leftPosition)
+    return unless scopeDescriptor
+    scopes = scopeDescriptor.getScopesArray()
+    return unless scopes?.length
+    return true if htmlScope.test(scopes[scopes.length - 1])
 
   cursorIsInStartTag: ->
     cursorPosition = @cursor.getBufferPosition()
@@ -243,3 +249,18 @@ class DoubleTag
 
   tagShouldBeIgnored: ->
     atom.config.get('double-tag.ignoredTags')?.indexOf(@tagText) >= 0
+
+  tagIsComplete: ->
+    tagIsComplete = false
+    scanRange = new Range(@backOfStartTag, @editor.buffer.getEndPosition())
+    nextCharacter = @editor.getTextInBufferRange(scanRange)?[0]
+    return true if nextCharacter == '>'
+    regex = new RegExp('<[^?%]|[^?%/]>', 'i')
+    @editor.buffer.scanInRange regex, scanRange, (obj) ->
+      tagIsComplete = (/>$/).test(obj.matchText)
+    tagIsComplete
+
+  getScopes = (cursor) ->
+    scopeDescriptor = cursor?.getScopeDescriptor()
+    return unless scopeDescriptor
+    scopeDescriptor.getScopesArray()

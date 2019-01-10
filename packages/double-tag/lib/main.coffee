@@ -4,6 +4,14 @@ DoubleTag = require './double-tag'
 module.exports =
   subscriptions: null
   config:
+    enabledScopes:
+      description: 'Language scopes that are active'
+      type: 'array'
+      default: [
+        'text.html', 'text.html.basic', 'text.xml', 'text.marko',
+        'source.js.jsx', 'source.tsx', 'text.html.erb', 'text.html.php',
+        'text.html.php.blade'
+      ]
     ignoredTags:
       description: 'These HTML tags will be skipped'
       type: 'array'
@@ -15,7 +23,7 @@ module.exports =
     allowEndTagSync:
       description: 'Editing the end tag will change the start tag'
       type: 'boolean'
-      default: true
+      default: false
 
   activate: (state) ->
     @subscriptions = new CompositeDisposable
@@ -24,9 +32,9 @@ module.exports =
       editorScope = editor.getRootScopeDescriptor?().getScopesArray()
       return unless editorScope?.length
 
-      # TODO: add option for language scope
-      editorScopeRegex = /text\.(html|xml|marko)|source\.js\.jsx/
-      return unless editorScopeRegex.test(editorScope[0])
+      scopeEnabled =
+        atom.config.get('double-tag.enabledScopes').includes(editorScope[0])
+      return unless scopeEnabled
 
       doubleTag = new DoubleTag(editor)
       editor.onDidDestroy -> doubleTag?.destroy()

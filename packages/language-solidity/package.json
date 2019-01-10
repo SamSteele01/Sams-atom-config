@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
+        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
-        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
+        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
+        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
         "type": "local"
       },
-      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-118516-12977-12ug1b.gg0skprpb9"
+      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-118111-48687-zwni36.cj591wcdi"
     ]
   ],
-  "_from": "../d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
-  "_id": "language-solidity@0.1.0",
+  "_from": "../d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
+  "_id": "language-solidity@0.1.1",
   "_inCache": true,
   "_location": "/language-solidity",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
+    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
-    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
+    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
+    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
-  "_shasum": "fbc217d5d225fa5723e4e0b2a8b74737a9facc62",
+  "_resolved": "file:../d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
+  "_shasum": "ccf5714583cdf5ccf8ee420721f9758348e2f608",
   "_shrinkwrap": null,
-  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118516-12977-1dj8cll.eiyyuba9k9/package.tgz",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-118516-12977-12ug1b.gg0skprpb9",
+  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48687-1e89pdy.n88cqsemi/package.tgz",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-118111-48687-zwni36.cj591wcdi",
   "bugs": {
     "url": "https://github.com/jesseweed/language-solidity/issues"
   },
@@ -60,15 +60,5 @@
     "type": "git",
     "url": "git+https://github.com/jesseweed/language-solidity.git"
   },
-  "version": "0.1.0",
-  "_atomModuleCache": {
-    "version": 1,
-    "dependencies": [],
-    "extensions": {
-      ".json": [
-        "package.json"
-      ]
-    },
-    "folders": []
-  }
+  "version": "0.1.1"
 }

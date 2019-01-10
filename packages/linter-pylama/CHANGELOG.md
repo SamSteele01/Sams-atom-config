@@ -1,3 +1,9 @@
+# 0.10.0
+* Update pylama, pylint, isort, radon, flake8, pyflakes, pycodestyle and pydocstyle
+
+# 0.9.5
+* Bump timeout to 60s if using an external pylama or pylint (@Rotonen)
+
 # 0.9.4
 * Update wrapt to version 1.10.11, pyflakes to version 1.6.0), pylint to version 1.7.2, pylama to version 7.4.1
 
