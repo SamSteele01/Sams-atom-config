@@ -1,17 +1,10 @@
 "*":
-
-"atom-ide-ui":
-  "atom-ide-code-format":
-    formatOnSave: true
-
-"console-log":
-  semiColons: true
+  "atom-ide-ui":
+    "atom-ide-code-format":
+      formatOnSave: true
+  "console-log":
+    semiColons: true
   core:
-    closeDeletedFileTabs: true
-    customFileTypes:
-      "source.js.jsx": [
-        "js"
-      ]
     disabledPackages: [
       "language-vue-component"
       "linter-pylama"
@@ -22,15 +15,6 @@
       "language-typescript"
       "jslint"
     ]
-    packagesWithKeymapsDisabled: [
-      "minimap"
-
-      "language-pug-jade"
-      "react"
-      "language-typescript"
-      "language-typescript-react"
-
-    ]
     telemetryConsent: "limited"
     themes: [
       "one-dark-ui"
@@ -38,29 +22,34 @@
     ]
     useTreeSitterParsers: false
   editor:
-
     fontSize: 13
     preferredLineLength: 80
-
     showIndentGuide: true
     softWrapAtPreferredLineLength: true
   "exception-reporting":
     userId: "e230802c-0ef7-4ef2-b08e-27acb3e58209"
   "language-babel":
     disableWhenNoBabelrcFileInPath: false
-
   "linter-eslint":
     autofix:
       fixOnSave: true
-
     emmetCSSAutocomplete: true
-
-  "linter-ui-default": {}
+  "linter-ui-default":
+    panelHeight: 300
+  packagesWithKeymapsDisabled: [
+    "minimap"
+    "language-pug-jade"
+    "react"
+    "language-typescript"
+    "language-typescript-react"
+  ]
   pigments: {}
   "prettier-atom":
     formatOnSaveOptions:
       enabled: true
       isDisabledIfNoConfigFile: true
+  telemetryConsent: "limited"
   "tree-view": {}
+  useTreeSitterParsers: false
   welcome:
     showOnStartup: false
