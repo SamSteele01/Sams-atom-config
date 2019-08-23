@@ -1,0 +1,65 @@
+{
+  "_from": "https://www.atom.io/api/packages/data-atom/versions/0.29.1/tarball",
+  "_id": "data-atom@0.29.1",
+  "_inBundle": false,
+  "_integrity": "sha512-Gjau6qbpiscpyXrwZn3+T7dpCViEKKjusbeVSg7nIfiVUnha7+dgcxLgZd2K4EsNvr7VEaO82Q09M2RGg5+NzQ==",
+  "_location": "/data-atom",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/data-atom/versions/0.29.1/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/data-atom/versions/0.29.1/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/data-atom/versions/0.29.1/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/data-atom/versions/0.29.1/tarball"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://www.atom.io/api/packages/data-atom/versions/0.29.1/tarball",
+  "_shasum": "a4aadcdcaee7a54029aaad7b786d81be6ea558ea",
+  "_spec": "https://www.atom.io/api/packages/data-atom/versions/0.29.1/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119610-82236-hu4vmt.r35f",
+  "activationCommands": [],
+  "bugs": {
+    "url": "https://github.com/lukemurray/data-atom/issues"
+  },
+  "bundleDependencies": false,
+  "consumedServices": {
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "consumeStatusBar"
+      }
+    }
+  },
+  "dependencies": {
+    "dom-listener": "0.1.2",
+    "etch": "0.12.7",
+    "mssql": "3.3.0",
+    "mysql": "2.14.1",
+    "pg": "git+https://github.com/lukemurray/node-postgres.git#master",
+    "season": "5.4.1",
+    "underscore.string": "2.4.0"
+  },
+  "deprecated": false,
+  "description": "Query and manage data sources (databases) from within Atom",
+  "engines": {
+    "atom": ">=1.17.0 <2.0.0"
+  },
+  "homepage": "https://github.com/lukemurray/data-atom#readme",
+  "license": "MIT",
+  "main": "./lib/data-atom",
+  "name": "data-atom",
+  "providedServices": {
+    "autocomplete.provider": {
+      "versions": {
+        "2.0.0": "provide"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukemurray/data-atom.git"
+  },
+  "version": "0.29.1"
+}

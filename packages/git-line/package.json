@@ -1,0 +1,52 @@
+{
+  "_from": "https://www.atom.io/api/packages/git-line/versions/0.6.0/tarball",
+  "_id": "git-line@0.6.0",
+  "_inBundle": false,
+  "_integrity": "sha512-88wy203nB6suK67olyHUoQwSRxvjtdVlf+SlAcGHv+5Avl/tgImnpnF2CLREBX3Qg5qmxYzTjCL6PaNl2kNVHw==",
+  "_location": "/git-line",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/git-line/versions/0.6.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/git-line/versions/0.6.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/git-line/versions/0.6.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/git-line/versions/0.6.0/tarball"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://www.atom.io/api/packages/git-line/versions/0.6.0/tarball",
+  "_shasum": "e108c3bc74493ec720b0e427f95a8f5d2faa262c",
+  "_spec": "https://www.atom.io/api/packages/git-line/versions/0.6.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119417-38108-dpojot.i1y4g",
+  "activationCommands": {
+    "atom-workspace": "git-line:toggle"
+  },
+  "bugs": {
+    "url": "https://github.com/joelgardner/git-line/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "moment": "^2.14.1"
+  },
+  "deprecated": false,
+  "description": "Displays a tooltip with git-blame information about the currently selected line.",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/joelgardner/git-line#readme",
+  "keywords": [
+    "git-blame",
+    "git-line",
+    "line"
+  ],
+  "license": "MIT",
+  "main": "./lib/git-line",
+  "name": "git-line",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joelgardner/git-line.git"
+  },
+  "version": "0.6.0"
+}

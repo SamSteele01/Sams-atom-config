@@ -2,7 +2,7 @@
 
 import { CompositeDisposable } from 'atom'
 import { getenvironment, getgopath } from './environment'
-import pathhelper from './pathhelper'
+import * as pathhelper from './pathhelper'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
@@ -57,7 +57,7 @@ class Locator {
       this.executor = options.executor
     } else {
       const { Executor } = require('./executor')
-      this.executor = new Executor()
+      this.executor = new Executor(() => null)
     }
 
     this.subscriptions.add(this.executor)

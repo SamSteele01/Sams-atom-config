@@ -2,6 +2,8 @@
   "atom-ide-ui":
     "atom-ide-code-format":
       formatOnSave: true
+  "better-git-blame":
+    searchInLayerEnabled: false
   "console-log":
     semiColons: true
   core:
@@ -9,11 +11,52 @@
       "language-vue-component"
       "linter-pylama"
       "linter"
-      "go-plus"
       "language-typescript-react"
-      "atom-typescript"
-      "language-typescript"
       "jslint"
+      "kite"
+      "about"
+      "archive-view"
+      "autocomplete-atom-api"
+      "autoflow"
+      "autosave"
+      "background-tips"
+      "bookmarks"
+      "dalek"
+      "deprecation-cop"
+      "incompatible-packages"
+      "language-c"
+      "language-clojure"
+      "language-coffee-script"
+      "language-csharp"
+      "language-java"
+      "language-mustache"
+      "language-objective-c"
+      "language-perl"
+      "language-php"
+      "language-property-list"
+      "language-shellscript"
+      "language-toml"
+      "open-on-github"
+      "package-generator"
+      "styleguide"
+      "whitespace"
+      "wrap-guide"
+      "welcome"
+      "update-package-dependencies"
+      "csslint"
+      "linter-stylelint"
+      "linter-tslint"
+      "linter-golinter"
+      "linter-gcc"
+      "ide-vue"
+      "gpp-compiler"
+      "go-debug"
+      "dockerletion"
+      "docker"
+      "dbg"
+      "dbg-gdb"
+      "atom-vue"
+      "git-line"
     ]
     telemetryConsent: "limited"
     themes: [
@@ -28,6 +71,8 @@
     softWrapAtPreferredLineLength: true
   "exception-reporting":
     userId: "e230802c-0ef7-4ef2-b08e-27acb3e58209"
+  "goto-definition":
+    performanceMode: true
   "language-babel":
     disableWhenNoBabelrcFileInPath: false
   "linter-eslint":

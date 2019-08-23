@@ -1,37 +1,46 @@
 // @flow
 
-import { CompositeDisposable } from 'atom'
+import { CompositeDisposable, Disposable } from 'atom'
+import type { PanelModel } from './panel/tab'
+import type { Renderable } from './etch-component'
 
-export default {
-  bootstrap: null,
-  bootstrapped: null,
-  builder: null,
-  busySignal: null,
-  configservice: null,
-  formatter: null,
-  getservice: null,
-  navigator: null,
-  godoc: null,
-  gomodifytags: null,
-  gorename: null,
-  information: null,
-  implements: null,
-  importer: null,
-  linter: null,
-  loaded: null,
-  orchestrator: null,
-  outputManager: null,
-  panelManager: null,
-  statusbar: null,
-  subscriptions: null,
-  tester: null,
-  references: null,
-  highlight: null,
-  outlineProvider: null,
+const minimumVersion = '1.12.7'
+
+class Main {
+  bootstrap = null
+  bootstrapped = null
+  builder = null
+  busySignal = null
+  configservice = null
+  console = null
+  formatter = null
+  getservice = null
+  navigator = null
+  godoc = null
+  gomodifytags = null
+  gorename = null
+  information = null
+  implements = null
+  importer = null
+  linter: any = null
+  golinter = null
+  buildLinter: any = null
+  loaded = null
+  orchestrator = null
+  outputManager = null
+  panelManager = null
+  subscriptions: CompositeDisposable
+  tester = null
+  references = null
+  highlight = null
+  outlineProvider = null
+  autocompleteProvider = null
+  definitionProvider = null
+  packagemanager = null
 
   activate() {
     this.subscriptions = new CompositeDisposable()
-    this.minimumVersion = '1.12.7'
+
     this.validateAtomVersion()
     this.bootstrapped = false
     this.loaded = false
@@ -48,18 +57,22 @@ export default {
       this.checkFormatOnSave()
     })
     this.subscriptions.add(this.bootstrap)
-  },
+  }
 
   deactivate() {
     this.dispose()
-  },
+  }
 
   dispose() {
     this.bootstrapped = false
     this.loaded = false
     if (this.subscriptions) {
       this.subscriptions.dispose()
-      this.subscriptions = null
+      this.subscriptions = (null: any)
+    }
+    if (this.console) {
+      this.console.dispose()
+      this.console = null
     }
     this.bootstrap = null
     this.builder = null
@@ -73,18 +86,17 @@ export default {
     this.information = null
     this.implements = null
     this.importer = null
-    this.linter = null
+    this.golinter = null
     this.orchestrator = null
     this.outputManager = null
     this.panelManager = null
-    this.statusbar = null
     this.tester = null
     this.references = null
     this.highlight = null
 
     this.autocompleteProvider = null
     this.definitionProvider = null
-  },
+  }
 
   load() {
     this.getPanelManager()
@@ -92,7 +104,7 @@ export default {
     this.loadInformation()
     this.loadBuilder()
     this.loadTester()
-    this.loadGometalinter()
+    this.loadLinter()
     this.loadDoc()
     this.loadImplements()
     this.loadGorename()
@@ -104,47 +116,51 @@ export default {
     }
     this.getPanelManager().requestUpdate()
 
-    this.subscriptions.add(
-      this.orchestrator.register('builder', (editor, path) => {
+    const { subscriptions, orchestrator } = this
+    if (!subscriptions || !orchestrator) {
+      return
+    }
+
+    subscriptions.add(
+      orchestrator.register('builder', (editor: TextEditor, path: string) => {
         if (this.builder) this.builder.build(editor, path)
-        return
       })
     )
-    this.subscriptions.add(
-      this.orchestrator.register('tester', (editor, path) => {
-        if (this.tester) this.tester.handleSaveEvent(editor, path)
-        return
+    subscriptions.add(
+      orchestrator.register('tester', (editor: TextEditor, path: string) => {
+        void path
+        if (this.tester) this.tester.handleSaveEvent(editor)
       })
     )
-    this.subscriptions.add(
-      this.orchestrator.register('linter', (editor, path) => {
-        if (this.linter) this.linter.lint(editor, path)
-        return
+    subscriptions.add(
+      orchestrator.register('linter', (editor: TextEditor, path: string) => {
+        void path
+        if (this.golinter) this.golinter.lint(editor)
       })
     )
 
     this.loaded = true
-  },
+  }
 
   loadInformation() {
     if (this.information) {
       return this.information
     }
 
-    const InformationView = require('./info/information-view')
+    const { InformationView } = require('./info/information-view')
     const { Information } = require('./info/information')
-    this.information = new Information(this.provideGoConfig())
+    const information = new Information(this.provideGoConfig())
+    this.information = information
     const view = this.consumeViewProvider({
       view: InformationView,
-      model: this.information
+      model: information
     })
     if (this.subscriptions) {
-      this.subscriptions.add(this.information)
-      this.subscriptions.add(view)
+      this.subscriptions.add(information, view)
     }
 
     return this.information
-  },
+  }
 
   loadImporter() {
     if (this.importer) {
@@ -153,7 +169,7 @@ export default {
     const { Importer } = require('./import/importer')
     this.importer = new Importer(this.provideGoConfig())
     return this.importer
-  },
+  }
 
   loadDoc() {
     if (this.godoc) {
@@ -161,38 +177,38 @@ export default {
     }
 
     const { Godoc } = require('./doc/godoc')
-    this.godoc = new Godoc(this.provideGoConfig())
+    const godoc = new Godoc(this.provideGoConfig())
+    this.godoc = godoc
 
-    const GodocView = require('./doc/godoc-view')
+    const { GodocView } = require('./doc/godoc-view')
     const view = this.consumeViewProvider({
       view: GodocView,
-      model: this.godoc.getPanel()
+      model: godoc.getPanel()
     })
 
     if (this.subscriptions) {
-      this.subscriptions.add(this.godoc)
-      this.subscriptions.add(view)
+      this.subscriptions.add(godoc, view)
     }
-    return this.godoc
-  },
+    return godoc
+  }
 
   loadImplements() {
     if (this.implements) {
       return this.implements
     }
     const { Implements } = require('./implements/implements')
-    this.implements = new Implements(this.provideGoConfig())
+    const impls = new Implements(this.provideGoConfig())
+    this.implements = impls
     const { ImplementsView } = require('./implements/implements-view')
     const view = this.consumeViewProvider({
       view: ImplementsView,
-      model: this.implements
+      model: impls
     })
     if (this.subscriptions) {
-      this.subscriptions.add(this.implements)
-      this.subscriptions.add(view)
+      this.subscriptions.add(impls, view)
     }
-    return this.implements
-  },
+    return impls
+  }
 
   provideOutlines() {
     if (this.outlineProvider) {
@@ -201,7 +217,7 @@ export default {
     const { OutlineProvider } = require('./outline/outline-provider')
     this.outlineProvider = new OutlineProvider(this.provideGoConfig())
     return this.outlineProvider
-  },
+  }
 
   provideCodeHighlight() {
     if (this.highlight) {
@@ -216,16 +232,17 @@ export default {
     }
 
     return this.highlight
-  },
+  }
 
   loadOutput() {
     if (this.outputManager) {
       return this.outputManager
     }
     const { OutputManager } = require('./output-manager')
-    this.outputManager = new OutputManager()
+    const outputManager = new OutputManager()
+    this.outputManager = outputManager
 
-    const OutputPanel = require('./output-panel')
+    const { OutputPanel } = require('./output-panel')
     const view = this.consumeViewProvider({
       view: OutputPanel,
       model: this.outputManager
@@ -235,8 +252,8 @@ export default {
       this.subscriptions.add(view)
     }
 
-    return this.outputManager
-  },
+    return outputManager
+  }
 
   provideCodeFormatter() {
     if (this.formatter) {
@@ -248,7 +265,7 @@ export default {
       this.subscriptions.add(this.formatter)
     }
     return this.formatter
-  },
+  }
 
   loadTester() {
     if (this.tester) {
@@ -265,12 +282,8 @@ export default {
       this.subscriptions.add(this.tester)
     }
 
-    if (this.subscriptions) {
-      this.subscriptions.add(this.tester)
-    }
-
     return this.tester
-  },
+  }
 
   loadGorename() {
     if (this.gorename) {
@@ -283,7 +296,7 @@ export default {
     }
 
     return this.gorename
-  },
+  }
 
   loadGoModifyTags() {
     if (this.gomodifytags) {
@@ -295,7 +308,7 @@ export default {
       this.subscriptions.add(this.gomodifytags)
     }
     return this.gomodifytags
-  },
+  }
 
   loadBuilder() {
     if (this.builder) {
@@ -314,25 +327,25 @@ export default {
     }
 
     return this.builder
-  },
+  }
 
-  loadGometalinter() {
-    if (this.linter) {
-      return this.linter
+  loadLinter() {
+    if (this.golinter) {
+      return this.golinter
     }
-    const { GometalinterLinter } = require('./lint/linter')
-    this.linter = new GometalinterLinter(
+    const { Linter } = require('./lint/linter')
+    this.golinter = new Linter(
       this.provideGoConfig(),
-      () => this.gometalinterLinter,
+      () => (this.linter: any),
       () => this.busySignal
     )
 
     if (this.subscriptions) {
-      this.subscriptions.add(this.linter)
+      this.subscriptions.add(this.golinter)
     }
 
-    return this.linter
-  },
+    return this.golinter
+  }
 
   loadNavigator() {
     if (this.navigator) {
@@ -346,30 +359,21 @@ export default {
     }
 
     return this.navigator
-  },
+  }
 
   getPanelManager() {
     if (this.panelManager) {
       return this.panelManager
     }
     const { PanelManager } = require('./panel/panel-manager')
-    this.panelManager = new PanelManager(() => this.statusbar || false)
+    this.panelManager = new PanelManager()
 
     if (this.subscriptions) {
       this.subscriptions.add(this.panelManager)
     }
 
     return this.panelManager
-  },
-
-  showPanel() {
-    if (this.bootstrapped) {
-      if (this.statusbar) {
-        this.getPanelManager().showStatusBar()
-      }
-      this.getPanelManager().togglePanel(true)
-    }
-  },
+  }
 
   loadPackageManager() {
     if (this.packagemanager) {
@@ -387,47 +391,61 @@ export default {
     }
 
     return this.packagemanager
-  },
-
-  consumeStatusBar(service: any) {
-    this.statusbar = service
-  },
+  }
 
   consumeBusySignal(service: any) {
     this.busySignal = service
-  },
+  }
 
-  consumeViewProvider(provider: any) {
+  consumeConsole(createConsole: Function) {
+    this.console = createConsole({ id: 'go-plus', name: 'go-plus' })
+    return new Disposable(() => {
+      if (this.console) {
+        this.console.dispose()
+        this.console = null
+      }
+    })
+  }
+
+  consumeViewProvider(provider: {
+    view: Class<Renderable>,
+    model: PanelModel
+  }) {
     if (!provider) {
-      return
+      // for simplified type handling just assume
+      // that this never happens for our own code
+      return (null: any)
     }
 
     return this.getPanelManager().registerViewProvider(
       provider.view,
       provider.model
     )
-  },
+  }
 
   consumeLinter(registry: any) {
     this.buildLinter = registry({ name: 'go build' })
-    this.subscriptions.add(this.buildLinter)
-    this.gometalinterLinter = registry({ name: 'gometalinter' })
-    this.subscriptions.add(this.gometalinterLinter)
-  },
+    this.linter = registry({ name: 'go linter' })
+    if (this.subscriptions) {
+      this.subscriptions.add(this.buildLinter, this.linter)
+    }
+  }
 
   consumeDatatipService(service: any) {
     service.addProvider(this.loadDoc())
-  },
+  }
 
   provideGoConfig() {
     if (this.configservice) {
       return this.configservice.provide()
     }
     const { ConfigService } = require('./config/service')
-    this.configservice = new ConfigService()
-    this.subscriptions.add(this.configservice)
+    this.configservice = new ConfigService(() => this.console)
+    if (this.subscriptions) {
+      this.subscriptions.add(this.configservice)
+    }
     return this.configservice.provide()
-  },
+  }
 
   provideGoGet() {
     if (this.getservice) {
@@ -440,7 +458,7 @@ export default {
       () => this.busySignal
     )
     return this.getservice.provide()
-  },
+  }
 
   provideAutocomplete() {
     if (this.autocompleteProvider) {
@@ -454,7 +472,7 @@ export default {
     }
 
     return this.autocompleteProvider
-  },
+  }
 
   provideReferences() {
     if (this.references) {
@@ -464,7 +482,7 @@ export default {
     const { ReferencesProvider } = require('./references/references-provider')
     this.references = new ReferencesProvider(this.provideGoConfig())
     return this.references
-  },
+  }
 
   provideDefinitions() {
     if (this.definitionProvider) {
@@ -478,7 +496,7 @@ export default {
     }
 
     return this.definitionProvider
-  },
+  }
 
   checkFormatOnSave() {
     const skip = atom.config.get('go-plus.skipCodeFormatCheck')
@@ -515,11 +533,11 @@ export default {
         "In order for go-plus to format code on save, `atom-ide-ui`'s " +
         'format on save option must be enabled.  Would you like to enable it now?'
     })
-  },
+  }
 
   validateAtomVersion() {
     const semver = require('semver')
-    if (semver.lt(atom.appVersion, this.minimumVersion)) {
+    if (semver.lt(atom.appVersion, minimumVersion)) {
       const os = require('os')
       const notification = atom.notifications.addError('go-plus', {
         dismissable: true,
@@ -527,7 +545,7 @@ export default {
         detail: 'you are running an old version of Atom',
         description:
           '`go-plus` requires at least `v' +
-          this.minimumVersion +
+          minimumVersion +
           '` but you are running v`' +
           atom.appVersion +
           '`.' +
@@ -545,3 +563,5 @@ export default {
     }
   }
 }
+
+module.exports = new Main()

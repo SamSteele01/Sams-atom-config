@@ -39,6 +39,8 @@ const goTools = new Map([
   ['goreturns', 'github.com/sqs/goreturns'],
   ['gocode', 'github.com/mdempsky/gocode'],
   ['gometalinter', 'github.com/alecthomas/gometalinter'],
+  ['revive', 'github.com/mgechev/revive'],
+  ['golangci-lint', 'github.com/golangci/golangci-lint/cmd/golangci-lint'],
   ['gogetdoc', 'github.com/zmb3/gogetdoc'],
   ['goaddimport', 'github.com/zmb3/goaddimport'],
   ['godef', 'github.com/rogpeppe/godef'],
@@ -57,7 +59,7 @@ class PackageManager {
   subscriptions: CompositeDisposable
   toolChecker: ToolChecker
 
-  constructor(goconfig: GoConfig, goget: any) {
+  constructor(goconfig: GoConfig, goget: GoGet) {
     this.loaded = false
     this.goconfig = goconfig
     this.goget = goget

@@ -1,16 +1,23 @@
-/** @babel */
+// @flow
 /** @jsx etch.dom */
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/no-string-refs */
 
 import etch from 'etch'
 import ResizeObserver from 'resize-observer-polyfill'
-import EtchComponent from './../etch-component'
-import EmptyTabView from './empty-tab-view'
+import { EtchComponent } from './../etch-component'
+import { EmptyTabView } from './empty-tab-view'
 import Octicon from 'etch-octicon'
+import type { PanelManager } from './panel-manager'
+import type { Tab } from './tab'
 
-export default class GoPlusPanel extends EtchComponent {
-  constructor(props) {
+export class GoPlusPanel extends EtchComponent {
+  props: { model: PanelManager }
+  ro: ResizeObserver
+  isNarrow: boolean
+  scrollHeight: number
+
+  constructor(props: { model: PanelManager }) {
     super(props)
     this.ro = new ResizeObserver(entries => {
       for (const entry of entries) {
@@ -27,9 +34,6 @@ export default class GoPlusPanel extends EtchComponent {
 
   render() {
     const panelBodyStyle = {
-      'font-family': atom.config.get('editor.fontFamily'),
-      'font-size': atom.config.get('go-plus.panel.fontSize'),
-      'line-height': atom.config.get('editor.lineHeight'),
       padding: '10px'
     }
 
@@ -38,7 +42,7 @@ export default class GoPlusPanel extends EtchComponent {
       panelClass += ' is-narrow'
     }
 
-    let tabs = []
+    let tabs: Tab[] = []
     let ActiveView
     let activeModel
     let packageName = 'unknown'
@@ -60,12 +64,13 @@ export default class GoPlusPanel extends EtchComponent {
       }
       tabs.push(
         Object.assign(
-          {
+          ({
             key: model.key,
             order: 999,
             icon: 'question',
-            packageName: 'unknown'
-          },
+            packageName: 'unknown',
+            name: ''
+          }: Tab),
           model.tab
         )
       )
@@ -136,7 +141,7 @@ export default class GoPlusPanel extends EtchComponent {
     }
   }
 
-  handleTabClick(item) {
+  handleTabClick(item: Tab) {
     if (
       item &&
       item.key &&
@@ -154,7 +159,7 @@ export default class GoPlusPanel extends EtchComponent {
 
   destroy() {
     this.ro.unobserve(this.element)
-    this.ro = null
+    this.ro = (null: any)
     super.destroy(true)
   }
 }

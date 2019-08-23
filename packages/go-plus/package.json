@@ -1,40 +1,25 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11905-80547-txlr40.nipugzaor/package.tgz",
-        "scope": null,
-        "escapedName": null,
-        "name": null,
-        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11905-80547-txlr40.nipugzaor/package.tgz",
-        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11905-80547-txlr40.nipugzaor/package.tgz",
-        "type": "local"
-      },
-      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11905-80547-1vkngwc.638zolxr"
-    ]
-  ],
-  "_from": "../d-11905-80547-txlr40.nipugzaor/package.tgz",
-  "_id": "go-plus@6.0.2",
-  "_inCache": true,
+  "_from": "https://www.atom.io/api/packages/go-plus/versions/6.1.0/tarball",
+  "_id": "go-plus@6.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-kQd92OJnYU+oAqnyvkT/xwRr2ktBDoJ/mS6ZQGAEJ//9MOUBXJyM2IiVQjMStMAf5oL45GoSJtEBdlfo4zONOQ==",
   "_location": "/go-plus",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11905-80547-txlr40.nipugzaor/package.tgz",
-    "scope": null,
-    "escapedName": null,
-    "name": null,
-    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11905-80547-txlr40.nipugzaor/package.tgz",
-    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11905-80547-txlr40.nipugzaor/package.tgz",
-    "type": "local"
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/go-plus/versions/6.1.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/go-plus/versions/6.1.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/go-plus/versions/6.1.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/go-plus/versions/6.1.0/tarball"
   },
   "_requiredBy": [
-    "#USER"
+    "#USER",
+    "/"
   ],
-  "_resolved": "file:../d-11905-80547-txlr40.nipugzaor/package.tgz",
-  "_shasum": "4af9834cb576efce37cf5b8677e392cf0d25eb66",
-  "_shrinkwrap": null,
-  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11905-80547-txlr40.nipugzaor/package.tgz",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11905-80547-1vkngwc.638zolxr",
+  "_resolved": "https://www.atom.io/api/packages/go-plus/versions/6.1.0/tarball",
+  "_shasum": "dc67ff1a821df8890654b85e3e2dcd9b3425a726",
+  "_spec": "https://www.atom.io/api/packages/go-plus/versions/6.1.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119322-31826-mp5zfn.aiwo9",
   "activationCommands": {
     "atom-workspace": [
       "golang:get-package",
@@ -74,6 +59,7 @@
   "bugs": {
     "url": "https://github.com/joefitzgerald/go-plus/issues"
   },
+  "bundleDependencies": false,
   "configSchema": {
     "disabledBundledPackages": {
       "title": "Disabled Bundled Packages",
@@ -295,26 +281,24 @@
       "title": "Lint",
       "type": "object",
       "properties": {
-        "args": {
-          "title": "gometalinter Arguments",
-          "description": "Arguments to be passed when invoking `gometalinter`. Please ensure the `--json` argument is always included. Arguments are comma-separated.",
-          "type": "array",
-          "default": [
-            "--vendor",
-            "--disable-all",
-            "--enable=vet",
-            "--enable=vetshadow",
-            "--enable=golint",
-            "--enable=ineffassign",
-            "--enable=goconst",
-            "--tests",
-            "--json",
-            "."
+        "tool": {
+          "title": "Linter",
+          "description": "The linter that is used to lint your code",
+          "type": "string",
+          "default": "gometalinter",
+          "enum": [
+            "gometalinter",
+            "revive",
+            "golangci-lint"
           ],
-          "items": {
-            "type": "string"
-          },
           "order": 1
+        },
+        "args": {
+          "title": "Linter Arguments",
+          "description": "Arguments to be passed when invoking the provided linter.",
+          "type": "any",
+          "default": "",
+          "order": 2
         }
       }
     },
@@ -402,11 +386,6 @@
     }
   },
   "consumedServices": {
-    "status-bar": {
-      "versions": {
-        "^1.0.0": "consumeStatusBar"
-      }
-    },
     "go-plus.view": {
       "versions": {
         "0.1.0": "consumeViewProvider"
@@ -426,6 +405,11 @@
       "versions": {
         "0.1.0": "consumeBusySignal"
       }
+    },
+    "console": {
+      "versions": {
+        "0.1.0": "consumeConsole"
+      }
     }
   },
   "dependencies": {
@@ -433,7 +417,6 @@
     "ansi-style-parser": "^2.0.0",
     "atom-babel6-transpiler": "^1.2.0",
     "atom-select-list": "^0.7.2",
-    "babel-plugin-add-module-exports": "^1.0.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
@@ -447,6 +430,7 @@
     "semver": "^5.6.0",
     "yargs-parser": "^10.1.0"
   },
+  "deprecated": false,
   "description": "Makes working with Go in Atom awesome.",
   "devDependencies": {
     "babel-eslint": "10.0.1",
@@ -456,7 +440,7 @@
     "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-react": "^7.11.1",
-    "flow-bin": "^0.85.0",
+    "flow-bin": "^0.90.0",
     "prettier": "1.14.3"
   },
   "engines": {
@@ -488,7 +472,6 @@
   "license": "Apache-2.0",
   "main": "./lib/main",
   "name": "go-plus",
-  "optionalDependencies": {},
   "providedServices": {
     "go-config": {
       "versions": {
@@ -531,8 +514,6 @@
       }
     }
   },
-  "readme": "# [go-plus](https://atom.io/packages/go-plus) [![Build Status](https://travis-ci.org/joefitzgerald/go-plus.svg?branch=master)](https://travis-ci.org/joefitzgerald/go-plus) [![Build status](https://ci.appveyor.com/api/projects/status/d0cekvaprt9wo1et/branch/master?svg=true)](https://ci.appveyor.com/project/joefitzgerald/go-plus/branch/master) [![Slack](https://img.shields.io/badge/atom_slack-%23go--plus-blue.svg?style=flat)](https://atom-slack.herokuapp.com) [![Slack](https://img.shields.io/badge/gophers_slack-%23go--plus-blue.svg?style=flat)](https://gophersinvite.herokuapp.com)\n\n[![Greenkeeper badge](https://badges.greenkeeper.io/joefitzgerald/go-plus.svg)](https://greenkeeper.io/)\n\n> An Improved [Go](https://www.golang.org) Experience For The [Atom Editor](https://atom.io)\n\n![image](https://user-images.githubusercontent.com/7527103/48982584-cd537600-f0a1-11e8-9101-e43dc2064223.png)\n\n- Github: https://github.com/joefitzgerald/go-plus\n- Atom: https://atom.io/packages/go-plus\n\n## Overview\n\nThis package includes the following functionality:\n\n- Display information about your current go installation, by running `go version` and `go env`\n- Autocomplete using `gocode`\n- Format your code with `gofmt`, `goimports`, or `goreturns`;\n  optionally run one of these tools on save of any `.go` file\n- Run `go install .` and `go test -c -o {tempdir} .` to verify your code compiles\n  and to keep `gocode` suggestions up to date\n- Run a variety of linters (e.g. `golint`, `vet`, etc.) against your code using `gometalinter`\n- Run tests, display test output, and display test coverage using `go test -coverprofile`\n- Display documentation for identifiers in source code using\n  [`gogetdoc`](https://github.com/zmb3/gogetdoc)\n- Rename the symbol under your cursor using `gorename`\n- Go to definition using `guru` or `godef`\n- Highlight occurrences of an identifier using `guru`\n- Find usages of an identifier using `guru`\n\nYou can add debug functionality to Atom by installing the following package:\n\n- [go-debug](https://atom.io/packages/go-debug): Debug your package / tests using [`delve`](https://github.com/derekparker/delve)\n\n## Builds\n\n### How Are The Builds Performed?\n\nThe following commands are run for the directory of the current file:\n\n- `go install .` (for normal `.go` files)\n- `go test -o {tmpdir} -c .` (for `_test.go` files)\n\n### Why Are You Running `go install` Instead Of `go build`?\n\n`gocode` (and a few other tools, like `gotype`) work on `.a` files (i.e. the package object archive), and the way to keep these up to date is to run `go install` periodically. This ensures your autocomplete suggestions are kept up to date.\n\n## Platforms\n\nThe package has CI for OS X, Windows and Ubuntu.\n\n## Installing Missing Tools\n\nIf you are missing any required tools, you may be prompted to install them. You can also manually install the required tools in your terminal:\n\n```\ngo get -u golang.org/x/tools/cmd/goimports\ngo get -u golang.org/x/tools/cmd/gorename\ngo get -u github.com/sqs/goreturns\ngo get -u github.com/mdempsky/gocode\ngo get -u github.com/alecthomas/gometalinter\ngo get -u github.com/zmb3/gogetdoc\ngo get -u github.com/zmb3/goaddimport\ngo get -u github.com/rogpeppe/godef\ngo get -u golang.org/x/tools/cmd/guru\ngo get -u github.com/fatih/gomodifytags\ngo get -u github.com/tpng/gopkgs\ngo get -u github.com/ramya-rao-a/go-outline\n```\n\n## Having Issues?\n\nPlease consult the [FAQ](https://github.com/joefitzgerald/go-plus/wiki/FAQ) prior to [opening an issue](https://github.com/joefitzgerald/go-plus/issues/new): https://github.com/joefitzgerald/go-plus/wiki/FAQ\n\nIf you have an issue with debugging, file an issue with [`go-debug`](https://github.com/lloiser/go-debug) [here](https://github.com/lloiser/go-debug/issues/new).\n\n## Maintainers\n\n- Joe Fitzgerald ([@joefitzgerald](https://github.com/joefitzgerald))\n- Zac Bergquist ([@zmb3](https://github.com/zmb3))\n- Lukas Beranek ([@lloiser](https://github.com/lloiser))\n\n## Contributors\n\nA list of contributors can be found at https://github.com/joefitzgerald/go-plus/graphs/contributors. Thank you so much to everyone has contributed to the package :heart:. You are awesome!\n\n## Contributing\n\nContributions are greatly appreciated. Please fork this repository, make your\nchanges, and open a pull request. See [Contributing](https://github.com/joefitzgerald/go-plus/wiki/Contributing) for detailed instructions.\n",
-  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joefitzgerald/go-plus.git"
@@ -543,5 +524,5 @@
     "lint": "eslint ./lib ./spec",
     "lintfix": "eslint ./lib ./spec --fix"
   },
-  "version": "6.0.2"
+  "version": "6.1.0"
 }

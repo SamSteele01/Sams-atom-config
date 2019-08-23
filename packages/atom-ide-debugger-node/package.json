@@ -1,0 +1,57 @@
+{
+  "_from": "https://www.atom.io/api/packages/atom-ide-debugger-node/versions/0.7.3/tarball",
+  "_id": "atom-ide-debugger-node@0.7.3",
+  "_inBundle": false,
+  "_integrity": "sha512-Iq0nHvtxHkYiVu1S0Qg+wK1401/0AOnOpS+pWLykPBSuPrcktagzB3jTZ2VsUXrW5lsKwKf0wQ67iV3y19gU/A==",
+  "_location": "/atom-ide-debugger-node",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/atom-ide-debugger-node/versions/0.7.3/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/atom-ide-debugger-node/versions/0.7.3/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/atom-ide-debugger-node/versions/0.7.3/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/atom-ide-debugger-node/versions/0.7.3/tarball"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://www.atom.io/api/packages/atom-ide-debugger-node/versions/0.7.3/tarball",
+  "_shasum": "6b5f8f6cdf02affbb4fdb8c933b8625defd4a507",
+  "_spec": "https://www.atom.io/api/packages/atom-ide-debugger-node/versions/0.7.3/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119024-39441-1abnvm5.x2fi",
+  "author": {
+    "name": "NEEDS OWNER"
+  },
+  "bugs": {
+    "url": "https://github.com/facebook-atom/atom-ide-debugger-node/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "atom-ide-debugger-node": "0.7.2"
+  },
+  "deprecated": false,
+  "description": "Node Debugger for Atom IDE.",
+  "engines": {
+    "atom": ">= 1.25.0"
+  },
+  "homepage": "https://nuclide.io/",
+  "license": "BSD-3-Clause",
+  "name": "atom-ide-debugger-node",
+  "package-deps": [
+    "atom-ide-ui"
+  ],
+  "providedServices": {
+    "debugger.provider": {
+      "description": "Debugger engine",
+      "versions": {
+        "0.0.0": "createDebuggerProvider"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook-atom/atom-ide-debugger-node.git"
+  },
+  "version": "0.7.3"
+}

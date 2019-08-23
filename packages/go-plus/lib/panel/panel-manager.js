@@ -1,24 +1,11 @@
 // @flow
 
 import { CompositeDisposable, Disposable } from 'atom'
-import GoPlusPanel, { PANEL_URI } from './go-plus-panel'
-import GoPlusStatusBar from './go-plus-status-bar'
+import { GoPlusPanel, PANEL_URI } from './go-plus-panel'
 
 import type { PanelModel } from './tab'
 import type { GoConfig } from './../config/service'
-
-type StatusBarTile = {
-  getPriority: () => number,
-  getItem: () => any,
-  destroy: () => void
-}
-
-type StatusBar = {
-  addLeftTile: ({ item: any, priority: number }) => void,
-  addRightTile: ({ item: any, priority: number }) => void,
-  getLeftTiles: Array<StatusBarTile>,
-  getRightTiles: Array<StatusBarTile>
-}
+import type { Renderable } from '../etch-component'
 
 class PanelManager {
   activeItem: string
@@ -31,15 +18,11 @@ class PanelManager {
     getAllowedLocations: () => string[]
   }
   subscriptions: CompositeDisposable
-  viewProviders: Map<string, { view: any, model: PanelModel }>
-  goPlusPanel: GoPlusPanel
-  statusBar: () => StatusBar | false
+  viewProviders: Map<string, { view: Class<Renderable>, model: PanelModel }>
+  goPlusPanel: ?GoPlusPanel
   goconfig: GoConfig
-  goPlusStatusBar: GoPlusStatusBar
-  goPlusStatusBarTile: ?StatusBarTile
 
-  constructor(statusBarFunc: () => StatusBar | false) {
-    this.statusBar = statusBarFunc
+  constructor() {
     this.activeItem = 'go'
 
     this.item = {
@@ -53,9 +36,6 @@ class PanelManager {
     this.subscriptions = new CompositeDisposable()
     this.viewProviders = new Map()
 
-    this.subscribeToConfig()
-
-    this.createPanel(atom.config.get('go-plus.panel.displayMode') === 'open')
     this.subscribeToCommands()
   }
 
@@ -76,26 +56,11 @@ class PanelManager {
   requestUpdate(): Promise<void> {
     if (this.goPlusPanel) {
       return this.goPlusPanel.update()
+    } else {
+      return this.createPanel(
+        atom.config.get('go-plus.panel.displayMode') === 'open'
+      )
     }
-    return Promise.resolve()
-  }
-
-  subscribeToConfig() {
-    this.subscriptions.add(
-      atom.config.observe('editor.fontFamily', () => {
-        this.requestUpdate()
-      })
-    )
-    this.subscriptions.add(
-      atom.config.observe('editor.fontSize', () => {
-        this.requestUpdate()
-      })
-    )
-    this.subscriptions.add(
-      atom.config.observe('editor.lineHeight', () => {
-        this.requestUpdate()
-      })
-    )
   }
 
   subscribeToCommands() {
@@ -124,15 +89,9 @@ class PanelManager {
     }
     this.goPlusPanel = null
     this.viewProviders.clear()
-
-    this.goPlusStatusBar = null
-    if (this.goPlusStatusBarTile) {
-      this.goPlusStatusBarTile.destroy()
-    }
-    this.goPlusStatusBarTile = null
   }
 
-  registerViewProvider(view: any, model: PanelModel): Disposable {
+  registerViewProvider(view: Class<Renderable>, model: PanelModel): Disposable {
     if (!view || !model || !model.key) {
       return new Disposable()
     }
@@ -169,11 +128,9 @@ class PanelManager {
 
     if (!visible) {
       container.hide()
-      if (this.goPlusPanel.props && this.goPlusPanel.props.viewProviders) {
-        for (const { model } of this.goPlusPanel.props.viewProviders.values()) {
-          if (model.isActive) {
-            model.isActive(false)
-          }
+      for (const { model } of this.viewProviders.values()) {
+        if (model.isActive) {
+          model.isActive(false)
         }
       }
       return Promise.resolve()
@@ -186,32 +143,6 @@ class PanelManager {
       return this.goPlusPanel.update()
     } else {
       return Promise.resolve()
-    }
-  }
-
-  showStatusBar() {
-    if (this.goPlusStatusBar) {
-      return
-    }
-
-    this.goPlusStatusBar = new GoPlusStatusBar({
-      togglePanel: () => {
-        this.togglePanel()
-      }
-    })
-
-    this.subscriptions.add(this.goPlusStatusBar)
-
-    if (this.goPlusStatusBarTile) {
-      this.goPlusStatusBarTile.destroy()
-    }
-
-    const sb = this.statusBar()
-    if (sb) {
-      this.goPlusStatusBarTile = sb.addRightTile({
-        item: this.goPlusStatusBar,
-        priority: 1000
-      })
     }
   }
 }

@@ -1,43 +1,29 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-        "scope": null,
-        "escapedName": null,
-        "name": null,
-        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-        "type": "local"
-      },
-      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11906-91391-io3eqv.08bkyphkt9"
-    ]
-  ],
-  "_from": "../d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-  "_id": "busy-signal@2.0.0",
-  "_inCache": true,
+  "_from": "https://www.atom.io/api/packages/busy-signal/versions/2.0.1/tarball",
+  "_id": "busy-signal@2.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-pXzYeHJi5f8jn3DMC2PT/gDdArX12VaDcEoWmq818f+i9WX6jyqzB9zMTebC/9FISpwrT63g/x9hUGCzzIl+Vw==",
   "_location": "/busy-signal",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-    "scope": null,
-    "escapedName": null,
-    "name": null,
-    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-    "type": "local"
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/busy-signal/versions/2.0.1/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/busy-signal/versions/2.0.1/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/busy-signal/versions/2.0.1/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/busy-signal/versions/2.0.1/tarball"
   },
   "_requiredBy": [
-    "#USER"
+    "#USER",
+    "/"
   ],
-  "_resolved": "file:../d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-  "_shasum": "6f4a513e2a3d152c8befe4aa79e29f779197a859",
-  "_shrinkwrap": null,
-  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11906-91391-1kkn0em.nihvqxs9k9/package.tgz",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11906-91391-io3eqv.08bkyphkt9",
+  "_resolved": "https://www.atom.io/api/packages/busy-signal/versions/2.0.1/tarball",
+  "_shasum": "74a948cc09ed6ecb262b9515d5c31a0a0e66a2e0",
+  "_spec": "https://www.atom.io/api/packages/busy-signal/versions/2.0.1/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119322-31794-1ufkjiz.vwno",
   "bugs": {
     "url": "https://github.com/steelbrain/busy-signal/issues"
   },
+  "bundleDependencies": false,
   "consumedServices": {
     "status-bar": {
       "versions": {
@@ -49,6 +35,7 @@
     "disposify": "^1.0.0",
     "ms": "^2.1.1"
   },
+  "deprecated": false,
   "description": "A package that provides an easy to use API to show your package is performing a task",
   "devDependencies": {
     "eslint-config-steelbrain": "^6.0.0",
@@ -67,7 +54,6 @@
   "license": "MIT",
   "main": "./lib/index.js",
   "name": "busy-signal",
-  "optionalDependencies": {},
   "providedServices": {
     "busy-signal": {
       "versions": {
@@ -80,8 +66,6 @@
       }
     }
   },
-  "readme": "# Busy Signal\n\n[![Greenkeeper badge](https://badges.greenkeeper.io/steelbrain/busy-signal.svg)](https://greenkeeper.io/)\n\nBusy Signal is a base package that provides an easy to use API to show your package is performing a task.\n\n## API\n\nPlease head to [`busy-signal` wiki](https://github.com/steelbrain/busy-signal/wiki/Busy-Signal-API) for the API documentation\n\n## Screenshot\n\n![busy-signal](https://cloud.githubusercontent.com/assets/4278113/22865536/0a123074-f188-11e6-8c6e-38574a6fe14c.gif)\n\n## License\n\nThis project is licensed under the terms of MIT License\n",
-  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/steelbrain/busy-signal.git"
@@ -90,5 +74,5 @@
     "lint": "eslint .",
     "test": "apm test"
   },
-  "version": "2.0.0"
+  "version": "2.0.1"
 }

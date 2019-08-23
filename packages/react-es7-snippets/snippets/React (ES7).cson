@@ -38,7 +38,9 @@
 
         render() {
           return (
-            ${2:<div>MyComponent</div>}
+            ${2:<div>
+                  MyComponent
+                </div>}
           );
         }
 
@@ -60,7 +62,9 @@
 
         render() {
           return (
-            ${3:<div>MyComponent</div>}
+            ${3:<div>
+                  MyComponent
+                </div>}
           );
         }
 
@@ -85,7 +89,9 @@
 
         render() {
           return (
-            ${4:<div>MyComponent</div>}
+            ${4:<div>
+                  MyComponent
+                </div>}
           );
         }
 
@@ -115,7 +121,9 @@
 
         render() {
           return (
-            ${4:<div>MyComponent</div>}
+            ${4:<div>
+                  MyComponent
+                </div>}
           );
         }
 
@@ -146,17 +154,19 @@
 
         render() {
           return (
-            ${6:<div>MyComponent</div>}
+            ${6:<div>
+                  MyComponent
+                </div>}
           );
         }
 
       }
 
-      const mapStateToProps = (state) => ({
+      const mapStateToProps = state => ({
         ${2}
       });
 
-      const mapDispatchToProps = (dispatch) => ({
+      const mapDispatchToProps = dispatch => ({
         ${3}
       });
 
@@ -347,16 +357,16 @@
       import React from 'react';
       import PropTypes from 'prop-types';
 
-
+      ${1}.propTypes = {
+        ${2}
+      };
+      
       export default function ${1}(${3:props}) {
         return (
           ${4:<div>MyComponent</div>}
         );
       }
 
-      ${1}.propTypes = {
-        ${2}
-      };
     """
 
   'React ES7 Functional Arrow Component':
@@ -399,14 +409,6 @@
       this.${1} = ::this.${1};
     """
 
-  'React componentWillMount (ES7)':
-    'prefix': 'cwm'
-    'body': """
-      componentWillMount() {
-        ${1}
-      }
-    """
-
   'React componentDidMount (ES7)':
     'prefix': 'cdm'
     'body': """
@@ -414,12 +416,30 @@
         ${1}
       }
     """
-
-  'React componentWillReceiveProps (ES7)':
-    'prefix': 'cwr'
+    
+  'React getDerivedStateFromProps (ES7)':
+    'prefix': 'gdsfp'
     'body': """
-      componentWillReceiveProps(nextProps) {
-        ${1}
+      static getDerivedStateFromProps(props, state) {
+        return { ${1}: props.${2} };
+      }
+    """
+    
+  'React getSnapshotBeforeUpdate (ES7)':
+    'prefix': 'gsbu'
+    'body': """
+      getSnapshotBeforeUpdate(prevProps, prevState) {
+        if (${1}) {
+          ${2}
+        }
+      }
+    """
+    
+  'React getDerivedStateFromError (ES7)':
+    'prefix': 'gdsfe'
+    'body': """
+      static getDerivedStateFromError(error) {
+        return { hasError: true };
       }
     """
 
@@ -431,19 +451,19 @@
       }
     """
 
-  'React componentWillUpdate (ES7)':
-    'prefix': 'cwu'
-    'body': """
-      componentWillUpdate(nextProps, nextState) {
-        ${1}
-      }
-    """
-
   'React componentDidUpdate (ES7)':
     'prefix': 'cdu'
     'body': """
       componentDidUpdate(prevProps, prevState) {
         ${1}
+      }
+    """
+    
+  'React componentDidCatch (ES7)':
+    'prefix': 'cdc'
+    'body': """
+      componentDidCatch(error, info) {
+        sendErrorLog(error, info);
       }
     """
 
@@ -454,13 +474,28 @@
         ${1}
       }
     """
+    
+  'React Hook useState':
+    'prefix': 'ust'
+    'body': 'const [${1}, set${1}] = useState(${2})'
+    
+  'React Hook useEffect':
+    'prefix': 'uef'
+    'body': """
+      useEffect(() => {
+        ${1}
+        return () => {
+          ${2}
+        }
+      }${3:, [${4}]})
+    """
 
   'React this.props':
-    'prefix': 'props'
+    'prefix': 'tp'
     'body': 'this.props${1}'
 
   'React this.state':
-    'prefix': 'state'
+    'prefix': 'ts'
     'body': 'this.state${1}'
 
   'React cx({ ... }) (ES7)':

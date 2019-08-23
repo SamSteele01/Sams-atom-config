@@ -1,0 +1,54 @@
+{
+  "_from": "https://www.atom.io/api/packages/expressjs/versions/2.2.0/tarball",
+  "_id": "expressjs@2.2.0",
+  "_inBundle": false,
+  "_integrity": "sha512-K09O472P/StXJym0FQRWmHiR+9KaRORTLFcLPG01x6p+Ama+IYr+anfgSknVyHBcgemCiIwEna/h2I+amBtfyQ==",
+  "_location": "/expressjs",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/expressjs/versions/2.2.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/expressjs/versions/2.2.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/expressjs/versions/2.2.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/expressjs/versions/2.2.0/tarball"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://www.atom.io/api/packages/expressjs/versions/2.2.0/tarball",
+  "_shasum": "68b864b7e997663bbb75dc1d5f01db6b012bfad1",
+  "_spec": "https://www.atom.io/api/packages/expressjs/versions/2.2.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119413-75124-199jsj1.emze",
+  "activationCommands": {
+    "atom-workspace": "expressjs:toggle"
+  },
+  "bugs": {
+    "url": "https://github.com/amandeepmittal/expressjs/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "Collection of Expressjs snippets for Atom",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/amandeepmittal/expressjs#readme",
+  "keywords": [
+    "nodejs",
+    "snippet",
+    "javascript",
+    "express",
+    "expressjs",
+    "es6",
+    "node"
+  ],
+  "license": "MIT",
+  "main": "./lib/expressjs",
+  "name": "expressjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amandeepmittal/expressjs.git"
+  },
+  "version": "2.2.0"
+}

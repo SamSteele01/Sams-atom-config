@@ -1,0 +1,50 @@
+{
+  "_from": "https://www.atom.io/api/packages/language-cuda/versions/0.1.0/tarball",
+  "_id": "language-cuda@0.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-4mluXAifNcaxmxu4Od5IKR4YeYFnqd8eU27OyTsTKsPss7sk9lFhklav1xypIuDsKOLGk/jgWAJIbOVKldj+Sw==",
+  "_location": "/language-cuda",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/language-cuda/versions/0.1.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/language-cuda/versions/0.1.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/language-cuda/versions/0.1.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/language-cuda/versions/0.1.0/tarball"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://www.atom.io/api/packages/language-cuda/versions/0.1.0/tarball",
+  "_shasum": "bbee3c5c963fb6815ed2bd52b1f86ec602200da3",
+  "_spec": "https://www.atom.io/api/packages/language-cuda/versions/0.1.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11974-7020-1updkaf.r0cy",
+  "bugs": {
+    "url": "https://github.com/thomasjo/language-cuda/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "CUDA C/C++ language support",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/thomasjo/language-cuda#readme",
+  "keywords": [
+    "cuda",
+    "c++",
+    "c",
+    "gpu",
+    "kernel",
+    "runtime",
+    "language",
+    "grammar"
+  ],
+  "license": "MIT",
+  "name": "language-cuda",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomasjo/language-cuda.git"
+  },
+  "version": "0.1.0"
+}

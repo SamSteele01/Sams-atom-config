@@ -1,40 +1,25 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-        "scope": null,
-        "escapedName": null,
-        "name": null,
-        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-        "type": "local"
-      },
-      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-118111-48727-xytiv7.tvnxxhia4i"
-    ]
-  ],
-  "_from": "../d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-  "_id": "linter-stylelint@4.3.2",
-  "_inCache": true,
+  "_from": "https://www.atom.io/api/packages/linter-stylelint/versions/4.4.4/tarball",
+  "_id": "linter-stylelint@4.4.4",
+  "_inBundle": false,
+  "_integrity": "sha512-9h1cXLVaP2WtOdqiBU36vfuB/ThyIP1twIlHSsJzt9msOEyf/TUF4Cs3MlInCUQwFyuigMMIEvx+tsN4Z6/WZw==",
   "_location": "/linter-stylelint",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-    "scope": null,
-    "escapedName": null,
-    "name": null,
-    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-    "type": "local"
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/linter-stylelint/versions/4.4.4/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/linter-stylelint/versions/4.4.4/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/linter-stylelint/versions/4.4.4/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/linter-stylelint/versions/4.4.4/tarball"
   },
   "_requiredBy": [
-    "#USER"
+    "#USER",
+    "/"
   ],
-  "_resolved": "file:../d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-  "_shasum": "f7f8c68f5d9c3455f0c0b933cd3769163192f8c0",
-  "_shrinkwrap": null,
-  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-118111-48727-6z3t07.hz2bfkcsor/package.tgz",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-118111-48727-xytiv7.tvnxxhia4i",
+  "_resolved": "https://www.atom.io/api/packages/linter-stylelint/versions/4.4.4/tarball",
+  "_shasum": "fac7eb33fb3c29358edec754b673370fe1b6feea",
+  "_spec": "https://www.atom.io/api/packages/linter-stylelint/versions/4.4.4/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119322-31943-3gfxlv.a3g82",
   "author": {
     "name": "1000ch",
     "email": "shogo.sensui@gmail.com",
@@ -43,6 +28,7 @@
   "bugs": {
     "url": "https://github.com/AtomLinter/linter-stylelint/issues"
   },
+  "bundleDependencies": false,
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -65,28 +51,36 @@
       "title": "Show message when a file is ignored",
       "type": "boolean",
       "default": false
+    },
+    "fixOnSave": {
+      "description": "Automatically attempt to fix errors using stylelint --fix flag (experimental)",
+      "title": "Attempt to fix styles on save",
+      "type": "boolean",
+      "default": false
     }
   },
   "dependencies": {
-    "assign-deep": "^0.4.7",
-    "atom-linter": "^10.0.0",
-    "atom-package-deps": "^4.6.0",
-    "resolve": "^1.8.1",
-    "stylelint": "9.3.0",
-    "stylelint-config-standard": "^18.0.0"
+    "assign-deep": "0.4.7",
+    "atom-linter": "10.0.0",
+    "atom-package-deps": "5.1.0",
+    "resolve": "1.10.0",
+    "stylelint": "9.10.1",
+    "stylelint-config-standard": "18.2.0"
   },
+  "deprecated": false,
   "description": "A plugin for Atom Linter providing an interface to stylelint.",
   "devDependencies": {
-    "@commitlint/cli": "^7.0.0",
-    "@commitlint/config-conventional": "^7.0.1",
-    "@commitlint/travis-cli": "^7.0.0",
-    "@semantic-release/apm-config": "^2.0.1",
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.13.0",
-    "husky": "^0.14.3",
-    "jasmine-fix": "^1.0.1",
-    "semantic-release": "^15.6.0"
+    "@commitlint/cli": "7.5.2",
+    "@commitlint/config-conventional": "7.5.0",
+    "@commitlint/travis-cli": "7.5.2",
+    "@semantic-release/apm-config": "6.0.1",
+    "eslint": "5.16.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.17.2",
+    "husky": "1.3.1",
+    "jasmine-fix": "1.3.1",
+    "rimraf": "2.6.3",
+    "semantic-release": "15.13.3"
   },
   "engines": {
     "atom": ">=1.7.0 <2.0.0"
@@ -117,6 +111,11 @@
     }
   },
   "homepage": "https://github.com/AtomLinter/linter-stylelint#readme",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "keywords": [
     "css",
     "lint",
@@ -126,7 +125,6 @@
   "license": "MIT",
   "main": "lib/index.js",
   "name": "linter-stylelint",
-  "optionalDependencies": {},
   "package-deps": [
     "linter:2.0.0"
   ],
@@ -138,19 +136,21 @@
       }
     }
   },
-  "readme": "# linter-stylelint [![Dependency Status](https://david-dm.org/AtomLinter/linter-stylelint.svg)](https://david-dm.org/AtomLinter/linter-stylelint) [![Greenkeeper badge](https://badges.greenkeeper.io/AtomLinter/linter-stylelint.svg)](https://greenkeeper.io/)\n\nA plugin for [Atom Linter](https://github.com/AtomLinter/atom-linter) providing\nan interface to [stylelint](https://github.com/stylelint/stylelint).\n\n![demo](https://raw.githubusercontent.com/AtomLinter/linter-stylelint/master/demo.png)\n\n## Installation\n\n```ShellSession\napm install linter-stylelint\n```\n\nlinter-stylelint runs `stylelint` against your CSS, SCSS, Less, PostCSS,\nand SugarSS files.\n\n## Configuration\n\nYou can pass a configuration to `stylelint` in any of the following ways:\n\n-   Place a configuration file (`.stylelintrc` or `stylelint.config.js`) in your\n    project's root folder or in any parent folder.\n\n-   Add a `stylelint` section in your `package.json`.\n\n-   In the settings, check `Use standard` to automatically use [stylelint-config-standard](https://github.com/stylelint/stylelint-config-standard)\n\n`.stylelintrc` is always prioritized. If you have checked `Use standard` in the\nsettings and also have a `.stylelintrc` file, your `.stylelintrc` configuration\nwill extend the preset, using [stylelint's extend functionality](http://stylelint.io/?/docs/user-guide/configuration.md).\n\n## Notes\n\nAs of `stylelint` v7.0.0 the ability to lint embedded style code has been\nremoved from core, replaced with the ability for generic processors to handle\nany file format. Currently one has yet to be written for pulling style code\nout of HTML, if you are interested in bringing this functionality back to\n`linter-stylelint`, check out [their documentation](https://github.com/stylelint/stylelint/blob/master/docs/developer-guide/processors.md)\non how to write a processor to handle HTML, and any other files that contain\nstyle code!\n\n## License\n\nMIT: <http://1000ch.mit-license.org/>\n",
-  "readmeFilename": "readme.md",
   "release": {
     "extends": "@semantic-release/apm-config"
+  },
+  "renovate": {
+    "extends": [
+      "config:base"
+    ]
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AtomLinter/linter-stylelint.git"
   },
   "scripts": {
-    "commitmsg": "commitlint -e $GIT_PARAMS",
     "lint": "eslint .",
     "test": "atom --test spec"
   },
-  "version": "4.3.2"
+  "version": "4.4.4"
 }

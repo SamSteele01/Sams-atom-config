@@ -5,7 +5,7 @@ import { spawnSync } from 'child_process'
 import { getenvironment } from './environment'
 import fs from 'fs-extra'
 import path from 'path'
-import { getEditor, projectPath } from '../utils'
+import { projectPath } from '../utils'
 
 export type ExecutorOptions = {
   timeout?: number,
@@ -28,6 +28,12 @@ export type ExecResult = {
 }
 
 class Executor {
+  getConsole: () => ?ConsoleApi
+
+  constructor(getConsole: () => ?ConsoleApi) {
+    this.getConsole = getConsole
+  }
+
   dispose() {}
 
   execSync(
@@ -49,15 +55,17 @@ class Executor {
     }
 
     let err: any = done.error
-    if (err && err.code) {
-      switch (err.code) {
-        case 'ENOENT':
-          code = 127
-          break
-        case 'ENOTCONN': // https://github.com/iojs/io.js/pull/1214
-          err = null
-          code = 0
-          break
+    if (err) {
+      if (err.code) {
+        switch (err.code) {
+          case 'ENOENT':
+            code = 127
+            break
+          case 'ENOTCONN': // https://github.com/iojs/io.js/pull/1214
+            err = null
+            code = 0
+            break
+        }
       }
     }
 
@@ -91,7 +99,12 @@ class Executor {
       const stderrFn = data => {
         stderr += data
       }
+
+      let timeoutId: TimeoutID
       const exitFn = code => {
+        if (timeoutId) {
+          clearTimeout(timeoutId)
+        }
         if (verbose) {
           /* eslint-disable no-console */
           console.log('exited with code: ' + code)
@@ -120,6 +133,15 @@ class Executor {
           }
         }
 
+        if (code !== 0) {
+          const console = this.getConsole()
+          if (console) {
+            console.error(
+              `${command} ${args.join(' ')} failed with exit code ${code}.`
+            )
+            console.warn(`${command} stderr: ${stderr}`)
+          }
+        }
         resolve({
           error: null,
           exitcode: code,
@@ -138,7 +160,7 @@ class Executor {
       })
 
       if (options.timeout && options.timeout > 0) {
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           bufferedprocess.kill()
           resolve({
             error: null,
@@ -174,7 +196,7 @@ class Executor {
 
   getOptions(
     kind: 'file' | 'project' = 'file',
-    editor: any = getEditor()
+    editor?: ?atom$TextEditor
   ): ExecutorOptions {
     const result: ExecutorOptions = this.getDefaultOptions(kind, editor)
     return this.ensureOptions(result)
@@ -203,7 +225,7 @@ class Executor {
 
   getDefaultOptions(
     key: 'file' | 'project' = 'file',
-    editor: any = getEditor()
+    editor?: ?atom$TextEditor
   ): ExecutorOptions {
     let options = {}
     switch (key) {
