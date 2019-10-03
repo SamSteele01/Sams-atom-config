@@ -33,3 +33,4 @@
 'atom-text-editor':
   'ctrl-j': 'editor:toggle-soft-wrap'
   'cmd-m': 'minimap:toggle'
+  'ctrl-shift-7': 'better-git-blame:toggle'

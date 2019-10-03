@@ -1,0 +1,7 @@
+projects:
+
+  "/Users/wizzard/go/src/slyncer/ui":
+    color: "rgb(235, 125, 111)"
+      
+  "/Users/wizzard/go/src/slyncer/node":
+    color: "rgb(146, 233, 133)"

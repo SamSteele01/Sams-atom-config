@@ -1,0 +1,72 @@
+{
+  "_from": "https://www.atom.io/api/packages/atom-jest-snippets/versions/2.2.0/tarball",
+  "_id": "atom-jest-snippets@2.2.0",
+  "_inBundle": false,
+  "_integrity": "sha512-LG8WaaSXlR3lfB/keMHoMSpY/nJWZIU17zH+tPb5oS6VB9qGmJV5UkHa8no0X5SH+WUXeqmO3dW/VXzwIE6PqA==",
+  "_location": "/atom-jest-snippets",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/atom-jest-snippets/versions/2.2.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/atom-jest-snippets/versions/2.2.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/atom-jest-snippets/versions/2.2.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/atom-jest-snippets/versions/2.2.0/tarball"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://www.atom.io/api/packages/atom-jest-snippets/versions/2.2.0/tarball",
+  "_shasum": "c39700c28d7e6c79fe2125dbd34f54ad5c98e56d",
+  "_spec": "https://www.atom.io/api/packages/atom-jest-snippets/versions/2.2.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119812-39357-8f8h7e.6pspg",
+  "author": {
+    "name": "Bryce Osterhaus"
+  },
+  "bugs": {
+    "url": "https://github.com/bryceosterhaus/atom-jest-snippets/issues"
+  },
+  "bundleDependencies": false,
+  "configSchema": {
+    "toggleSemicolons": {
+      "type": "boolean",
+      "default": true,
+      "description": "When enabled adds semicolons to the end of the expressions(atom restart required)"
+    },
+    "quoteType": {
+      "type": "string",
+      "default": "'",
+      "description": "The quote type to use when generating snippets(atom restart required)",
+      "enum": [
+        "'",
+        "\"",
+        "`"
+      ]
+    }
+  },
+  "dependencies": {
+    "mustache": "^2.3.0"
+  },
+  "deprecated": false,
+  "description": "Snippets for Jest testing framework",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "homepage": "https://github.com/bryceosterhaus/atom-jest-snippets#readme",
+  "keywords": [
+    "atom",
+    "jest",
+    "snippets"
+  ],
+  "license": "MIT",
+  "main": "./src/atom-jest-snippets.js",
+  "name": "atom-jest-snippets",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bryceosterhaus/atom-jest-snippets.git"
+  },
+  "scripts": {
+    "build": "node ./build.js"
+  },
+  "version": "2.2.0"
+}

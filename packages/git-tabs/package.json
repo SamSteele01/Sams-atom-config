@@ -1,0 +1,70 @@
+{
+  "_from": "https://www.atom.io/api/packages/git-tabs/versions/0.4.1/tarball",
+  "_id": "git-tabs@0.4.1",
+  "_inBundle": false,
+  "_integrity": "sha512-6+wyPCcpTvan8nM3UO/80zOUtSlH2zBXIsPnax23ey3xQEzk7vd78JUf5bs+eeyz/vwH5mAaoCDj8q5V4dRvoA==",
+  "_location": "/git-tabs",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/git-tabs/versions/0.4.1/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/git-tabs/versions/0.4.1/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/git-tabs/versions/0.4.1/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/git-tabs/versions/0.4.1/tarball"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://www.atom.io/api/packages/git-tabs/versions/0.4.1/tarball",
+  "_shasum": "69e16b6651381889a65619a5b1f00b22b8089586",
+  "_spec": "https://www.atom.io/api/packages/git-tabs/versions/0.4.1/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119820-15178-11g6jfi.i6ep",
+  "bugs": {
+    "url": "https://github.com/dbslone/git-tabs/issues"
+  },
+  "bundleDependencies": false,
+  "configSchema": {
+    "useConfirmNotification": {
+      "type": "boolean",
+      "default": false,
+      "description": "Use a confirm notification when switching project/branch"
+    }
+  },
+  "dependencies": {
+    "md5": "^2.2.1"
+  },
+  "deprecated": false,
+  "description": "git-tabs stores the currently open text editors by branch and reopens closed files upon switching branches.",
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.3.0"
+  },
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/dbslone/git-tabs#readme",
+  "keywords": [
+    "git-tabs",
+    "github",
+    "git",
+    "tab",
+    "remember",
+    "branches",
+    "tab manager"
+  ],
+  "license": "MIT",
+  "main": "./lib/git-tabs",
+  "name": "git-tabs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dbslone/git-tabs.git"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint"
+  },
+  "version": "0.4.1"
+}

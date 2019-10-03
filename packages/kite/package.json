@@ -1,25 +1,25 @@
 {
-  "_from": "https://www.atom.io/api/packages/kite/versions/0.170.0/tarball",
-  "_id": "kite@0.170.0",
+  "_from": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
+  "_id": "kite@0.172.0",
   "_inBundle": false,
-  "_integrity": "sha512-M7JUmonrNykSn8MRYoCo4m9IZIMimB3KJ0+lRxrODWHl9aMpdyrexBbPgYLKFm0yhgsFvUuSKeGVymNHb9vrZw==",
+  "_integrity": "sha512-sZ3SpcAD1bB3SmjjQmc+bXfVip6ZsFTLaDBdZOYqO8LZ8uBxVPexAxN1iQEoY+O1VITtsYHQYBHmORz0vAIa9w==",
   "_location": "/kite",
   "_phantomChildren": {},
   "_requested": {
     "type": "remote",
-    "raw": "https://www.atom.io/api/packages/kite/versions/0.170.0/tarball",
-    "rawSpec": "https://www.atom.io/api/packages/kite/versions/0.170.0/tarball",
-    "saveSpec": "https://www.atom.io/api/packages/kite/versions/0.170.0/tarball",
-    "fetchSpec": "https://www.atom.io/api/packages/kite/versions/0.170.0/tarball"
+    "raw": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://www.atom.io/api/packages/kite/versions/0.170.0/tarball",
-  "_shasum": "bda5d962a8538f79cc8bff19aa6ad88ffc767dd8",
-  "_spec": "https://www.atom.io/api/packages/kite/versions/0.170.0/tarball",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119722-17036-14npx69.bkmk",
+  "_resolved": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
+  "_shasum": "2da22d709c487100ce7c49c5d64488a8480b86f2",
+  "_spec": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119825-66883-2irhto.004ps",
   "bugs": {
     "url": "https://github.com/kiteco/atom-plugin/issues"
   },
@@ -172,5 +172,5 @@
     "lint:fix": "eslint --fix .",
     "prepublishOnly": "rm -rf node_modules && rm -f package-lock.json && apm install && rm -rf dist && npm run build-prod"
   },
-  "version": "0.170.0"
+  "version": "0.172.0"
 }

@@ -4,6 +4,8 @@
       formatOnSave: true
   "better-git-blame":
     searchInLayerEnabled: false
+  "color-tabs-byproject":
+    folderDepth: 1
   "console-log":
     semiColons: true
   core:
@@ -20,7 +22,6 @@
       "autoflow"
       "autosave"
       "background-tips"
-      "bookmarks"
       "dalek"
       "deprecation-cop"
       "incompatible-packages"
@@ -34,13 +35,11 @@
       "language-perl"
       "language-php"
       "language-property-list"
-      "language-shellscript"
       "language-toml"
       "open-on-github"
       "package-generator"
       "styleguide"
       "whitespace"
-      "wrap-guide"
       "welcome"
       "update-package-dependencies"
       "csslint"
@@ -50,13 +49,13 @@
       "linter-gcc"
       "ide-vue"
       "gpp-compiler"
-      "go-debug"
       "dockerletion"
       "docker"
       "dbg"
       "dbg-gdb"
       "atom-vue"
       "git-line"
+      "color-tabs-byproject"
     ]
     telemetryConsent: "limited"
     themes: [
@@ -66,7 +65,7 @@
     useTreeSitterParsers: false
   editor:
     fontSize: 13
-    preferredLineLength: 80
+    preferredLineLength: 100
     showIndentGuide: true
     softWrapAtPreferredLineLength: true
   "exception-reporting":
@@ -80,7 +79,7 @@
       fixOnSave: true
     emmetCSSAutocomplete: true
   "linter-ui-default":
-    panelHeight: 300
+    panelHeight: 57
   packagesWithKeymapsDisabled: [
     "minimap"
     "language-pug-jade"
