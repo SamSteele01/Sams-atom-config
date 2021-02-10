@@ -20,6 +20,7 @@ export interface Dependencies {
   showTooltipAt: (ed: Atom.TextEditor) => void
   showSigHelpAt: (ed: Atom.TextEditor) => void
   hideSigHelpAt: (ed: Atom.TextEditor) => boolean
+  rotateSigHelp: (ed: Atom.TextEditor, shift: number) => boolean
 }
 
 export type AllowedSelectors = keyof Dispatch
@@ -59,7 +60,7 @@ export function addCommand<Selector extends AllowedSelectors>(
   command: string,
   desc: CommandDescription[Selector],
 ) {
-  commands.push({selector, command, desc} as CommandDescriptionWithSelector[Selector])
+  commands.push(({selector, command, desc} as unknown) as CommandDescriptionWithSelector[Selector])
 }
 
 export function getCommands() {

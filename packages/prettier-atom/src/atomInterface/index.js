@@ -13,7 +13,7 @@ const setConfigOption = (key: string, value: any) => atom.config.set(`prettier-a
 const isLinterLintCommandDefined = (editor: TextEditor) =>
   atom.commands
     .findCommands({ target: atom.views.getView(editor) })
-    .some(command => command.name === LINTER_LINT_COMMAND);
+    .some((command) => command.name === LINTER_LINT_COMMAND);
 
 // public
 const isLinterEslintAutofixEnabled = () =>
@@ -22,6 +22,8 @@ const isLinterEslintAutofixEnabled = () =>
 const shouldUseEslint = () => getConfigOption('useEslint');
 
 const shouldUseStylelint = () => getConfigOption('useStylelint');
+
+const shouldUseEditorConfig = () => getConfigOption('useEditorConfig');
 
 const isFormatOnSaveEnabled = () => getConfigOption('formatOnSaveOptions.enabled');
 
@@ -72,7 +74,7 @@ const runLinter = (editor: TextEditor) =>
   atom.commands.dispatch(atom.views.getView(editor), LINTER_LINT_COMMAND);
 
 const invokeAtomRelativizePath = _.flow(
-  filePath => atom.project.relativizePath(filePath), // NOTE: fat arrow necessary for `this`
+  (filePath) => atom.project.relativizePath(filePath), // NOTE: fat arrow necessary for `this`
   _.get('[1]'),
 );
 
@@ -80,13 +82,7 @@ const relativizePathToDirname = (filePath: string) => path.relative(path.dirname
 
 const relativizePathFromAtomProject: (filePath: ?string) => ?string = _.cond([
   [_.isNil, _.constant(null)],
-  [
-    _.flow(
-      invokeAtomRelativizePath,
-      path.isAbsolute,
-    ),
-    relativizePathToDirname,
-  ],
+  [_.flow(invokeAtomRelativizePath, path.isAbsolute), relativizePathToDirname],
   [_.stubTrue, invokeAtomRelativizePath],
 ]);
 
@@ -110,6 +106,7 @@ module.exports = {
   shouldRespectEslintignore,
   shouldUseEslint,
   shouldUseStylelint,
+  shouldUseEditorConfig,
   toggleFormatOnSave,
   attemptWithErrorNotification,
 };

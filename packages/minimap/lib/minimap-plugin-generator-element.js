@@ -1,10 +1,10 @@
 'use strict'
 
-const _ = require('underscore-plus')
-const fs = require('fs-plus')
-const path = require('path')
-const {BufferedProcess} = require('atom')
-const element = require('./decorators/element')
+import { dasherize } from './deps/underscore-plus'
+import { getHomeDirectory, existsSync } from 'fs-plus'
+import path from 'path'
+import { BufferedProcess } from 'atom'
+import element from './decorators/element'
 
 /**
  * @access private
@@ -33,7 +33,7 @@ class MinimapPluginGeneratorElement {
     this.modal.classList.add('overlay')
     this.modal.classList.add('from-top')
 
-    this.editor = atom.workspace.buildTextEditor({mini: true})
+    this.editor = atom.workspace.buildTextEditor({ mini: true })
     this.editorElement = atom.views.getView(this.editor)
 
     this.error = document.createElement('div')
@@ -63,12 +63,12 @@ class MinimapPluginGeneratorElement {
   setPathText (placeholderName, rangeToSelect) {
     if (!rangeToSelect) { rangeToSelect = [0, placeholderName.length] }
 
-    let packagesDirectory = this.getPackagesDirectory()
+    const packagesDirectory = getPackagesDirectory()
 
     this.editor.setText(path.join(packagesDirectory, placeholderName))
 
-    let pathLength = this.editor.getText().length
-    let endOfDirectoryIndex = pathLength - placeholderName.length
+    const pathLength = this.editor.getText().length
+    const endOfDirectoryIndex = pathLength - placeholderName.length
 
     this.editor.setSelectedBufferRange([
       [0, endOfDirectoryIndex + rangeToSelect[0]],
@@ -95,8 +95,8 @@ class MinimapPluginGeneratorElement {
       `
 
       this.createPackageFiles(() => {
-        let packagePath = this.getPackagePath()
-        atom.open({pathsToOpen: [packagePath], devMode: atom.config.get('minimap.createPluginInDevMode')})
+        const packagePath = this.getPackagePath()
+        atom.open({ pathsToOpen: [packagePath], devMode: atom.config.get('minimap.createPluginInDevMode') })
 
         this.message.innerHTML = '<span class="text-success">Plugin successfully generated, opening it now...</span>'
 
@@ -106,20 +106,14 @@ class MinimapPluginGeneratorElement {
   }
 
   getPackagePath () {
-    let packagePath = this.editor.getText()
-    let packageName = _.dasherize(path.basename(packagePath))
+    const packagePath = this.editor.getText()
+    const packageName = dasherize(path.basename(packagePath))
 
     return path.join(path.dirname(packagePath), packageName)
   }
 
-  getPackagesDirectory () {
-    return atom.config.get('core.projectHome') ||
-           process.env.ATOM_REPOS_HOME ||
-           path.join(fs.getHomeDirectory(), 'github')
-  }
-
   validPackagePath () {
-    if (fs.existsSync(this.getPackagePath())) {
+    if (existsSync(this.getPackagePath())) {
       this.error.textContent = `Path already exists at '${this.getPackagePath()}'`
       this.error.style.display = 'block'
       return false
@@ -129,52 +123,59 @@ class MinimapPluginGeneratorElement {
   }
 
   initPackage (packagePath, callback) {
-    let templatePath = path.resolve(__dirname, path.join('..', 'templates', `plugin-${this.template}`))
-    this.runCommand(atom.packages.getApmPath(), ['init', '-p', `${packagePath}`, '--template', templatePath], callback)
-  }
-
-  linkPackage (packagePath, callback) {
-    let args = ['link']
-    if (atom.config.get('minimap.createPluginInDevMode')) { args.push('--dev') }
-    args.push(packagePath.toString())
-
-    this.runCommand(atom.packages.getApmPath(), args, callback)
-  }
-
-  installPackage (packagePath, callback) {
-    let args = ['install']
-
-    this.runCommand(atom.packages.getApmPath(), args, callback, {cwd: packagePath})
-  }
-
-  isStoredInDotAtom (packagePath) {
-    let packagesPath = path.join(atom.getConfigDirPath(), 'packages', path.sep)
-    if (packagePath.indexOf(packagesPath) === 0) { return true }
-
-    let devPackagesPath = path.join(atom.getConfigDirPath(), 'dev', 'packages', path.sep)
-
-    return packagePath.indexOf(devPackagesPath) === 0
+    const templatePath = path.resolve(__dirname, path.join('..', 'templates', `plugin-${this.template}`))
+    runCommand(atom.packages.getApmPath(), ['init', '-p', `${packagePath}`, '--template', templatePath], callback)
   }
 
   createPackageFiles (callback) {
-    let packagePath = this.getPackagePath()
+    const packagePath = this.getPackagePath()
 
-    if (this.isStoredInDotAtom(packagePath)) {
+    if (isStoredInDotAtom(packagePath)) {
       this.initPackage(packagePath, () => {
-        this.installPackage(packagePath, callback)
+        installPackage(packagePath, callback)
       })
     } else {
       this.initPackage(packagePath, () => {
-        this.linkPackage(packagePath, () => {
-          this.installPackage(packagePath, callback)
+        linkPackage(packagePath, () => {
+          installPackage(packagePath, callback)
         })
       })
     }
   }
-
-  runCommand (command, args, exit, options = {}) {
-    return new BufferedProcess({command, args, exit, options})
-  }
 }
 
-module.exports = MinimapPluginGeneratorElement.initClass()
+const minimapPluginGeneratorElement = MinimapPluginGeneratorElement.initClass()
+export default minimapPluginGeneratorElement
+
+function linkPackage (packagePath, callback) {
+  const args = ['link']
+  if (atom.config.get('minimap.createPluginInDevMode')) { args.push('--dev') }
+  args.push(packagePath.toString())
+
+  runCommand(atom.packages.getApmPath(), args, callback)
+}
+
+function installPackage (packagePath, callback) {
+  const args = ['install']
+
+  runCommand(atom.packages.getApmPath(), args, callback, { cwd: packagePath })
+}
+
+function getPackagesDirectory () {
+  return atom.config.get('core.projectHome') ||
+           process.env.ATOM_REPOS_HOME ||
+           path.join(getHomeDirectory(), 'github')
+}
+
+function isStoredInDotAtom (packagePath) {
+  const packagesPath = path.join(atom.getConfigDirPath(), 'packages', path.sep)
+  if (packagePath.indexOf(packagesPath) === 0) { return true }
+
+  const devPackagesPath = path.join(atom.getConfigDirPath(), 'dev', 'packages', path.sep)
+
+  return packagePath.indexOf(devPackagesPath) === 0
+}
+
+function runCommand (command, args, exit, options = {}) {
+  return new BufferedProcess({ command, args, exit, options })
+}

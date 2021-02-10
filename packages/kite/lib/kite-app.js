@@ -22,15 +22,6 @@ const ensureUtils = () => {
 const ATTEMPTS = 30;
 const INTERVAL = 2500;
 
-const EXTENSIONS_BY_LANGUAGES = {
-  python: [
-    'py',
-  ],
-  javascript: [
-    'js',
-  ],
-};
-
 class KiteApp {
   static get STATES() {
     ensureKiteDeps();
@@ -196,7 +187,7 @@ class KiteApp {
       Metrics.Tracker.props = {};
       Metrics.Tracker.props.lastEvent = event;
 
-      this.showInstallFlow({});
+      return this.showInstallFlow({});
     }, (err) => {
       Logger.error('rejected with data:', err);
     });
@@ -205,6 +196,7 @@ class KiteApp {
   showInstallFlow(variant) {
     ensureKiteDeps();
 
+    if (!os) { os = require('os'); }
     if (!errors) { errors = Errors(); }
     const {
       install: {
@@ -229,14 +221,12 @@ class KiteApp {
     errors.trackUncaught();
     atom.workspace.getActivePane().addItem(install);
     atom.workspace.getActivePane().activateItem(install);
-
-    install.start()
+    
+    return install.start()
     .catch(err => console.error(err))
     .then(() => {
       KiteAPI.Account.client = initialClient;
     });
-
-    return install;
   }
 
   install() {
@@ -333,13 +323,6 @@ class KiteApp {
     return basepath && path.relative(os.homedir(), basepath).indexOf('..') === 0
       ? path.parse(basepath).root
       : os.homedir();
-  }
-
-  getSupportedLanguagesRegExp(languages) {
-    ensureUtils();
-    return `\.(${
-      compact(flatten(languages.map(l => EXTENSIONS_BY_LANGUAGES[l]))).join('|')
-    })$`;
   }
 }
 

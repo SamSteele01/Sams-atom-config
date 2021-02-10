@@ -6,19 +6,26 @@
     "jsxFactory": "etch.dom",
     "lib": ["es7", "dom", "ES2017.object"],
     "module": "commonjs",
+    "esModuleInterop": true,
+    "allowJs": false,
     "noLib": false,
     "outDir": "../dist",
     "preserveConstEnums": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2017",
+    "target": "esnext",
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "plugins": [{"name": "typescript-tslint-plugin"}]
+    "plugins": [{"name": "typescript-tslint-plugin"}],
+    "newLine": "LF",
+    "noEmit": true
   },
-  "compileOnSave": true
+  "preferences": {
+    "quotePreference": "double"
+  },
+  "compileOnSave": false
 }

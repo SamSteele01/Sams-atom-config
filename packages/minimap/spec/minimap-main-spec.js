@@ -1,7 +1,8 @@
 'use strict'
+process.env.NODE_ENV = 'test'
 
 require('./helpers/workspace')
-const Minimap = require('../lib/minimap')
+const { Minimap } = require('../dist/main')
 
 describe('Minimap package', () => {
   let [editor, minimap, editorElement, minimapElement, workspaceElement, minimapPackage] = []
@@ -16,6 +17,10 @@ describe('Minimap package', () => {
       return atom.workspace.open('sample.coffee')
     })
 
+    // Package activation will be deferred to the configured, activation hook, which is then triggered
+    // Activate activation hook
+    atom.packages.triggerDeferredActivationHooks()
+    atom.packages.triggerActivationHook('core:loaded-shell-environment')
     waitsForPromise(() => {
       return atom.packages.activatePackage('minimap').then((pkg) => {
         minimapPackage = pkg.mainModule
@@ -37,8 +42,8 @@ describe('Minimap package', () => {
   })
 
   it('registers the minimap views provider', () => {
-    let textEditor = atom.workspace.buildTextEditor({})
-    minimap = new Minimap({textEditor})
+    const textEditor = atom.workspace.buildTextEditor({})
+    minimap = new Minimap({ textEditor })
     minimapElement = atom.views.getView(minimap)
 
     expect(minimapElement).toExist()
@@ -63,9 +68,13 @@ describe('Minimap package', () => {
 
       describe('and reactivated with a remaining minimap in the DOM', () => {
         beforeEach(() => {
-          const m = new Minimap({textEditor: editor})
+          const m = new Minimap({ textEditor: editor })
           const v = atom.views.getView(m)
           editorElement.appendChild(v)
+          // Package activation will be deferred to the configured, activation hook, which is then triggered
+          // Activate activation hook
+          atom.packages.triggerDeferredActivationHooks()
+          atom.packages.triggerActivationHook('core:loaded-shell-environment')
           waitsForPromise(() => atom.packages.activatePackage('minimap'))
         })
 
@@ -109,13 +118,15 @@ describe('Minimap package', () => {
   })
 
   describe('service', () => {
-    it('returns the minimap main module', () => {
-      expect(minimapPackage.provideMinimapServiceV1()).toEqual(minimapPackage)
+    it('returns the minimap public exports', () => {
+      const publicExports = Object.keys(minimapPackage.provideMinimapServiceV1())
+      const allExports = Object.keys(minimapPackage)
+      expect(publicExports.every((str) => { return allExports.includes(str) || console.log(str) })).toBeTruthy()
     })
 
     it('creates standalone minimap with provided text editor', () => {
-      let textEditor = atom.workspace.buildTextEditor({})
-      let standaloneMinimap = minimapPackage.standAloneMinimapForEditor(textEditor)
+      const textEditor = atom.workspace.buildTextEditor({})
+      const standaloneMinimap = minimapPackage.standAloneMinimapForEditor(textEditor)
       expect(standaloneMinimap.getTextEditor()).toEqual(textEditor)
     })
   })
@@ -158,7 +169,7 @@ describe('Minimap package', () => {
         })
 
         it('makes the plugin available in the minimap', () => {
-          expect(minimapPackage.plugins['dummy']).toBe(plugin)
+          expect(minimapPackage.plugins.dummy).toBe(plugin)
         })
 
         it('emits an event', () => {
@@ -191,7 +202,7 @@ describe('Minimap package', () => {
           })
 
           it('has been unregistered', () => {
-            expect(minimapPackage.plugins['dummy']).toBeUndefined()
+            expect(minimapPackage.plugins.dummy).toBeUndefined()
           })
 
           it('emits an event', () => {
@@ -284,7 +295,7 @@ describe('Minimap package', () => {
         })
 
         it('makes the plugin available in the minimap', () => {
-          expect(minimapPackage.plugins['dummy']).toBe(plugin)
+          expect(minimapPackage.plugins.dummy).toBe(plugin)
         })
 
         it('emits an event', () => {
@@ -301,7 +312,7 @@ describe('Minimap package', () => {
           })
 
           it('has been unregistered', () => {
-            expect(minimapPackage.plugins['dummy']).toBeUndefined()
+            expect(minimapPackage.plugins.dummy).toBeUndefined()
           })
 
           it('emits an event', () => {

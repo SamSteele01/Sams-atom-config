@@ -1,5 +1,7 @@
 'use strict';
 
+const { DEFAULT_MAX_FILE_SIZE } = require('kite-api');
+
 // Contents of this plugin will be reset by Kite on start.
 // Changes you make are not guaranteed to persist.
 
@@ -24,9 +26,13 @@ let child_process,
   VirtualCursor,
   NodeClient,
   KiteConnect,
+  BracketMarker,
+  Codenav,
   Status;
 
 const Kite = (module.exports = {
+  maxFileSize: DEFAULT_MAX_FILE_SIZE,
+
   getModule(name) {
     return this.modules && this.modules[name];
   },
@@ -96,6 +102,8 @@ const Kite = (module.exports = {
       Status = require('./status');
       KSG = require('./ksg');
       KSGShortcut = require('./ksg/status-shortcut');
+      BracketMarker = require('./bracket-marker');
+      Codenav = require('./codenav');
     }
 
     metrics.featureRequested('starting');
@@ -120,6 +128,7 @@ const Kite = (module.exports = {
     this.registerModule('status', new Status());
     this.registerModule('ksg', new KSG());
     this.registerModule('ksg-shortcut', new KSGShortcut());
+    this.registerModule('bracket-marker', new BracketMarker());
 
     // run "apm upgrade kite"
     this.selfUpdate();
@@ -127,6 +136,7 @@ const Kite = (module.exports = {
     this.app = new KiteApp(this);
     this.notifications = new NotificationsCenter(this.app);
     this.reporter = new RollbarReporter();
+    this.codenav = new Codenav(this.notifications);
 
     // All these objects have a dispose method so we can just
     // add them to the subscription.
@@ -207,10 +217,6 @@ const Kite = (module.exports = {
       });
     }
 
-    // we aggressively turn on the scrollPastEnd setting in order for KSG to function best
-    // should we gate this in a notification similar to the tree-sitter one?
-    atom.config.set('editor.scrollPastEnd', true);
-
     this.subscriptions.add(
       atom.config.observe('kite.loggingLevel', level => {
         Logger.LEVEL = Logger.LEVELS[level.toUpperCase()];
@@ -270,8 +276,12 @@ const Kite = (module.exports = {
 
     this.subscriptions.add(
       atom.commands.add('atom-workspace', {
+        'kite:find-related-code-from-line-experimental': () => this.codenav.relatedCodeFromLine(),
+        'kite:find-related-code-from-file-experimental': () => this.codenav.relatedCodeFromFile(),
         'kite:search-stack-overflow': () => this.toggleKSG(),
-        'kite:tutorial': () => this.openKiteTutorial(true),
+        'kite:python-tutorial': () => this.openKiteTutorial(true, 'python'),
+        'kite:javascript-tutorial': () => this.openKiteTutorial(true, 'javascript'),
+        'kite:go-tutorial': () => this.openKiteTutorial(true, 'go'),
         'kite:engine-settings': () => this.openSettings(),
         'kite:open-copilot': () => this.openCopilot(),
         'kite:package-settings': () =>
@@ -304,9 +314,7 @@ const Kite = (module.exports = {
 
     // We try to connect at startup
     this.app.connect('activation').then(state => {
-      if (state === KiteApp.STATES.UNINSTALLED && !this.app.wasInstalledOnce()) {
-        this.app.installFlow();
-      } else if (state !== KiteApp.STATES.UNINSTALLED) {
+      if (state !== KiteApp.STATES.UNINSTALLED) {
         this.app.saveUserID();
 
         if (state === KiteApp.STATES.NOT_RUNNING && atom.config.get('kite.startKiteAtStartup')) {
@@ -419,7 +427,7 @@ const Kite = (module.exports = {
       KiteStatusPanel = require('./elements/kite-status-panel');
     }
 
-    this.statusPanel = new KiteStatusPanel();
+    this.statusPanel = new KiteStatusPanel(this);
     return this.statusPanel;
   },
 
@@ -471,9 +479,9 @@ const Kite = (module.exports = {
     atom.applicationDelegate.openExternal(url);
   },
 
-  openKiteTutorial(fromCommand) {
+  openKiteTutorial(fromCommand, language) {
     if (fromCommand) {
-      KiteAPI.getOnboardingFilePath('atom')
+      KiteAPI.getOnboardingFilePath('atom', language)
         .then(path => {
           atom.workspace.open(path);
         })
@@ -528,7 +536,7 @@ const Kite = (module.exports = {
           return res && res.then ? res.then(res => (/\($/.test(prefix) ? [] : res)) : /\($/.test(prefix) ? [] : res;
         };
       })
-      .catch(() => {});
+      .catch(() => { });
 
     atom.packages.activatePackage('autocomplete-plus').then(autocompletePlus => {
       const acp = autocompletePlus.mainModule;
@@ -540,13 +548,11 @@ const Kite = (module.exports = {
       if (atom.config.get('kite.enableSnippets')) {
         atom.packages.activatePackage('snippets').then(snippetsPkg => {
           const snippets = snippetsPkg.mainModule;
-          const safeGoToNextTabStop = snippets && snippets.goToNextTabStop;
-          const safeGoToPreviousTabStop = snippets && snippets.goToPreviousTabStop;
+          const safeInsertSnippet = manager && manager.snippetsManager && manager.snippetsManager.insertSnippet;
 
           this.subscriptions.add(
             new Disposable(() => {
-              snippets.goToNextTabStop = safeGoToNextTabStop;
-              snippets.goToPreviousTabStop = safeGoToPreviousTabStop;
+              manager.snippetsManager.insertSnippet = safeInsertSnippet;
             })
           );
 
@@ -565,30 +571,20 @@ const Kite = (module.exports = {
             })
           );
 
-          // Fetch suggestion after the next tab stop is visited.
-          snippets.goToNextTabStop = editor => {
-            let nextTabStopVisited = false;
-            const expansions = snippets.getExpansions(editor);
-            // Nested snippets are added to the end of the expansions array, so process the last item
-            const expansion = expansions[expansions.length - 1];
-            if (expansion && expansion.goToNextTabStop()) {
-              nextTabStopVisited = true;
-            }
-            manager.requestNewSuggestions();
-            return nextTabStopVisited;
-          };
+          // Almost the same as in native atom/snippets insert (since autocomplete-plus uses this directly as insertSnippet) 
+          // but uses our modified SnippetExpansion to avoid indenting multiline completions.
+          // snippets exposed by atom.packages.activatePackage does not expose a constructor to patch.
+          const SnippetExpansion = require('./atom-snippets-fork/lib/snippet-expansion.js');
+          const Snippet = require('./atom-snippets-fork/lib/snippet.js');
 
-          // Fetch suggestion after visting the previous tab stop.
-          snippets.goToPreviousTabStop = editor => {
-            let previousTabStopVisited = false;
-            const expansions = snippets.getExpansions(editor);
-            // Nested snippets are added to the end of the expansions array, so process the last item
-            const expansion = expansions[expansions.length - 1];
-            if (expansion && expansion.goToPreviousTabStop()) {
-              previousTabStopVisited = true;
+          manager.snippetsManager.insertSnippet = (snippet, editor, cursor, shouldNotIndent) => {
+            if (editor == null) { editor = atom.workspace.getActiveTextEditor(); }
+            if (cursor == null) { cursor = editor.getLastCursor(); }
+            if (typeof snippet === 'string') {
+              const bodyTree = snippets.getBodyParser().parse(snippet);
+              snippet = new Snippet({ name: '__anonymous', prefix: '', bodyTree, bodyText: snippet });
             }
-            manager.requestNewSuggestions();
-            return previousTabStopVisited;
+            return new SnippetExpansion(snippet, editor, cursor, snippets, shouldNotIndent);
           };
         });
       }
@@ -649,6 +645,7 @@ const Kite = (module.exports = {
           }
         };
 
+        const bracketMarker = this.getModule('bracket-marker');
         manager.replaceTextWithMatch = suggestion => {
           if (atom.config.get('kite.enableSnippets') && suggestion.className === 'kite-completion') {
             // Tweak behavior of ACP text replacement
@@ -667,9 +664,11 @@ const Kite = (module.exports = {
               cursor.setBufferPosition(replacementRange.end);
               // Select up to and including the start position
               cursor.selection.selectToBufferPosition(replacementRange.begin);
+              const cursorPosBeforeInsert = editor.getCursorBufferPosition();
               // Insert suggestion
               if (suggestion.snippet && manager.snippetsManager) {
-                manager.snippetsManager.insertSnippet(suggestion.snippet, editor, cursor);
+                const shouldNotIndent = suggestion && suggestion.className && suggestion.className === 'kite-completion';
+                manager.snippetsManager.insertSnippet(suggestion.snippet, editor, cursor, shouldNotIndent);
                 manager.requestNewSuggestions();
               } else {
                 cursor.selection.insertText(suggestion.text ? suggestion.text : suggestion.snippet, {
@@ -677,6 +676,7 @@ const Kite = (module.exports = {
                   autoDecreaseIndent: editor.shouldAutoIndent(),
                 });
               }
+              bracketMarker.processTextForWriteThrough(suggestion.text, editor, cursorPosBeforeInsert);
             });
           } else {
             safeReplaceTextWithMatch.call(manager, suggestion);
@@ -762,7 +762,7 @@ const Kite = (module.exports = {
             // Fix case where shouldDisplaySuggestion is ignored when suggestion hiding methods are invoked,
             // unless a snippet is confirmed. This is because cursorMoved is called after snippet confirmation
             // causing shouldDisplaySuggestions to be false when we want it to be true.
-            if (atom.config.get('kite.enableSnippets') && (!manager.shouldDisplaySuggestions && !wasSnippetConfirmed)) {
+            if (!manager.shouldDisplaySuggestions) {
               return;
             }
             if (parseFloat(autocompletePlus.metadata.version) >= 2.36) {

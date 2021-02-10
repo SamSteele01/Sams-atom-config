@@ -1,5 +1,5 @@
 import * as Atom from "atom"
-import {flatten} from "lodash"
+import {debounce, DebouncedFunc, flatten} from "lodash"
 import {GetClientFunction, TSClient} from "../client"
 import {handlePromise} from "../utils"
 import {TBuildStatus} from "./atom/components/statusPanel"
@@ -41,20 +41,26 @@ export class TypescriptBuffer {
   public on = this.events.on.bind(this.events)
 
   private constructor(public buffer: Atom.TextBuffer, private deps: Deps) {
+    let debouncedGetErr: DebouncedFunc<() => void>
     this.subscriptions.add(
+      atom.config.observe("atom-typescript.getErrDebounceTimeout", (val) => {
+        debouncedGetErr = debounce(() => {
+          handlePromise(this.getErr({allFiles: false, delay: 0}))
+        }, val)
+      }),
       buffer.onDidChangePath(this.onDidChangePath),
       buffer.onDidDestroy(this.dispose),
       buffer.onDidSave(() => {
         handlePromise(this.onDidSave())
       }),
       buffer.onDidStopChanging(({changes}) => {
-        handlePromise(this.getErr({allFiles: false}))
         if (changes.length > 0) this.deps.reportBuildStatus(undefined)
       }),
-      buffer.onDidChangeText(arg => {
+      buffer.onDidChangeText((arg) => {
         // NOTE: we don't need to worry about interleaving here,
         // because onDidChangeText pushes all changes at once
         handlePromise(this.onDidChangeText(arg))
+        debouncedGetErr()
       }),
     )
 
@@ -73,12 +79,12 @@ export class TypescriptBuffer {
     }
   }
 
-  private async getErr({allFiles}: {allFiles: boolean}) {
+  private async getErr(opts: {allFiles: boolean; delay: number}) {
     if (!this.state) return
-    const files = allFiles ? Array.from(getOpenEditorsPaths()) : [this.state.filePath]
+    const files = opts.allFiles ? Array.from(getOpenEditorsPaths()) : [this.state.filePath]
     await this.state.client.execute("geterr", {
       files,
-      delay: 100,
+      delay: opts.delay,
     })
   }
 
@@ -89,14 +95,14 @@ export class TypescriptBuffer {
     const result = await client.execute("compileOnSaveAffectedFileList", {
       file: filePath,
     })
-    const fileNames = flatten(result.body.map(project => project.fileNames))
+    const fileNames = flatten(result.body.map((project) => project.fileNames))
 
     if (fileNames.length === 0) return
 
-    const promises = fileNames.map(file => client.execute("compileOnSaveEmitFile", {file}))
+    const promises = fileNames.map((file) => client.execute("compileOnSaveEmitFile", {file}))
     const saved = await Promise.all(promises)
 
-    if (!saved.every(res => !!res.body)) {
+    if (!saved.every((res) => !!res.body)) {
       throw new Error("Some files failed to emit")
     }
   }
@@ -158,9 +164,18 @@ export class TypescriptBuffer {
     if (!this.state || !this.state.configFile) return
     const options = getProjectConfig(this.state.configFile.getPath())
     this.compileOnSave = options.compileOnSave
+    const cfg = atom.config.get("atom-typescript")
     await this.state.client.execute("configure", {
       file: this.state.filePath,
       formatOptions: options.formatCodeOptions,
+      preferences: {
+        includeCompletionsWithInsertText: true,
+        includeCompletionsForModuleExports: cfg.includeCompletionsForModuleExports,
+        quotePreference: cfg.quotePreference,
+        importModuleSpecifierEnding: cfg.importModuleSpecifierEnding,
+        importModuleSpecifierPreference: cfg.importModuleSpecifierPreference,
+        ...options.preferences,
+      },
     })
   }
 
@@ -171,7 +186,7 @@ export class TypescriptBuffer {
       fileContent: this.buffer.getText(),
     })
 
-    await this.getErr({allFiles: false})
+    handlePromise(this.getErr({allFiles: false, delay: 0}))
   }
 
   private close = async () => {
@@ -179,10 +194,10 @@ export class TypescriptBuffer {
     if (this.state) {
       const client = this.state.client
       const file = this.state.filePath
-      await client.execute("close", {file})
       this.deps.clearFileErrors(file)
       this.state.subscriptions.dispose()
       this.state = undefined
+      await client.execute("close", {file})
     }
   }
 
@@ -195,8 +210,7 @@ export class TypescriptBuffer {
   }
 
   private onDidSave = async () => {
-    await this.getErr({allFiles: true})
-    await this.doCompileOnSave()
+    await Promise.all([this.getErr({allFiles: true, delay: 100}), this.doCompileOnSave()])
   }
 
   private onDidChangeText = async ({changes}: {changes: ReadonlyArray<Atom.TextChange>}) => {

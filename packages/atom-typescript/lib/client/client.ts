@@ -1,18 +1,19 @@
 // tslint:disable:max-classes-per-file
 import {BufferedNodeProcess, BufferedProcess, Emitter} from "atom"
-import byline = require("byline")
+import byline from "byline"
 import {ChildProcess} from "child_process"
 import {Readable, Transform} from "stream"
-import * as protocol from "typescript/lib/protocol"
+import protocol from "typescript/lib/protocol"
 import {ReportBusyWhile} from "../main/pluginManager"
 import {Callbacks} from "./callbacks"
 import {
   AllTSClientCommands,
   CommandArg,
   CommandRes,
+  CommandsWithMultistep,
   CommandsWithResponse,
 } from "./commandArgsResponseMap"
-import {EventTypes} from "./events"
+import {DiagnosticEventTypes} from "./events"
 
 // Set this to true to start tsserver with node --inspect
 const INSPECT_TSSERVER = false
@@ -40,15 +41,40 @@ const commandWithResponseMap: {readonly [K in CommandsWithResponse]: true} = {
   getEditsForRefactor: true,
   organizeImports: true,
   signatureHelp: true,
+  getEditsForFileRename: true,
+  applyCodeActionCommand: true,
+}
+
+const commandsWithMultistepMap: {readonly [K in CommandsWithMultistep]: true} = {
+  geterr: true,
+  geterrForProject: true,
+}
+
+const eventTypesMap: {readonly [K in keyof DiagnosticEventTypes]: true} = {
+  configFileDiag: true,
+  semanticDiag: true,
+  suggestionDiag: true,
+  syntaxDiag: true,
 }
 
 const commandWithResponse = new Set(Object.keys(commandWithResponseMap))
+const commandWithMultistep = new Set(Object.keys(commandsWithMultistepMap))
+const eventTypes = new Set(Object.keys(eventTypesMap))
 
 function isCommandWithResponse(command: AllTSClientCommands): command is CommandsWithResponse {
   return commandWithResponse.has(command)
 }
 
+function isCommandWithMultistep(command: AllTSClientCommands): command is CommandsWithMultistep {
+  return commandWithMultistep.has(command)
+}
+
+function isKnownDiagEventType(event: string): event is keyof DiagnosticEventTypes {
+  return eventTypes.has(event)
+}
+
 export class TypescriptServiceClient {
+  public readonly multistepSupported: boolean
   /** Callbacks that are waiting for responses */
   private readonly callbacks: Callbacks
 
@@ -57,7 +83,7 @@ export class TypescriptServiceClient {
       restarted: void
       terminated: void
     },
-    EventTypes
+    DiagnosticEventTypes
   >()
   private seq = 0
 
@@ -72,6 +98,13 @@ export class TypescriptServiceClient {
     public version: string,
     private reportBusyWhile: ReportBusyWhile,
   ) {
+    // multistep completion event is supported as of TS version 2.2
+    const [major, minor] = version
+      .split(".")
+      .slice(0, 2)
+      .map((x) => parseInt(x, 10))
+    this.multistepSupported = major > 2 || (major === 2 && minor >= 2)
+
     this.callbacks = new Callbacks(this.reportBusyWhile)
     this.server = this.startServer()
   }
@@ -92,14 +125,19 @@ export class TypescriptServiceClient {
     }
 
     if (window.atom_typescript_debug) {
-      console.log("sending request", command, "with args", args)
+      console.log("sending request", req)
     }
 
-    const result = isCommandWithResponse(command)
-      ? this.callbacks.add(req.seq, command)
-      : (undefined as CommandRes<T>)
+    let result: CommandRes<T> | Promise<CommandRes<T>> = undefined as CommandRes<T>
+    if (
+      isCommandWithResponse(command) ||
+      (this.multistepSupported && isCommandWithMultistep(command))
+    ) {
+      result = this.callbacks.add(req.seq, command)
+    }
 
     try {
+      if (!this.server.stdin) throw new Error("Server stdin is missing")
       this.server.stdin.write(JSON.stringify(req) + "\n")
     } catch (error) {
       this.callbacks.error(req.seq, error as Error)
@@ -113,7 +151,7 @@ export class TypescriptServiceClient {
       const graceTimer = setTimeout(() => server.kill(), 10000)
       await Promise.all([
         this.execute("exit"),
-        new Promise(resolve => {
+        new Promise((resolve) => {
           const disp = this.emitter.once("terminated", () => {
             disp.dispose()
             resolve()
@@ -148,8 +186,10 @@ export class TypescriptServiceClient {
     })
 
     // Pipe both stdout and stderr appropriately
+    if (!cp.stdout) throw new Error("ChildProcess stdout missing")
+    if (!cp.stderr) throw new Error("ChildProcess stderr missing")
     messageStream(cp.stdout).on("data", this.onMessage)
-    cp.stderr.on("data", data => {
+    cp.stderr.on("data", (data: Buffer) => {
       console.warn("tsserver stderr:", (this.lastStderrOutput = data.toString()))
     })
     return cp
@@ -175,12 +215,8 @@ export class TypescriptServiceClient {
   }
 
   private onMessage = (res: protocol.Response | protocol.Event) => {
-    if (res.type === "response") this.onResponse(res)
+    if (res.type === "response") this.callbacks.resolve(res)
     else this.onEvent(res)
-  }
-
-  private onResponse(res: protocol.Response) {
-    this.callbacks.resolve(res.request_seq, res)
   }
 
   private onEvent(res: protocol.Event) {
@@ -188,8 +224,13 @@ export class TypescriptServiceClient {
       console.log("received event", res)
     }
 
-    // tslint:disable-next-line:no-unsafe-any
-    if (res.body) this.emitter.emit(res.event as keyof EventTypes, res.body)
+    if (res.body) {
+      if (isKnownDiagEventType(res.event)) {
+        this.emitter.emit(res.event, res.body as DiagnosticEventTypes[keyof DiagnosticEventTypes])
+      } else if (res.event === "requestCompleted") {
+        this.callbacks.resolveMS(res.body as protocol.RequestCompletedEventBody)
+      }
+    }
   }
 }
 
@@ -219,7 +260,7 @@ class MessageStream extends Transform {
     super({objectMode: true})
   }
 
-  public _transform(buf: Buffer, _encoding: string, callback: (n: null) => void) {
+  public _transform(buf: Buffer, _encoding: string, callback: (n: Error | undefined) => void) {
     const line = buf.toString()
 
     try {
@@ -231,7 +272,7 @@ class MessageStream extends Transform {
     } catch (error) {
       console.error("client: failed to parse: ", line)
     } finally {
-      callback(null)
+      callback(undefined)
     }
   }
 }

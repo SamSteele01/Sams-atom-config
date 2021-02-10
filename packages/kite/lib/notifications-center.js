@@ -5,16 +5,13 @@ const { CompositeDisposable, Emitter } = require('atom');
 const KiteAPI = require('kite-api');
 const { STATES } = KiteAPI;
 const { fromSetting, all } = require('./conditions');
-const toSentence = a => `${a.slice(0, -1).join(', ')} and ${a.pop()}`;
-const KiteNotification = require('./kite-notification');
 const NotificationQueue = require('./notification-queue');
-const metrics = require('./metrics');
 
 class NotificationsCenter {
   get NOTIFIERS() {
     return {
       [STATES.UNSUPPORTED]: 'warnNotSupported',
-      // [STATES.UNINSTALLED]: 'warnNotInstalled',
+      [STATES.UNINSTALLED]: 'warnNotInstalled',
       // [STATES.INSTALLED]: 'warnNotRunning',
       [STATES.RUNNING]: 'warnNotReachable',
       [STATES.REACHABLE]: 'warnNotAuthenticated',
@@ -148,7 +145,7 @@ class NotificationsCenter {
     this[this.NOTIFIERS[state]] && this[this.NOTIFIERS[state]](state);
   }
 
-  onboardingNotifications(hasSeenOnboarding) {
+  onboardingNotifications() {
     this.queue.addInfo(
       'Kite is now integrated with Atom',
       {
@@ -213,28 +210,26 @@ class NotificationsCenter {
   }
 
   warnNotInstalled(state) {
-    if (!this.app.wasInstalledOnce()) {
-      this.queue.addWarning(
-        'The Kite engine is not installed',
-        {
-          description: 'Install Kite to get Python completions, documentation, and examples.',
-          icon: 'circle-slash',
-          buttons: [
-            {
-              text: 'Install Kite',
-              metric: 'install',
-              onDidClick: dismiss => {
-                dismiss && dismiss();
-                this.app && this.app.install();
-              },
+    this.queue.addWarning(
+      'The Kite engine is not installed',
+      {
+        description: 'Install Kite to get Python completions, documentation, and examples.',
+        icon: 'circle-slash',
+        buttons: [
+          {
+            text: 'Install Kite',
+            metric: 'install',
+            onDidClick: dismiss => {
+              dismiss && dismiss();
+              this.app && this.app.installFlow();
             },
-          ],
-        },
-        {
-          metric: state,
-        }
-      );
-    }
+          },
+        ],
+      },
+      {
+        metric: state,
+      }
+    );
   }
 
   warnNotRunning(state) {
@@ -475,14 +470,105 @@ class NotificationsCenter {
     );
   }
 
+  getRelatedCodeErrHandler(filename, lineNo) {
+    return (err) => {
+      if (!err) {
+        return;
+      }
+      const KiteCodeFinderError = 'Kite Code Finder Error';
+      const showDefaultErrMsg = () => this.queue.addWarning(KiteCodeFinderError, {
+        description: 'Oops! Something went wrong with Code Finder. Please try again later.',
+        buttons: [
+          {
+            text: 'OK',
+            onDidClick: dismiss => dismiss && dismiss(),
+          },
+        ],
+      });
+      if (!err.data) {
+        showDefaultErrMsg();
+        return;
+      }
+
+      const { state, responseData } = err.data;
+
+      if (state && state <= KiteAPI.STATES.UNREACHABLE) {
+        this.queue.addWarning(KiteCodeFinderError, {
+          description: 'Kite could not be reached. Please check that Kite engine is running.',
+          buttons: [
+            {
+              text: 'OK',
+              onDidClick: dismiss => dismiss && dismiss(),
+            },
+          ],
+        });
+        return;
+      }
+
+      if (responseData && typeof responseData === 'string') {
+        switch (responseData.trim()) {
+          case 'ErrPathNotInSupportedProject':
+            this.queue.addWarning(KiteCodeFinderError, {
+              description: [
+                `The file ${filename} is not in any Git project.`,
+                'Code finder only works inside Git projects.',
+              ].join(' '),
+              buttons: [
+                {
+                  text: 'OK',
+                  onDidClick: dismiss => dismiss && dismiss(),
+                },
+              ],
+            });
+            return;
+          case 'ErrProjectStillIndexing':
+            this.queue.addWarning(KiteCodeFinderError, {
+              description: [
+                'Kite is not done indexing your project yet.',
+                'Please wait for the status icon to switch to ready before using Code Finder.',
+              ].join(' '),
+              buttons: [
+                {
+                  text: 'OK',
+                  onDidClick: dismiss => dismiss && dismiss(),
+                },
+              ],
+            });
+            return;
+          case 'ErrEmptyLine':
+            this.queue.addWarning(KiteCodeFinderError, {
+              description: [
+                `Line ${lineNo} in file ${filename} is empty.`,
+                'Code finder only works in non-empty lines.',
+              ].join(' '),
+              buttons: [
+                {
+                  text: 'OK',
+                  onDidClick: dismiss => dismiss && dismiss(),
+                },
+              ],
+            });
+            return;
+          case 'ErrNotTextEditor':
+            this.queue.addWarning(KiteCodeFinderError, {
+              description: 'Could not get active text editor.',
+              buttons: [
+                {
+                  text: 'OK',
+                  onDidClick: dismiss => dismiss && dismiss(),
+                },
+              ],
+            });
+            return;
+        }
+      }
+
+      showDefaultErrMsg();
+    };
+  }
+
   shouldNotify(state) {
-    return (
-      this.forceNotification ||
-      (this.app &&
-        this.app.kite.getModule('editors').hasActiveSupportedFile() &&
-        !this.lastShown[state] &&
-        !this.paused)
-    );
+    return this.forceNotification || (!this.lastShown[state] && !this.paused);
   }
 
   emit(...args) {

@@ -26,6 +26,8 @@ const shouldUseEslint = () => getConfigOption('useEslint');
 
 const shouldUseStylelint = () => getConfigOption('useStylelint');
 
+const shouldUseEditorConfig = () => getConfigOption('useEditorConfig');
+
 const isFormatOnSaveEnabled = () => getConfigOption('formatOnSaveOptions.enabled');
 
 const isDisabledIfNotInPackageJson = () => getConfigOption('formatOnSaveOptions.isDisabledIfNotInPackageJson');
@@ -56,10 +58,8 @@ const addWarningNotification = (message, options) => atom.notifications.addWarni
 
 const addErrorNotification = (message, options) => atom.notifications.addError(message, options);
 
-const attemptWithErrorNotification =
-/*#__PURE__*/
-function () {
-  var _ref = (0, _asyncToGenerator2["default"])(function* (func, ...args) {
+const attemptWithErrorNotification = /*#__PURE__*/function () {
+  var _ref = (0, _asyncToGenerator2.default)(function* (func, ...args) {
     try {
       yield func(...args);
     } catch (e) {
@@ -106,6 +106,7 @@ module.exports = {
   shouldRespectEslintignore,
   shouldUseEslint,
   shouldUseStylelint,
+  shouldUseEditorConfig,
   toggleFormatOnSave,
   attemptWithErrorNotification
 };

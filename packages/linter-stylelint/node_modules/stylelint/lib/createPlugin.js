@@ -1,9 +1,13 @@
-/* @flow */
-"use strict";
+'use strict';
 
-module.exports = function(ruleName /*: string*/, rule /*: Function*/) {
-  return {
-    ruleName,
-    rule
-  };
+/**
+ * @param {string} ruleName
+ * @param {Function} rule
+ * @returns {{ruleName: string, rule: Function}}
+ */
+module.exports = function (ruleName, rule) {
+	return {
+		ruleName,
+		rule,
+	};
 };

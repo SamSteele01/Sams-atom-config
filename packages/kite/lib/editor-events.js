@@ -1,10 +1,9 @@
 'use strict';
 
-const {CompositeDisposable} = require('atom');
+const { CompositeDisposable } = require('atom');
 const KiteAPI = require('kite-api');
-const {MAX_FILE_SIZE, MAX_PAYLOAD_SIZE} = require('./constants');
-const {DisposableEvent} = require('./utils');
-const {version: plugin_version} = require('./metrics')
+const { DisposableEvent } = require('./utils');
+const { version: plugin_version } = require('./metrics')
 let Kite;
 
 class EditorEvents {
@@ -64,22 +63,18 @@ class EditorEvents {
 
     // was resulting in unhandled Promise rejection from `this.pendingPromiseReject(err)`
     // below... so we catch it
-    return this.pendingPromise.catch((err) => {});
+    return this.pendingPromise.catch((err) => { });
   }
 
   mergeEvents() {
     if (!this.editor) { return; }
 
-    let focus = this.pendingEvents.filter(e => e === 'focus')[0];
-    let action = this.pendingEvents.some(e => e === 'edit') ? 'edit' : this.pendingEvents.pop();
+    const focus = this.pendingEvents.filter(e => e === 'focus')[0];
+    const action = this.pendingEvents.some(e => e === 'edit') ? 'edit' : this.pendingEvents.pop();
 
     this.reset();
 
     const payload = JSON.stringify(this.buildEvent(action));
-
-    if (payload.length > MAX_PAYLOAD_SIZE) {
-      return this.reset();
-    }
 
     let promise = Promise.resolve();
 
@@ -91,27 +86,21 @@ class EditorEvents {
     }
 
     return promise
-    .then(() => KiteAPI.request({
-      path: '/clientapi/editor/event',
-      method: 'POST',
-    }, payload))
-    .then((res) => {
-      this.pendingPromiseResolve(res);
-    })
-    .catch((err) => {
-      this.pendingPromiseReject && this.pendingPromiseReject(err);
-      // on connection error send a metric, but not too often or we will generate too many events
-      // if (!this.lastErrorAt ||
-      //     secondsSince(this.lastErrorAt) >= CONNECT_ERROR_LOCKOUT) {
-      //   this.lastErrorAt = new Date();
-      //   // metrics.track('could not connect to event endpoint', err);
-      // }
-    })
-    .then(() => {
-      delete this.pendingPromise;
-      delete this.pendingPromiseResolve;
-      delete this.pendingPromiseReject;
-    });
+      .then(() => KiteAPI.request({
+        path: '/clientapi/editor/event',
+        method: 'POST',
+      }, payload))
+      .then((res) => {
+        this.pendingPromiseResolve(res);
+      })
+      .catch((err) => {
+        this.pendingPromiseReject && this.pendingPromiseReject(err);
+      })
+      .then(() => {
+        delete this.pendingPromise;
+        delete this.pendingPromiseResolve;
+        delete this.pendingPromiseReject;
+      });
   }
 
   buildEvent(action) {
@@ -122,8 +111,7 @@ class EditorEvents {
     const buffer = this.editor.getBuffer();
     const cursorOffset = buffer.characterIndexForPosition(cursorPoint);
 
-    // don't send content over 1mb
-    if (text && text.length > MAX_FILE_SIZE) {
+    if (text && text.length > Kite.maxFileSize) {
       action = 'skip';
       text = '';
     }
@@ -140,6 +128,7 @@ class EditorEvents {
       selections: [{
         start: cursor,
         end: cursor,
+        encoding: 'utf-16',
       }],
       editor_version: atom.getVersion(),
       plugin_version,

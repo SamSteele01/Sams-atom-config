@@ -1,20 +1,21 @@
 import * as etch from "etch"
-import * as protocol from "typescript/lib/protocol"
+import protocol from "typescript/lib/protocol"
 import {TSClient} from "../../../client"
 import {getFilePathPosition} from "../utils"
 import {HighlightComponent} from "../views/highlightComponent"
 import {selectListView} from "../views/simpleSelectionView"
 import {addCommand, Dependencies} from "./registry"
 
-interface RefactorAction {
+export interface RefactorAction {
   refactorName: string
   refactorDescription: string
+  refactorRange: protocol.FileLocationOrRangeRequestArgs
   actionName: string
   actionDescription: string
   inlineable: boolean
 }
 
-addCommand("atom-text-editor", "typescript:refactor-selection", deps => ({
+addCommand("atom-text-editor", "typescript:refactor-selection", (deps) => ({
   description: "Get a list of applicable refactors to selected code",
   async didDispatch(editor) {
     const location = getFilePathPosition(editor)
@@ -56,11 +57,11 @@ addCommand("atom-text-editor", "typescript:refactor-selection", deps => ({
     })
 
     if (selectedAction === undefined) return
-    await applyRefactors(selectedAction, fileRange, client, deps)
+    await applyRefactors(selectedAction, client, deps)
   },
 }))
 
-async function getApplicableRefactorsActions(
+export async function getApplicableRefactorsActions(
   client: TSClient,
   pointOrRange: protocol.FileLocationOrRangeRequestArgs,
 ) {
@@ -76,6 +77,7 @@ async function getApplicableRefactorsActions(
       actions.push({
         refactorName: refactor.name,
         refactorDescription: refactor.description,
+        refactorRange: pointOrRange,
         actionName: action.name,
         actionDescription: action.description,
         inlineable: refactor.inlineable !== undefined ? refactor.inlineable : true,
@@ -91,20 +93,22 @@ async function getApplicabeRefactors(
   pointOrRange: protocol.FileLocationOrRangeRequestArgs,
 ) {
   try {
-    return await client.execute("getApplicableRefactors", pointOrRange)
+    return await client.execute("getApplicableRefactors", {
+      triggerReason: "invoked",
+      ...pointOrRange,
+    })
   } catch {
     return undefined
   }
 }
 
-async function applyRefactors(
+export async function applyRefactors(
   selectedAction: RefactorAction,
-  range: protocol.FileLocationOrRangeRequestArgs,
   client: TSClient,
-  deps: Dependencies,
+  deps: Pick<Dependencies, "applyEdits">,
 ) {
   const responseEdits = await client.execute("getEditsForRefactor", {
-    ...range,
+    ...selectedAction.refactorRange,
     refactor: selectedAction.refactorName,
     action: selectedAction.actionName,
   })

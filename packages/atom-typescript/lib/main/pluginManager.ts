@@ -1,6 +1,6 @@
 import * as Atom from "atom"
 import {CompositeDisposable} from "atom"
-import {BusySignalService, DatatipService, SignatureHelpRegistry} from "atom/ide"
+import {BusySignalService, DatatipService, SignatureHelpRegistry} from "atom-ide-base"
 import {IndieDelegate} from "atom/linter"
 import {StatusBar} from "atom/status-bar"
 import {throttle} from "lodash"
@@ -126,10 +126,10 @@ export class PluginManager {
         toggleSemanticViewController: () => {
           handlePromise(this.semanticViewController.toggle())
         },
-        toggleFileSymbolsView: ed => {
+        toggleFileSymbolsView: (ed) => {
           this.symbolsViewController.toggleFileView(ed)
         },
-        toggleProjectSymbolsView: ed => {
+        toggleProjectSymbolsView: (ed) => {
           this.symbolsViewController.toggleProjectView(ed)
         },
         histGoForward: this.histGoForward,
@@ -138,6 +138,7 @@ export class PluginManager {
         showTooltipAt: this.showTooltipAt,
         showSigHelpAt: this.showSigHelpAt,
         hideSigHelpAt: this.hideSigHelpAt,
+        rotateSigHelp: this.rotateSigHelp,
       }),
     )
   }
@@ -200,8 +201,9 @@ export class PluginManager {
 
   public consumeSigHelpService(registry: SignatureHelpRegistry): void | Atom.DisposableLike {
     if (atom.config.get("atom-typescript").preferBuiltinSigHelp) return
-    const disp = registry(new TSSigHelpProvider(this.getClient))
-    this.subscriptions.add(disp)
+    const provider = new TSSigHelpProvider(this.getClient)
+    const disp = registry(provider)
+    this.subscriptions.add(disp, provider)
     this.sigHelpManager.dispose()
     this.usingBuiltinSigHelpManager = false
     return disp
@@ -222,7 +224,7 @@ export class PluginManager {
 
   // Registering an autocomplete provider
   public provideAutocomplete() {
-    return [new AutocompleteProvider(this.getClient)]
+    return [new AutocompleteProvider(this.getClient, this.applyEdits)]
   }
 
   public provideIntentions() {
@@ -281,7 +283,7 @@ export class PluginManager {
     action: (buffer: Atom.TextBuffer) => Promise<T>,
   ) => {
     const normalizedFilePath = path.normalize(filePath)
-    const ed = atom.workspace.getTextEditors().find(p => p.getPath() === normalizedFilePath)
+    const ed = atom.workspace.getTextEditors().find((p) => p.getPath() === normalizedFilePath)
 
     // found open buffer
     if (ed) return action(ed.getBuffer())
@@ -324,13 +326,13 @@ export class PluginManager {
     handlePromise(this.statusPanel.update(info))
   }
 
-  private applyEdits: ApplyEdits = async edits =>
+  private applyEdits: ApplyEdits = async (edits) =>
     void Promise.all(
-      edits.map(edit =>
-        this.withBuffer(edit.fileName, async buffer => {
+      edits.map((edit) =>
+        this.withBuffer(edit.fileName, async (buffer) => {
           buffer.transact(() => {
             const changes = edit.textChanges
-              .map(e => ({range: spanToRange(e), newText: e.newText}))
+              .map((e) => ({range: spanToRange(e), newText: e.newText}))
               .reverse() // NOTE: needs reverse for cases where ranges are same for two changes
               .sort((a, b) => b.range.compare(a.range))
             for (const change of changes) {
@@ -356,6 +358,11 @@ export class PluginManager {
     else return false
   }
 
+  private rotateSigHelp = (ed: Atom.TextEditor, shift: number): boolean => {
+    if (this.usingBuiltinSigHelpManager) return this.sigHelpManager.rotateSigHelp(ed, shift)
+    else return false
+  }
+
   private histGoForward: EditorPositionHistoryManager["goForward"] = (ed, opts) => {
     return this.editorPosHist.goForward(ed, opts)
   }
@@ -365,7 +372,7 @@ export class PluginManager {
       atom.workspace.observeTextEditors((editor: Atom.TextEditor) => {
         this.typescriptPaneFactory(editor)
       }),
-      atom.workspace.onDidChangeActiveTextEditor(ed => {
+      atom.workspace.onDidChangeActiveTextEditor((ed) => {
         if (ed && isTypescriptEditorWithPath(ed)) {
           handlePromise(this.statusPanel.show())
           const tep = TypescriptEditorPane.lookupPane(ed)

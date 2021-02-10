@@ -1,25 +1,25 @@
 {
-  "_from": "https://www.atom.io/api/packages/better-git-blame/versions/0.4.7/tarball",
-  "_id": "better-git-blame@0.4.7",
+  "_from": "https://www.atom.io/api/packages/better-git-blame/versions/0.5.0/tarball",
+  "_id": "better-git-blame@0.5.0",
   "_inBundle": false,
-  "_integrity": "sha512-2jZvHalxtC5rzRWepnPNS69iRpTpNM9SloFIU6abOuvpPMYicYjlDsTgP1m0lokgbXjJMidSdhS1n+PiOQxyXg==",
+  "_integrity": "sha512-Bbi3E3UsdwzeSuv6rT8GULgg3TwTkaTqg1iL+b6OMb72XISKO7zIkBksoKskqe058aE8eeBy/4LLMNb2VbZ7Gg==",
   "_location": "/better-git-blame",
   "_phantomChildren": {},
   "_requested": {
     "type": "remote",
-    "raw": "https://www.atom.io/api/packages/better-git-blame/versions/0.4.7/tarball",
-    "rawSpec": "https://www.atom.io/api/packages/better-git-blame/versions/0.4.7/tarball",
-    "saveSpec": "https://www.atom.io/api/packages/better-git-blame/versions/0.4.7/tarball",
-    "fetchSpec": "https://www.atom.io/api/packages/better-git-blame/versions/0.4.7/tarball"
+    "raw": "https://www.atom.io/api/packages/better-git-blame/versions/0.5.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/better-git-blame/versions/0.5.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/better-git-blame/versions/0.5.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/better-git-blame/versions/0.5.0/tarball"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://www.atom.io/api/packages/better-git-blame/versions/0.4.7/tarball",
-  "_shasum": "863f8df2bfcec73cdbc14899b65f2c877362aa73",
-  "_spec": "https://www.atom.io/api/packages/better-git-blame/versions/0.4.7/tarball",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11952-27270-bbeesr.m8str",
+  "_resolved": "https://www.atom.io/api/packages/better-git-blame/versions/0.5.0/tarball",
+  "_shasum": "bd1d46ce35cc047f8edd2b7c21b30c4756b5b066",
+  "_spec": "https://www.atom.io/api/packages/better-git-blame/versions/0.5.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-120019-1994-13bl0g2.uupjk",
   "bugs": {
     "url": "https://github.com/Stepsize/atom-better-git-blame/issues"
   },
@@ -80,5 +80,5 @@
     "dev": "tsc --watch",
     "pretty": "prettier \"lib/**/*.ts\" --write"
   },
-  "version": "0.4.7"
+  "version": "0.5.0"
 }

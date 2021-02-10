@@ -1,5 +1,5 @@
 import {CompositeDisposable, DisplayMarker, TextEditor} from "atom"
-import {debounce} from "lodash"
+import {debounce, DebouncedFunc} from "lodash"
 import {DocumentHighlightsItem} from "typescript/lib/protocol"
 import {GetClientFunction} from "../../../client"
 import {handlePromise} from "../../../utils"
@@ -11,13 +11,33 @@ export class OccurenceController {
   private disposed = false
 
   constructor(private getClient: GetClientFunction, private editor: TextEditor) {
-    const debouncedUpdate = debounce(() => {
-      handlePromise(this.update())
-    }, 100)
+    let debouncedUpdate: DebouncedFunc<() => void>
+    let didChangeTimeout: number | undefined
+    let changeDelay: number
+    let shouldHighlight: boolean = false
     this.disposables.add(
-      editor.onDidChangeCursorPosition(debouncedUpdate),
-      editor.onDidChangePath(debouncedUpdate),
-      editor.onDidChangeGrammar(debouncedUpdate),
+      atom.config.observe("atom-typescript.occurrenceHighlightDebounceTimeout", (val) => {
+        debouncedUpdate = debounce(() => {
+          handlePromise(this.update())
+        }, val)
+        changeDelay = val * 3.5
+      }),
+      editor.onDidChangeCursorPosition(() => {
+        if (didChangeTimeout === undefined) debouncedUpdate()
+        else shouldHighlight = true
+      }),
+      editor.onDidChangePath(() => debouncedUpdate()),
+      editor.onDidChangeGrammar(() => debouncedUpdate()),
+      editor.onDidChange(() => {
+        if (didChangeTimeout !== undefined) clearTimeout(didChangeTimeout)
+        didChangeTimeout = window.setTimeout(() => {
+          if (shouldHighlight) {
+            debouncedUpdate()
+            shouldHighlight = false
+          }
+          didChangeTimeout = undefined
+        }, changeDelay)
+      }),
     )
   }
 
@@ -72,7 +92,7 @@ export class OccurenceController {
       if (fileInfo.file !== this.editor.getPath()) continue
       for (const span of fileInfo.highlightSpans) {
         const range = spanToRange(span)
-        const oldMarker = this.occurrenceMarkers.find(m => m.getBufferRange().isEqual(range))
+        const oldMarker = this.occurrenceMarkers.find((m) => m.getBufferRange().isEqual(range))
         if (oldMarker) yield oldMarker
         else {
           const marker = this.editor.markBufferRange(range)

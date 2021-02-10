@@ -12,3 +12,13 @@ interface ElementExp extends Element {
 interface CallableFunction {
   bind<T>(this: T, thisArg: any): T
 }
+
+namespace NodeJS {
+  interface Process {
+    activateUvLoop: () => void
+  }
+}
+
+interface ObjectConstructor {
+  keys<T>(o: T): Array<keyof T>
+}

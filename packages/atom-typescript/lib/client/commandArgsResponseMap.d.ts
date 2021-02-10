@@ -1,4 +1,4 @@
-import * as p from "typescript/lib/protocol"
+import p from "typescript/lib/protocol"
 
 export interface CommandArgResponseMap {
   change: (x: p.ChangeRequestArgs) => void
@@ -37,6 +37,10 @@ export interface CommandArgResponseMap {
   organizeImports: (x: p.OrganizeImportsRequestArgs) => p.OrganizeImportsResponse
   exit: () => void
   signatureHelp: (x: p.SignatureHelpRequestArgs) => p.SignatureHelpResponse
+  getEditsForFileRename: (x: p.GetEditsForFileRenameRequestArgs) => p.GetEditsForFileRenameResponse
+  applyCodeActionCommand: (
+    x: p.ApplyCodeActionCommandRequestArgs,
+  ) => p.ApplyCodeActionCommandResponse
 }
 
 export type AllTSClientCommands = keyof CommandArgResponseMap
@@ -44,6 +48,10 @@ export type AllTSClientCommands = keyof CommandArgResponseMap
 export type CommandsWithResponse = {
   [K in AllTSClientCommands]: CommandRes<K> extends void ? never : K
 }[AllTSClientCommands]
+
+export type CommandsWithMultistep = "geterr" | "geterrForProject"
+
+export type CommandsWithCallback = CommandsWithResponse | CommandsWithMultistep
 
 export type ArgType<T extends (x: any) => any> = T extends (...x: infer U) => any ? U : never
 

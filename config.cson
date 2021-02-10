@@ -9,13 +9,11 @@
   "console-log":
     semiColons: true
   core:
+    closeDeletedFileTabs: true
     disabledPackages: [
       "language-vue-component"
-      "linter-pylama"
-      "linter"
       "language-typescript-react"
       "jslint"
-      "kite"
       "about"
       "archive-view"
       "autocomplete-atom-api"
@@ -44,8 +42,6 @@
       "update-package-dependencies"
       "csslint"
       "linter-stylelint"
-      "linter-tslint"
-      "linter-golinter"
       "linter-gcc"
       "ide-vue"
       "gpp-compiler"
@@ -56,7 +52,44 @@
       "atom-vue"
       "git-line"
       "color-tabs-byproject"
+      "redux-snippets"
+      "react-redux-snippets"
+      "react-redux-react-native-snippets"
+      "language-solidity"
+      "language-graphql"
+      "language-cuda"
+      "graphql-autocomplete"
+      "go-debug"
+      "markdown-preview"
+      "language-cpp14"
+      "language-docker"
+      "language-rust"
+      "linter-docker"
+      "jsx-comment"
+      "language-less"
+      "language-ruby"
+      "language-ruby-on-rails"
+      "language-sass"
+      "language-sql"
+      "language-xml"
+      "language-make"
+      "linter-tslint"
+      "ide-go"
+      "linter-solidity"
+      "linter"
+      "ide-svelte"
+      "kite"
+      "linter-golinter"
+      "linter-pylama"
+      "linter-ui-default"
+      "ide-typescript"
+      "timecop"
+      "language-typescript"
+      "language-python"
+      "language-rust-bundled"
+      "language-go"
     ]
+    packagesWithKeymapsDisabled: []
     telemetryConsent: "limited"
     themes: [
       "one-dark-ui"
@@ -64,14 +97,19 @@
     ]
     useTreeSitterParsers: false
   editor:
-    fontSize: 13
+    fontSize: 15
     preferredLineLength: 100
     showIndentGuide: true
+    softWrap: true
     softWrapAtPreferredLineLength: true
   "exception-reporting":
     userId: "e230802c-0ef7-4ef2-b08e-27acb3e58209"
+  "find-and-replace":
+    useRipgrep: true
   "goto-definition":
     performanceMode: true
+  kite:
+    showWelcomeNotificationOnStartup: false
   "language-babel":
     disableWhenNoBabelrcFileInPath: false
   "linter-eslint":
@@ -79,7 +117,7 @@
       fixOnSave: true
     emmetCSSAutocomplete: true
   "linter-ui-default":
-    panelHeight: 57
+    panelHeight: 300
   packagesWithKeymapsDisabled: [
     "minimap"
     "language-pug-jade"
@@ -92,6 +130,8 @@
     formatOnSaveOptions:
       enabled: true
       isDisabledIfNoConfigFile: true
+    useEditorConfig: false
+    useEslint: true
   telemetryConsent: "limited"
   "tree-view": {}
   useTreeSitterParsers: false

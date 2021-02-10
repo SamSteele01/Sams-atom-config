@@ -1,9 +1,11 @@
 'use strict'
 
-const include = require('./decorators/include')
-const DecorationManagement = require('./mixins/decoration-management')
+import include from './decorators/include'
+import DecorationManagement from './decoration-management'
 
-let Emitter, CompositeDisposable, LegacyAdapter, StableAdapter
+import { Emitter, CompositeDisposable } from 'atom'
+import StableAdapter from './adapters/stable-adapter'
+
 let nextModelId = 1
 
 /**
@@ -14,11 +16,12 @@ let nextModelId = 1
  * Their lifecycle follow the one of their target `TextEditor`, so they are
  * destroyed whenever their `TextEditor` is destroyed.
  */
-class Minimap {
+export default class Minimap {
   static initClass () {
     include(this, DecorationManagement)
     return this
   }
+
   /**
    * Creates a new Minimap instance for the given `TextEditor`.
    *
@@ -36,10 +39,6 @@ class Minimap {
       throw new Error('Cannot create a minimap without an editor')
     }
 
-    if (!Emitter) {
-      ({Emitter, CompositeDisposable} = require('atom'))
-    }
-
     /**
      * The Minimap's text editor.
      *
@@ -47,6 +46,13 @@ class Minimap {
      * @access private
      */
     this.textEditor = options.textEditor
+
+    /**
+    * The Minimap's text editor element.
+     * @access private
+     */
+    this.editorElement = undefined
+
     /**
      * The stand-alone state of the current Minimap.
      *
@@ -207,14 +213,11 @@ class Minimap {
     this.initializeDecorations()
 
     if (atom.views.getView(this.textEditor).getScrollTop != null) {
-      if (!StableAdapter) {
-        StableAdapter = require('./adapters/stable-adapter')
-      }
       this.adapter = new StableAdapter(this.textEditor)
     } else {
-      if (!LegacyAdapter) {
-        LegacyAdapter = require('./adapters/legacy-adapter')
-      }
+      // TODO remove LegacyAdapter in the next major version
+      atom.notifications.addWarning('LegacyAdapter of Minimap is deprecated and will be removed in the next major version. Please upgrade Atom to the latest version.')
+      const LegacyAdapter = require('./adapters/legacy-adapter')
       this.adapter = new LegacyAdapter(this.textEditor)
     }
 
@@ -312,13 +315,13 @@ class Minimap {
 
     // Optimisation: If the redraw delay is set to 0, do not even schedule a timer
     if (!this.redrawDelay) {
-      return this.flushChanges()
+      this.requestFlushChanges()
     }
 
     if (!this.flushChangesTimer) {
       // If any changes happened within the timeout's delay, a timeout will already have been
       // scheduled -> no need to schedule again
-      this.flushChangesTimer = setTimeout(() => { this.flushChanges() }, this.redrawDelay)
+      this.flushChangesTimer = setTimeout(() => { this.requestFlushChanges() }, this.redrawDelay)
     }
   }
 
@@ -333,6 +336,24 @@ class Minimap {
     this.flushChangesTimer = null
     this.emitChanges(this.pendingChangeEvents)
     this.pendingChangeEvents = []
+  }
+
+  /**
+   * Requests flush changes if not already requested
+   *
+   * @return void
+   * @access private
+   */
+  requestFlushChanges () {
+    if (!this.requestedFlushChanges) {
+      this.requestedFlushChanges = requestAnimationFrame(() => {
+        this.flushChanges()
+        if (this.requestedFlushChanges) {
+          cancelAnimationFrame(this.requestedFlushChanges)
+          this.requestedFlushChanges = null
+        }
+      })
+    }
   }
 
   /**
@@ -436,7 +457,7 @@ class Minimap {
    */
   subscribeToConfig () {
     const subs = new CompositeDisposable()
-    const opts = {scope: this.textEditor.getRootScopeDescriptor()}
+    const opts = { scope: this.textEditor.getRootScopeDescriptor() }
 
     subs.add(atom.config.observe('editor.scrollPastEnd', opts, (scrollPastEnd) => {
       this.scrollPastEnd = scrollPastEnd
@@ -510,6 +531,18 @@ class Minimap {
    * @return {TextEditor} this Minimap's text editor
    */
   getTextEditor () { return this.textEditor }
+
+  /**
+   * Returns the `TextEditorElement` for the Minimap's `TextEditor`.
+   *
+   * @return {TextEditorElement} the minimap's text editor element
+   */
+  getTextEditorElement () {
+    if (this.editorElement) { return this.editorElement }
+
+    this.editorElement = atom.views.getView(this.getTextEditor())
+    return this.editorElement
+  }
 
   /**
    * Returns the height of the `TextEditor` at the Minimap scale.
@@ -963,7 +996,7 @@ class Minimap {
 
       if (!this.canScroll()) { return }
 
-      const {wheelDeltaY} = event
+      const { wheelDeltaY } = event
       const previousScrollTop = this.getScrollTop()
       const updatedScrollTop = previousScrollTop - Math.round(wheelDeltaY * this.scrollSensitivity)
 
@@ -1023,7 +1056,6 @@ class Minimap {
   clearCache () { this.adapter.clearCache() }
 
   editorDestroyed () { this.adapter.editorDestroyed() }
-
 }
 
-module.exports = Minimap.initClass()
+Minimap.initClass()

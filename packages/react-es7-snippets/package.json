@@ -1,64 +1,50 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-        "scope": null,
-        "escapedName": null,
-        "name": null,
-        "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-        "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-        "type": "local"
-      },
-      "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11858-47342-11xnbg1.m93262mx6r"
-    ]
-  ],
-  "_from": "../d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-  "_id": "react-es7-snippets@0.3.13",
-  "_inCache": true,
+  "_from": "https://www.atom.io/api/packages/react-es7-snippets/versions/0.5.0/tarball",
+  "_id": "react-es7-snippets@0.5.0",
+  "_inBundle": false,
+  "_integrity": "sha512-/8FRgHtZz47ev2k1EPDGxWPoxU7/atTgWNUWqTtiSfRtrs/TpbDtX8Rr3JceEkjKT3aEikJxyBwBcIAqk8Q1XA==",
   "_location": "/react-es7-snippets",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-    "scope": null,
-    "escapedName": null,
-    "name": null,
-    "rawSpec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-    "spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-    "type": "local"
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/react-es7-snippets/versions/0.5.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/react-es7-snippets/versions/0.5.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/react-es7-snippets/versions/0.5.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/react-es7-snippets/versions/0.5.0/tarball"
   },
   "_requiredBy": [
-    "#USER"
+    "#USER",
+    "/"
   ],
-  "_resolved": "file:../d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-  "_shasum": "afe1c91f2e2e9fad8de944407a48aa1c67657ca6",
-  "_shrinkwrap": null,
-  "_spec": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/d-11858-47342-147miml.bm3djf9a4i/package.tgz",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-11858-47342-11xnbg1.m93262mx6r",
+  "_resolved": "https://www.atom.io/api/packages/react-es7-snippets/versions/0.5.0/tarball",
+  "_shasum": "1e75393459e61fbc6e150378fa6fc958e29387d6",
+  "_spec": "https://www.atom.io/api/packages/react-es7-snippets/versions/0.5.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-202096-19463-1tdej1i.g783",
   "bugs": {
     "url": "https://github.com/ngthorg/react-es7-snippets/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {},
-  "description": "React ES7 snippets for atom",
-  "devDependencies": {},
+  "deprecated": false,
+  "description": "React, Redux and Relay ES7 snippets for atom",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
   "homepage": "https://github.com/ngthorg/react-es7-snippets#readme",
   "keywords": [
     "react",
+    "redux",
+    "relay",
     "ES7",
+    "standard",
     "babel",
     "snippets"
   ],
   "license": "MIT",
   "name": "react-es7-snippets",
-  "optionalDependencies": {},
-  "readme": "# react-es7-snippets package\n\nReact ES7 snippets for atom\n",
-  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngthorg/react-es7-snippets.git"
   },
-  "version": "0.3.13"
+  "version": "0.5.0"
 }

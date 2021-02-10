@@ -1,25 +1,25 @@
 {
-  "_from": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.2.0/tarball",
-  "_id": "graphql-autocomplete@1.2.0",
+  "_from": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.3.1/tarball",
+  "_id": "graphql-autocomplete@1.3.1",
   "_inBundle": false,
-  "_integrity": "sha512-kkkpf/fcLFwmtI6IJqLR2aYgTiCyjQGKrwQ1IvpLqaYJmmtUId0gr1lRNd+ecmt1r2MIp/AwLQqFNLsfOYnLHQ==",
+  "_integrity": "sha512-kH7n2w8WZUdc21wQmnTo+VC5UkpUpK/jLoeHerg8eo3BeLDdsdvBOxvrvoGFFnTpF7FURAiU8gdDdGJVIAvo/w==",
   "_location": "/graphql-autocomplete",
   "_phantomChildren": {},
   "_requested": {
     "type": "remote",
-    "raw": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.2.0/tarball",
-    "rawSpec": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.2.0/tarball",
-    "saveSpec": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.2.0/tarball",
-    "fetchSpec": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.2.0/tarball"
+    "raw": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.3.1/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.3.1/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.3.1/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.3.1/tarball"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.2.0/tarball",
-  "_shasum": "71b49fec9b995721fa45458e4fa8cf4525ec3c9c",
-  "_spec": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.2.0/tarball",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119322-31836-196bk2v.wlt8",
+  "_resolved": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.3.1/tarball",
+  "_shasum": "e6e4c8e8cdb5052f68ffee87e21816947894f095",
+  "_spec": "https://www.atom.io/api/packages/graphql-autocomplete/versions/1.3.1/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-20201116-38380-32rvbf.d1ce2",
   "bugs": {
     "url": "https://github.com/nicolaslopezj/atom-graphql-autocomplete/issues"
   },
@@ -63,5 +63,5 @@
     "type": "git",
     "url": "git+https://github.com/nicolaslopezj/atom-graphql-autocomplete.git"
   },
-  "version": "1.2.0"
+  "version": "1.3.1"
 }

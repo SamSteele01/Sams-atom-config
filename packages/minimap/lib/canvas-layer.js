@@ -1,20 +1,24 @@
+'use babel'
 'use strict'
 
 /**
  * @access private
  */
-module.exports = class CanvasLayer {
+export default class CanvasLayer {
   constructor () {
     /**
      * The onscreen canvas.
      * @type {HTMLCanvasElement}
      */
     this.canvas = document.createElement('canvas')
+
+    const desynchronized = process.platform !== 'linux'
+
     /**
      * The onscreen canvas context.
      * @type {CanvasRenderingContext2D}
      */
-    this.context = this.canvas.getContext('2d')
+    this.context = this.canvas.getContext('2d', { desynchronized })
     this.canvas.webkitImageSmoothingEnabled = false
     this.context.imageSmoothingEnabled = false
 
@@ -29,7 +33,7 @@ module.exports = class CanvasLayer {
      * @type {CanvasRenderingContext2D}
      * @access private
      */
-    this.offscreenContext = this.offscreenCanvas.getContext('2d')
+    this.offscreenContext = this.offscreenCanvas.getContext('2d', { desynchronized })
     this.offscreenCanvas.webkitImageSmoothingEnabled = false
     this.offscreenContext.imageSmoothingEnabled = false
   }
@@ -61,19 +65,25 @@ module.exports = class CanvasLayer {
   }
 
   copyToOffscreen () {
-    this.offscreenContext.drawImage(this.canvas, 0, 0)
+    if (this.canvas.width > 0 && this.canvas.height > 0) {
+      this.offscreenContext.drawImage(this.canvas, 0, 0)
+    }
   }
 
   copyFromOffscreen () {
-    this.context.drawImage(this.offscreenCanvas, 0, 0)
+    if (this.offscreenCanvas.width > 0 && this.offscreenCanvas.height > 0) {
+      this.context.drawImage(this.offscreenCanvas, 0, 0)
+    }
   }
 
   copyPartFromOffscreen (srcY, destY, height) {
-    this.context.drawImage(
-      this.offscreenCanvas,
-      0, srcY, this.offscreenCanvas.width, height,
-      0, destY, this.offscreenCanvas.width, height
-    )
+    if (this.offscreenCanvas.width > 0 && this.offscreenCanvas.height > 0) {
+      this.context.drawImage(
+        this.offscreenCanvas,
+        0, srcY, this.offscreenCanvas.width, height,
+        0, destY, this.offscreenCanvas.width, height
+      )
+    }
   }
 
   clearCanvas () {

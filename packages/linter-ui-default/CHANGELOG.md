@@ -1,4 +1,94 @@
 # Changelog
+### 2.4.1
+- fix: minor null bug fixes
+
+### 2.4.0
+- feat: large/minified file optimizations (#612)
+
+### 2.3.5
+- fix: do not move the linter tooltip out of the editor
+
+### 2.3.4
+- fix: transform the whole overlay to make underneath of the tooltip clickable
+
+### 2.3.3
+- fix: make event listeners passive
+
+### 2.3.2
+- fix: linter tooltip messages not being visible in some themes
+
+### 2.3.1
+- fix: remove extra space from the tooltip due to arrow pointer
+- fix: decrease the time required for showing the linter tooltip (faster response)
+
+### 2.3.0
+- Fixes overlaps with datatips (linter messages now are positioned above the point, unless there is not enough space) (#607)
+- Changes the style of the tooltips so they match datatips (atom-ide-community style) (#607)
+
+  info messages:
+
+  ![image](https://user-images.githubusercontent.com/16418197/102887312-532a8280-441c-11eb-99ca-3e82306f3dfb.png)
+
+  error messages:
+
+  ![image](https://user-images.githubusercontent.com/16418197/102887315-54f44600-441c-11eb-8b3f-d89a463b5865.png)
+
+  when the message is at the top of the page, it does not translate:
+
+  ![image](https://user-images.githubusercontent.com/16418197/102887388-7bb27c80-441c-11eb-8961-6a13890ba86a.png)
+
+### 2.2.4
+- Bump dependencies
+- Add benchmarks (#605)
+
+### 2.2.3
+- if file path of the editor is undefined save the message in ""
+
+### 2.2.2
+- Huge number of bug fixes (#604)
+- Maximize TypeScript strictness (#604)
+
+### 2.2.1
+- Use parcel to build and optimize linter-ui-default (#603)
+-
+### 2.2.0
+- feat: convert codebase to typescript. [This involved many bug fixes](https://github.com/steelbrain/linter-ui-default/pull/602)
+
+## 2.1.5
+- fix: check if `intersectsWith` is a function
+
+## 2.1.4
+* Update dependencies
+* Re-add package-lock.json
+
+## 2.1.3
+* Remove package-lock.json
+
+## 2.1.2
+* Add another null check for messages
+
+
+## 2.1.1
+* null check guard for messages to prevent unforeseen errors
+
+### 2.1.0
+* Bump deps #589
+* Use lodash.debounce instead of the deprecated sb-debounce.debounce
+
+## 2.0.1
+* improve performance (#581)
+* rewrite rendering algorithm (#581)
+* fix memory leaks (#581)
+
+
+## 1.8.1
+
+* Fix `showPanel` being set to `true` on Editor restart (Thanks @Osmose)
+
+## 1.8.0
+
+* Remove support for Legacy Linter messages
+* Fix Panel hide/inactive detection (Thanks @willy2dg)
 
 ## 1.7.1
 

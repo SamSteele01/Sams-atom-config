@@ -2,19 +2,22 @@
 
 const DataLoader = require('./data-loader');
 const KiteSignature = require('./elements/kite-signature');
-const {delayPromise} = require('./utils');
+const { delayPromise } = require('./utils');
 let Kite;
 
+let isAutocompletePlusInstalled = null;
+let autocompletePlusPkg = null;
+
 const KiteProvider = {
-  selector: '.source.python, .source.js',
+  selector: '.source, .text',
   disableForSelector: [
-    '.source.python .comment',
-    '.source.js .comment',
+    '.source .comment',
+    '.text .comment',
   ].join(', '),
   inclusionPriority: 5,
   suggestionPriority: 5,
   excludeLowerPriority: false,
-  
+
   // called to handle attribute completions
   getSuggestions(params) {
     if (!Kite) { Kite = require('./kite'); }
@@ -25,7 +28,7 @@ const KiteProvider = {
         let promise = Promise.resolve();
         const position = params.editor.getCursorBufferPosition();
         if (this.isInsideFunctionCall(params.editor, position) ||
-            this.isInsideFunctionCallBrackets(params.editor, position)) {
+          this.isInsideFunctionCallBrackets(params.editor, position)) {
           promise = promise.then(() => this.loadSignature(params));
         } else {
           // the signature panel is visible, it's either we've deleted the
@@ -41,35 +44,30 @@ const KiteProvider = {
         if (!atom.config.get('kite.enableCompletions', false)) {
           return promise.then(() => []);
         }
-        // Return completions with snippets
-        if (atom.config.get('kite.enableSnippets')) {
-          return promise.then(() => 
-          DataLoader.getSnippetCompletionsAtPosition(params.editor));
-        }
         // Return regular completions
         return promise.then(() =>
-        DataLoader.getCompletionsAtPosition(params.editor, params.editor.getCursorBufferPosition()))
-        .then(suggestions =>
-          // For Atom < 1.23.3, a weird bug happen when we're completing after a space.
-          // In that case we just remove the replacementPrefix that is by default set
-          // to the provided prefix
-          params.prefix === ' '
-            ? suggestions.map(s => {s.replacementPrefix = ''; return s;})
-            : suggestions
-        )
-        .then(suggestions => {
-          suggestions.forEach(s => {
-            // in the case the suggestion text matches the completion prefix
-            // it seems atom will set an empty replacementPrefix, making the completed
-            // text appear twice as the typed text is not removed.
-            // FWIW most providers seems to not provide anything in the case the prefix
-            // matches a single completion whose text equals the prefix
-            if (!s.replacementPrefix && params.prefix === s.text) {
-              s.replacementPrefix = s.text;
-            }
+          DataLoader.getCompletions(params.editor, atom.config.get('kite.enableSnippets'), Kite.maxFileSize))
+          .then(suggestions =>
+            // For Atom < 1.23.3, a weird bug happen when we're completing after a space.
+            // In that case we just remove the replacementPrefix that is by default set
+            // to the provided prefix
+            params.prefix === ' '
+              ? suggestions.map(s => { s.replacementPrefix = ''; return s; })
+              : suggestions
+          )
+          .then(suggestions => {
+            suggestions.forEach(s => {
+              // in the case the suggestion text matches the completion prefix
+              // it seems atom will set an empty replacementPrefix, making the completed
+              // text appear twice as the typed text is not removed.
+              // FWIW most providers seems to not provide anything in the case the prefix
+              // matches a single completion whose text equals the prefix
+              if (!s.replacementPrefix && params.prefix === s.text) {
+                s.replacementPrefix = s.text;
+              }
+            });
+            return suggestions;
           });
-          return suggestions;
-        });
       }, 0)
       : Promise.resolve();
   },
@@ -83,7 +81,7 @@ const KiteProvider = {
       (parseFloat(atom.getVersion()) <= 1.23
         ? scopeDescriptor.scopes.some(s => /(function|method)-call|arguments/.test(s))
         : scopeDescriptor.scopes.some(s => /(function|method)-call\.arguments/.test(s)))
-      );
+    );
   },
 
   isOnFunctionCallBrackets(editor, position) {
@@ -101,48 +99,48 @@ const KiteProvider = {
       [position.row, position.column + 1],
     ]);
     return this.isOnFunctionCallBrackets(editor, position)
-           && (
-             /\(/.test(prefixChar)
-             || /\)/.test(suffixChar)
-           );
+      && (
+        /\(/.test(prefixChar)
+        || /\)/.test(suffixChar)
+      );
   },
 
-  loadSignature({editor, position}) {
+  loadSignature({ editor, position }) {
     const compact = false;
 
-    return DataLoader.getSignaturesAtPosition(editor, position || editor.getCursorBufferPosition())
-    .then(data => {
-      if (data) {
-        const listElement = this.getSuggestionsListElement( );
+    return DataLoader.getSignaturesAtPosition(editor, position || editor.getCursorBufferPosition(), Kite.maxFileSize)
+      .then(data => {
+        if (data) {
+          const listElement = this.getSuggestionsListElement();
 
-        listElement.maxVisibleSuggestions = compact
-          ? atom.config.get('autocomplete-plus.maxVisibleSuggestions')
-          : atom.config.get('kite.maxVisibleSuggestionsAlongSignature');
+          listElement.maxVisibleSuggestions = compact
+            ? atom.config.get('autocomplete-plus.maxVisibleSuggestions')
+            : atom.config.get('kite.maxVisibleSuggestionsAlongSignature');
 
-        const isNewSigPanel = this.signaturePanel == null;
-        this.signaturePanel = this.signaturePanel || new KiteSignature();
-        this.signaturePanel.setListElement(listElement);
+          const isNewSigPanel = this.signaturePanel == null;
+          this.signaturePanel = this.signaturePanel || new KiteSignature();
+          this.signaturePanel.setListElement(listElement);
 
-        this.signaturePanel.setData(data, compact);
+          this.signaturePanel.setData(data, compact);
 
-        const element = listElement.element
-          ? listElement.element
-          : listElement;
+          const element = listElement.element
+            ? listElement.element
+            : listElement;
 
-        if (isNewSigPanel || this.sigPanelNeedsReinsertion(element)) {
-          element.style.width = null;
+          if (isNewSigPanel || this.sigPanelNeedsReinsertion(element)) {
+            element.style.width = null;
 
-          element.appendChild(this.signaturePanel);
+            element.appendChild(this.signaturePanel);
+          }
+        } else {
+          this.clearSignature();
         }
-      } else {
+        return data != null;
+      })
+      .catch(err => {
         this.clearSignature();
-      }
-      return data != null;
-    })
-    .catch(err => {
-      this.clearSignature();
-      return false;
-    });
+        return false;
+      });
   },
 
   sigPanelNeedsReinsertion(element) {
@@ -163,19 +161,24 @@ const KiteProvider = {
   },
 
   getSuggestionsListElement() {
-    if (!atom.packages.getAvailablePackageNames().includes('autocomplete-plus')) {
+    if (isAutocompletePlusInstalled === null) {
+      isAutocompletePlusInstalled = atom.packages.getAvailablePackageNames().includes('autocomplete-plus');
+    }
+    if (isAutocompletePlusInstalled === false) {
       return null;
     }
     if (this.suggestionListElement) { return this.suggestionListElement; }
 
-    const pkg = atom.packages.getActivePackage('autocomplete-plus').mainModule;
-    if (!pkg || !pkg.autocompleteManager || !pkg.autocompleteManager.suggestionList) {
+    if (autocompletePlusPkg === null) {
+      autocompletePlusPkg = atom.packages.getActivePackage('autocomplete-plus').mainModule;
+    }
+    if (!autocompletePlusPkg || !autocompletePlusPkg.autocompleteManager || !autocompletePlusPkg.autocompleteManager.suggestionList) {
       return null;
     }
-    const list = pkg.autocompleteManager.suggestionList;
+    const list = autocompletePlusPkg.autocompleteManager.suggestionList;
     this.suggestionListElement = list.suggestionListElement
       ? list.suggestionListElement
-      : atom.views.getView(pkg.autocompleteManager.suggestionList);
+      : atom.views.getView(autocompletePlusPkg.autocompleteManager.suggestionList);
 
     if (!this.suggestionListElement.ol) {
       this.suggestionListElement.renderList();

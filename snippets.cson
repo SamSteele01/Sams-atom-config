@@ -20,42 +20,92 @@
 # Atom Flight Manual:
 # http://flight-manual.atom.io/using-atom/sections/basic-customization/#_cson
 
-'.text.html':
-    'HTML5 Skeleton':
-      'prefix': 'html5'
-      'body': '
-<!DOCTYPE html>\n
-<html>\n
-\t<head>\n
-\t\t<meta charset="utf-8">\n
-\t\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n
-\t\t<title></title>\n
-\t\t<meta name="description" content="$1" />\n
-\t\t<meta name="author" content="$2" />\n
-\t\t<meta name="HandheldFriendly" content="true" />\n
-\t\t<meta name="MobileOptimized" content="320" />\n
-\t\t<!-- Use maximum-scale and user-scalable at your own risk. It disables pinch/zoom. Think about usability/accessibility before including.-->\n
-\t\t<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />\n
-\t\t<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->\n
-\t\t<link rel="stylesheet" type="text/css" href="$3">\n
-\t</head>\n
-\t<body>\n
-\t\t<h1>Hello, World!</h1>\n
-\t\t<p>Go ahead and add your content!</p>\n
-\t<script type="text/javascript" src="$4"></script>\n
-\t</body>\n
-</html>'
+
 
 '.source.js':
+
   "app.get('/', function)":
       'prefix': 'app.get'
       'body': "
-      app.get('/$1', function(req, res, next$2){\n
-      \t$3\n
-      $4})"
+        app.get('/$1', function(req, res, next$2){\n
+        \t$3\n
+        $4})
+      "
+      
   "app.post('/', function)":
       'prefix': 'app.post'
       'body': "
-      app.post('/$1', function(req, res){\n
-      \t$2\n
-      $3})"
+        app.post('/$1', function(req, res){\n
+        \t$2\n
+        $3})
+      "
+      
+  "req, res, next":
+      'prefix': 'rrn callback'
+      'body': "
+        (req, res, next) {
+          $1
+        }
+      "
+      
+  'React useState':
+    'prefix': 'ust'
+    'body': """
+      const [$2, set$2] = useState($1);
+    """
+      
+  'React useEffect':
+    'prefix': 'uef'
+    'body': """
+      useEffect(() => {
+        $1
+      }, [$2]);
+    """
+    
+  'React useEffect with cleanup':
+    'prefix': 'uefr'
+    'body': """
+      useEffect(() => {
+        $1
+        return () => {
+          $2
+        }
+      }, []);
+    """
+      
+  'React Context':
+    'prefix': 'rcx'
+    'body': """
+      import React, { useState, useEffect } from 'react';
+
+      export const ${1}Context = React.createContext({});
+
+      /* ${2} */
+      const ${1}Provider = ({ children }) => {
+      /* --------------- state --------------- */
+
+
+      /* ------------- API calls ------------- */
+
+
+      /* ------------- functions ------------- */
+
+
+      /* -------------- effects -------------- */
+
+
+      return (
+        <${1}Context.Provider 
+          value={{
+            /* state */
+            
+            /* functions */
+            
+          }}
+        >
+          {children}
+        </${1}Context.Provider>
+      )
+      };
+      export default ${1}Provider;
+    """

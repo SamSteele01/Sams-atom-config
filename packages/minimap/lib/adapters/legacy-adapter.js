@@ -3,7 +3,7 @@
 /**
  * @access private
  */
-module.exports = class LegacyAdapter {
+export default class LegacyAdapter {
   constructor (textEditor) { this.textEditor = textEditor }
 
   enableCache () { this.useCache = true }
@@ -63,8 +63,8 @@ module.exports = class LegacyAdapter {
     if (this.maxScrollTopCache != null && this.useCache) {
       return this.maxScrollTopCache
     }
-    var maxScrollTop = this.textEditor.displayBuffer.getMaxScrollTop()
-    var lineHeight = this.textEditor.getLineHeightInPixels()
+    let maxScrollTop = this.textEditor.displayBuffer.getMaxScrollTop()
+    const lineHeight = this.textEditor.getLineHeightInPixels()
 
     if (this.scrollPastEnd) {
       maxScrollTop -= this.getHeight() - 3 * lineHeight

@@ -8,12 +8,16 @@ const KiteAPI = require('kite-api');
 const { retryPromise } = require('kite-api/lib/utils');
 const LinkScheme = require('../link-scheme');
 const DataLoader = require('../data-loader');
-const { MAX_FILE_SIZE } = require('../constants');
 
 const { STATES } = KiteAPI;
 const dot = '<span class="dot">•</span>';
 
 class KiteStatusPanel extends HTMLElement {
+  constructor(kite) {
+    super();
+    this.Kite = kite;
+  }
+
   static initClass() {
     customElements.define('kite-status-panel', this);
     return this;
@@ -138,25 +142,20 @@ class KiteStatusPanel extends HTMLElement {
         atom.applicationDelegate.openExternal(`kite://settings/permissions${url.path || ''}`);
         break;
       case 'install':
-        this.pendingStatus('Installing Kite');
+        this.pendingStatus('Installing Kite...');
 
         this.installing = true;
-        promise = this.app
-          .install()
-          .then(() => this.app.start())
-          .then(() => retryPromise(() => KiteAPI.isUserAuthenticated(), 10, 500))
-          .catch(err => {
-            if (err.data !== 4) {
-              throw err;
-            }
-          })
+        this.app
+          .installFlow()
           .then(() => {
             this.installing = false;
           })
           .catch(() => {
             this.installing = false;
           })
-          .then(() => this.renderCurrent());
+          .then(() => {
+            this.renderCurrent();
+          });
         break;
       case 'start':
         this.pendingStatus('Launching Kite');
@@ -233,9 +232,10 @@ class KiteStatusPanel extends HTMLElement {
           };
         });
       }),
-      DataLoader.getUserAccountInfo().catch(() => {}),
+      DataLoader.getUserAccountInfo().catch(() => { }),
       DataLoader.getStatus(editor),
-      DataLoader.isUserAuthenticated().catch(() => {}),
+      DataLoader.isUserAuthenticated().catch(() => { }),
+      Promise.resolve(this.Kite.maxFileSize),
     ];
 
     return Promise.all(promises).then(data => {
@@ -243,11 +243,11 @@ class KiteStatusPanel extends HTMLElement {
     });
   }
 
-  render(status, account, syncStatus, isUserAuthenticated) {
+  render(status, account, syncStatus, isUserAuthenticated, maxFileSize) {
     this.innerHTML = `
       ${this.renderSubscription(status)}
       ${this.renderLinks(account)}
-      ${this.renderStatus(status, syncStatus, isUserAuthenticated)}
+      ${this.renderStatus(status, syncStatus, isUserAuthenticated, maxFileSize)}
     `;
   }
 
@@ -267,7 +267,7 @@ class KiteStatusPanel extends HTMLElement {
     `;
   }
 
-  renderStatus(status, syncStatus, isUserAuthenticated) {
+  renderStatus(status, syncStatus, isUserAuthenticated, maxFileSize) {
     let content = '';
     switch (status.state) {
       case STATES.UNSUPPORTED:
@@ -275,10 +275,10 @@ class KiteStatusPanel extends HTMLElement {
         break;
 
       case STATES.UNINSTALLED:
-        content = `
-          <div class="text-danger">Kite engine is not installed ${dot}</div>
-          <a href="https://kite.com/download" class="btn btn-error">Install now</a>
-        `;
+        content = `<div class="text-danger">Kite engine is not installed ${dot}</div>`;
+        if (!this.installing) {
+          content += '<a href="kite-atom-internal://install" class="btn btn-error">Install now</a>';
+        }
         break;
       case STATES.INSTALLED: {
         if (KiteAPI.hasManyKiteInstallation() || KiteAPI.hasManyKiteEnterpriseInstallation()) {
@@ -312,27 +312,12 @@ class KiteStatusPanel extends HTMLElement {
         } else if (!this.app.kite.getModule('editors').isGrammarSupported(editor)) {
           content = `<div>Open a supported file to see Kite's status ${dot}</div>`;
         } else {
-          if (editor && editor.getText().length >= MAX_FILE_SIZE) {
+          if (editor && editor.getText().length >= maxFileSize) {
             content = `
             <div class="text-warning">The current file is too large for Kite to handle ${dot}</div>`;
           } else {
-            switch (syncStatus.status) {
-              case '':
-              case 'ready':
-                content = `<div class="ready">Kite engine is ready and working ${dot}</div>`;
-                break;
-
-              case 'indexing':
-                content = `<div class="ready">Kite engine is indexing your code ${dot}</div>`;
-                break;
-
-              case 'noIndex':
-                content = `<div class="ready">Kite engine is ready, but no index available ${dot}</div>`;
-                break;
-
-              case 'syncing':
-                content = `<div class="ready">Kite engine is syncing your code ${dot}</div>`;
-                break;
+            if (syncStatus && syncStatus.long !== undefined) {
+              content = `<div class="ready">${syncStatus.long} ${dot}</div>`;
             }
           }
         }
@@ -355,9 +340,8 @@ class KiteStatusPanel extends HTMLElement {
   renderSubscription(status) {
     return `<div class="split-line subscription">
       <div class="left"><kite-logo small></kite-logo></div>
-      <div class="right">${
-  status.state >= STATES.READY ? '<a href="kite-atom-internal://open-account-web">Account</a>' : ''
-}</div>
+      <div class="right">${status.state >= STATES.READY ? '<a href="kite-atom-internal://open-account-web">Account</a>' : ''
+      }</div>
     </div>`;
   }
 }

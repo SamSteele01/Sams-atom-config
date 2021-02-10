@@ -4,7 +4,7 @@ import {isEqual} from "lodash"
 import {NavigationTree} from "typescript/lib/protocol"
 import {GetClientFunction} from "../../../../client"
 import {handlePromise} from "../../../../utils"
-import atomUtils = require("../../utils")
+import * as atomUtils from "../../utils"
 import {NavigationNodeComponent} from "./navigationNodeComponent"
 import {
   findNodeAt,
@@ -67,7 +67,7 @@ export class NavigationTreeComponent
       <NavigationNodeComponent navTree={this.props.navTree} ctrl={this} />
     ) : null
     return (
-      <div class="atomts atomts-semantic-view native-key-bindings">
+      <div className="atomts atomts-semantic-view native-key-bindings">
         <ol className="list-tree has-collapsable-children focusable-panel">{maybeNavNodeComp}</ol>
       </div>
     )

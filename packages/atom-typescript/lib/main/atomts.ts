@@ -1,5 +1,4 @@
 import {DisposableLike} from "atom"
-import {AutocompleteProvider} from "atom/autocomplete-plus"
 import {
   BusySignalService,
   CodeActionProvider,
@@ -10,29 +9,31 @@ import {
   HyperclickProvider,
   OutlineProvider,
   SignatureHelpRegistry,
-} from "atom/ide"
+} from "atom-ide-base"
+import * as packageDeps from "atom-package-deps"
+import {AutocompleteProvider} from "atom/autocomplete-plus"
 import {IndieDelegate} from "atom/linter"
 import {StatusBar} from "atom/status-bar"
+import etch from "etch"
+import {handlePromise} from "../utils"
 import {SemanticView, SemanticViewSerializationData} from "./atom/views/outline/semanticView"
 import {State} from "./packageState"
 import {PluginManager} from "./pluginManager"
 
 let pluginManager: PluginManager | undefined
 
-export async function activate(state: State) {
-  const pns = atom.packages.getAvailablePackageNames()
-  const packagesProvidingUIServices = ["atom-ide-ui", "linter", "nuclide"]
-  if (!packagesProvidingUIServices.some(p => pns.includes(p))) {
-    // tslint:disable-next-line:no-unsafe-any
-    await require("atom-package-deps").install("atom-typescript", true)
-  }
-
-  // tslint:disable-next-line:no-unsafe-any
-  require("etch").setScheduler(atom.views)
-
-  // tslint:disable-next-line:no-shadowed-variable
-  const {PluginManager} = require("./pluginManager") as typeof import("./pluginManager")
+export function activate(state: State) {
+  etch.setScheduler(atom.views)
   pluginManager = new PluginManager(state)
+
+  setImmediate(() => handlePromise(checkAndInstallDependencies()))
+}
+
+async function checkAndInstallDependencies() {
+  const packagesProvidingUIServices = ["atom-ide-ui", "linter", "nuclide"]
+  if (!packagesProvidingUIServices.some((p) => atom.packages.isPackageLoaded(p))) {
+    await packageDeps.install("atom-typescript", true)
+  }
 }
 
 export function deactivate() {
@@ -46,10 +47,6 @@ export function serialize() {
 }
 
 export function deserializeSemanticView(serialized: SemanticViewSerializationData): SemanticView {
-  const {
-    // tslint:disable-next-line:no-unsafe-any no-shadowed-variable
-    SemanticView,
-  } = require("./atom/views/outline/semanticView") as typeof import("./atom/views/outline/semanticView")
   return SemanticView.create(serialized.data)
 }
 

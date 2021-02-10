@@ -1,3 +1,168 @@
+## [1.10.43](https://github.com/AtomLinter/linter-tslint/compare/v1.10.42...v1.10.43) (2020-02-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.8.2 ([30c1d9a](https://github.com/AtomLinter/linter-tslint/commit/30c1d9a5458db1eca10f30947dc73a155eedd797))
+
+## [1.10.42](https://github.com/AtomLinter/linter-tslint/compare/v1.10.41...v1.10.42) (2020-02-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.15.1 ([096ecb5](https://github.com/AtomLinter/linter-tslint/commit/096ecb5fc41f80a30bd8160b07e4eb6896800fd6))
+
+## [1.10.41](https://github.com/AtomLinter/linter-tslint/compare/v1.10.40...v1.10.41) (2020-02-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.7.5 ([cefe30d](https://github.com/AtomLinter/linter-tslint/commit/cefe30d92bd24c6231d110cdebca165f8014deb6))
+
+## [1.10.40](https://github.com/AtomLinter/linter-tslint/compare/v1.10.39...v1.10.40) (2020-02-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency crypto-random-string to v3.1.0 ([973d7b2](https://github.com/AtomLinter/linter-tslint/commit/973d7b2f9c3f20d816ce54d5d2274e5c9a1b8a63))
+
+## [1.10.39](https://github.com/AtomLinter/linter-tslint/compare/v1.10.38...v1.10.39) (2020-01-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.15.0 ([70f7423](https://github.com/AtomLinter/linter-tslint/commit/70f74234f7d43b2fcc4d4fec59126aceca4c75b5))
+
+## [1.10.38](https://github.com/AtomLinter/linter-tslint/compare/v1.10.37...v1.10.38) (2020-01-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.14.2 ([186040e](https://github.com/AtomLinter/linter-tslint/commit/186040e75626535df8697335e08322de57b16b00))
+
+## [1.10.37](https://github.com/AtomLinter/linter-tslint/compare/v1.10.36...v1.10.37) (2019-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.7.4 ([ed0a682](https://github.com/AtomLinter/linter-tslint/commit/ed0a682761cf63e1468b7d5b7047153c40d1804c))
+
+## [1.10.36](https://github.com/AtomLinter/linter-tslint/compare/v1.10.35...v1.10.36) (2019-12-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.14.1 ([7c5fa9d](https://github.com/AtomLinter/linter-tslint/commit/7c5fa9dc332c520a6d048201526bbc112bfb212b))
+
+## [1.10.35](https://github.com/AtomLinter/linter-tslint/compare/v1.10.34...v1.10.35) (2019-12-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslint to v5.20.1 ([f66c97f](https://github.com/AtomLinter/linter-tslint/commit/f66c97f40831838bddab5bcb96c77d1b94e79913))
+
+## [1.10.34](https://github.com/AtomLinter/linter-tslint/compare/v1.10.33...v1.10.34) (2019-12-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.7.3 ([404f898](https://github.com/AtomLinter/linter-tslint/commit/404f898de3db05dfa21143b039e114e976302a8b))
+
+## [1.10.33](https://github.com/AtomLinter/linter-tslint/compare/v1.10.32...v1.10.33) (2019-12-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.14.0 ([305779b](https://github.com/AtomLinter/linter-tslint/commit/305779b7b5cec0505318c4e8a88cda0aa99e095b))
+
+## [1.10.32](https://github.com/AtomLinter/linter-tslint/compare/v1.10.31...v1.10.32) (2019-10-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.6.4 ([aeb4d5b](https://github.com/AtomLinter/linter-tslint/commit/aeb4d5bb854f253d3242b0eb5f006360ae50a24d))
+
+## [1.10.31](https://github.com/AtomLinter/linter-tslint/compare/v1.10.30...v1.10.31) (2019-09-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslint to v5.20.0 ([365511f](https://github.com/AtomLinter/linter-tslint/commit/365511f))
+
+## [1.10.30](https://github.com/AtomLinter/linter-tslint/compare/v1.10.29...v1.10.30) (2019-09-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.6.3 ([6c11dbf](https://github.com/AtomLinter/linter-tslint/commit/6c11dbf))
+
+## [1.10.29](https://github.com/AtomLinter/linter-tslint/compare/v1.10.28...v1.10.29) (2019-09-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency crypto-random-string to v3 ([a55d069](https://github.com/AtomLinter/linter-tslint/commit/a55d069))
+* correct call to cryptoRandomString ([1013802](https://github.com/AtomLinter/linter-tslint/commit/1013802))
+* **deps:** update dependency resolve to v1.12.0 ([a4d1a7c](https://github.com/AtomLinter/linter-tslint/commit/a4d1a7c))
+* **deps:** update dependency tslint to v5.19.0 ([a8cd6ab](https://github.com/AtomLinter/linter-tslint/commit/a8cd6ab))
+* **deps:** update dependency typescript to v3.6.2 ([f1f12d1](https://github.com/AtomLinter/linter-tslint/commit/f1f12d1))
+
+## [1.10.28](https://github.com/AtomLinter/linter-tslint/compare/v1.10.27...v1.10.28) (2019-06-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslint to v5.18.0 ([f01d133](https://github.com/AtomLinter/linter-tslint/commit/f01d133))
+
+## [1.10.27](https://github.com/AtomLinter/linter-tslint/compare/v1.10.26...v1.10.27) (2019-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.5.2 ([a3cee03](https://github.com/AtomLinter/linter-tslint/commit/a3cee03))
+
+## [1.10.26](https://github.com/AtomLinter/linter-tslint/compare/v1.10.25...v1.10.26) (2019-06-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.11.1 ([6a03337](https://github.com/AtomLinter/linter-tslint/commit/6a03337))
+
+## [1.10.25](https://github.com/AtomLinter/linter-tslint/compare/v1.10.24...v1.10.25) (2019-05-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tslint to v5.17.0 ([eea1853](https://github.com/AtomLinter/linter-tslint/commit/eea1853))
+
+## [1.10.24](https://github.com/AtomLinter/linter-tslint/compare/v1.10.23...v1.10.24) (2019-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.5.1 ([1d10f03](https://github.com/AtomLinter/linter-tslint/commit/1d10f03))
+
+## [1.10.23](https://github.com/AtomLinter/linter-tslint/compare/v1.10.22...v1.10.23) (2019-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.11.0 ([6ec00f1](https://github.com/AtomLinter/linter-tslint/commit/6ec00f1))
+
+## [1.10.22](https://github.com/AtomLinter/linter-tslint/compare/v1.10.21...v1.10.22) (2019-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typescript to v3.4.5 ([fca4f34](https://github.com/AtomLinter/linter-tslint/commit/fca4f34))
+
+## [1.10.21](https://github.com/AtomLinter/linter-tslint/compare/v1.10.20...v1.10.21) (2019-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.10.1 ([318cbb8](https://github.com/AtomLinter/linter-tslint/commit/318cbb8))
+
 ## [1.10.20](https://github.com/AtomLinter/linter-tslint/compare/v1.10.19...v1.10.20) (2019-04-22)
 
 

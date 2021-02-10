@@ -2,17 +2,34 @@
 import * as Atom from "atom"
 import * as ACP from "atom/autocomplete-plus"
 import * as fuzzaldrin from "fuzzaldrin"
+import {
+  CompletionEntryDetails,
+  CompletionEntryIdentifier,
+  CompletionsTriggerCharacter,
+} from "typescript/lib/protocol"
 import {GetClientFunction, TSClient} from "../../client"
+import {handlePromise} from "../../utils"
+import {ApplyEdits} from "../pluginManager"
+import {codeActionTemplate} from "./codeActionTemplate"
 import {FileLocationQuery, spanToRange, typeScriptScopes} from "./utils"
+import {selectListView} from "./views/simpleSelectionView"
 
 type SuggestionWithDetails = ACP.TextSuggestion & {
-  details?: protocol.CompletionEntryDetails
   replacementRange?: Atom.Range
+  isMemberCompletion?: boolean
+  identifier?: CompletionEntryIdentifier | string
+  hasAction?: boolean
+}
+
+interface Details {
+  details: CompletionEntryDetails
+  rightLabel: string
+  description?: string
 }
 
 export class AutocompleteProvider implements ACP.AutocompleteProvider {
   public selector = typeScriptScopes()
-    .map(x => (x.includes(".") ? `.${x}` : x))
+    .map((x) => (x.includes(".") ? `.${x}` : x))
     .join(", ")
 
   public disableForSelector = ".comment"
@@ -33,25 +50,22 @@ export class AutocompleteProvider implements ACP.AutocompleteProvider {
 
     // The completions that were returned for the position
     suggestions: SuggestionWithDetails[]
+    details: Map<string, Details>
   }
 
-  constructor(private getClient: GetClientFunction) {}
+  constructor(private getClient: GetClientFunction, private applyEdits: ApplyEdits) {}
 
-  public async getSuggestions(opts: ACP.SuggestionsRequestedEvent): Promise<ACP.TextSuggestion[]> {
+  public async getSuggestions(opts: ACP.SuggestionsRequestedEvent): Promise<ACP.AnySuggestion[]> {
     const location = getLocationQuery(opts)
-    const {prefix} = opts
+    const prefix = getPrefix(opts)
 
-    if (!location) {
-      return []
-    }
+    if (!location) return []
 
-    // Don't show autocomplete if the previous character was a non word character except "."
-    const lastChar = getLastNonWhitespaceChar(opts.editor.getBuffer(), opts.bufferPosition)
-    if (lastChar !== undefined && !opts.activatedManually) {
-      if (/\W/i.test(lastChar) && lastChar !== ".") {
-        return []
-      }
-    }
+    // Don't auto-show autocomplete if prefix is empty unless last character is '.'
+    const triggerCharacter = getTrigger(
+      getLastNonWhitespaceChar(opts.editor.getBuffer(), opts.bufferPosition),
+    )
+    if (!prefix && !opts.activatedManually && !triggerCharacter) return []
 
     // Don't show autocomplete if we're in a string.template and not in a template expression
     if (
@@ -62,68 +76,131 @@ export class AutocompleteProvider implements ACP.AutocompleteProvider {
     }
 
     try {
-      let suggestions = await this.getSuggestionsWithCache(prefix, location, opts.activatedManually)
+      let suggestions = await this.getSuggestionsWithCache({
+        prefix,
+        location,
+        triggerCharacter,
+        activatedManually: opts.activatedManually,
+      })
 
-      const alphaPrefix = prefix.replace(/\W/g, "")
-      if (alphaPrefix !== "") {
-        suggestions = fuzzaldrin.filter(suggestions, alphaPrefix, {
-          key: "text",
-        })
-      }
+      suggestions = fuzzaldrin.filter(suggestions, prefix, {
+        key: "displayText",
+      })
 
-      // Get additional details for the first few suggestions
-      await this.getAdditionalDetails(suggestions.slice(0, 10), location)
-
-      const trimmed = prefix.trim()
-
-      return suggestions.map(suggestion => ({
+      return suggestions.map((suggestion) => ({
         replacementPrefix: suggestion.replacementRange
           ? opts.editor.getTextInBufferRange(suggestion.replacementRange)
-          : getReplacementPrefix(prefix, trimmed, suggestion.text!),
-        ...suggestion,
+          : prefix,
+        location,
+        ...this.getDetailsFromCache(suggestion),
+        ...addCallableParens(opts, suggestion),
       }))
     } catch (error) {
       return []
     }
   }
 
-  private async getAdditionalDetails(
-    suggestions: SuggestionWithDetails[],
-    location: FileLocationQuery,
-  ) {
-    if (suggestions.some(s => !s.details) && this.lastSuggestions) {
-      const details = await this.lastSuggestions.client.execute("completionEntryDetails", {
-        entryNames: suggestions.map(s => s.displayText!),
-        ...location,
-      })
-
-      details.body!.forEach((detail, i) => {
-        const suggestion = suggestions[i]
-
-        suggestion.details = detail
-        let parts = detail.displayParts
-        if (
-          parts.length >= 3 &&
-          parts[0].text === "(" &&
-          parts[1].text === suggestion.leftLabel &&
-          parts[2].text === ")"
-        ) {
-          parts = parts.slice(3)
-        }
-        suggestion.rightLabel = parts.map(d => d.text).join("")
-
-        suggestion.description =
-          detail.documentation && detail.documentation.map(d => d.text).join(" ")
-      })
+  public async getSuggestionDetailsOnSelect(suggestion: ACP.AnySuggestion) {
+    if ("text" in suggestion && !("rightLabel" in suggestion)) {
+      return this.getAdditionalDetails(suggestion)
+    } else {
+      return null
     }
   }
 
+  public onDidInsertSuggestion(evt: ACP.SuggestionInsertedEvent) {
+    const s = evt.suggestion as SuggestionWithDetails
+    if (!s.hasAction) return
+    if (!this.lastSuggestions) return
+    const client = this.lastSuggestions.client
+    let details = this.getDetailsFromCache(s)
+    handlePromise(
+      (async () => {
+        if (!details) details = await this.getAdditionalDetails(s)
+        if (!details?.details.codeActions) return
+        let action
+        if (details.details.codeActions.length === 1) {
+          action = details.details.codeActions[0]
+        } else {
+          action = await selectListView({
+            items: details.details.codeActions,
+            itemTemplate: codeActionTemplate,
+            itemFilterKey: "description",
+          })
+        }
+        if (!action) return
+        await this.applyEdits(action.changes)
+        if (!action.commands) return
+        await Promise.all(
+          action.commands.map((cmd) =>
+            client.execute("applyCodeActionCommand", {
+              command: cmd,
+            }),
+          ),
+        )
+      })(),
+    )
+  }
+
+  private async getAdditionalDetails(suggestion: SuggestionWithDetails) {
+    if (suggestion.identifier === undefined) return null
+    if (!this.lastSuggestions) return null
+    const reply = await this.lastSuggestions.client.execute("completionEntryDetails", {
+      entryNames: [suggestion.identifier],
+      ...this.lastSuggestions.location,
+    })
+    if (!reply.body) return null
+    const [details] = reply.body
+    // apparently, details can be undefined
+    // tslint:disable-next-line: strict-boolean-expressions
+    if (!details) return null
+    let parts = details.displayParts
+    if (
+      parts.length >= 3 &&
+      parts[0].text === "(" &&
+      parts[1].text === suggestion.leftLabel &&
+      parts[2].text === ")"
+    ) {
+      parts = parts.slice(3)
+    }
+    let rightLabel = parts.map((d) => d.text).join("")
+    const actionDesc =
+      suggestion.hasAction && details.codeActions?.length === 1
+        ? `${details.codeActions[0].description}\n\n`
+        : ""
+    if (actionDesc) rightLabel = actionDesc
+    const description =
+      actionDesc +
+      details.displayParts.map((d) => d.text).join("") +
+      (details.documentation ? "\n\n" + details.documentation.map((d) => d.text).join(" ") : "")
+    this.lastSuggestions.details.set(suggestion.displayText!, {details, rightLabel, description})
+    return {
+      ...suggestion,
+      details,
+      rightLabel,
+      description,
+    }
+  }
+
+  private getDetailsFromCache(suggestion: SuggestionWithDetails) {
+    if (!this.lastSuggestions) return null
+    const d = this.lastSuggestions.details.get(suggestion.displayText!)
+    if (!d) return null
+    return d
+  }
+
   // Try to reuse the last completions we got from tsserver if they're for the same position.
-  private async getSuggestionsWithCache(
-    prefix: string,
-    location: FileLocationQuery,
-    activatedManually: boolean,
-  ): Promise<SuggestionWithDetails[]> {
+  private async getSuggestionsWithCache({
+    prefix,
+    location,
+    triggerCharacter,
+    activatedManually,
+  }: {
+    prefix: string
+    location: FileLocationQuery
+    triggerCharacter?: CompletionsTriggerCharacter
+    activatedManually: boolean
+  }): Promise<SuggestionWithDetails[]> {
     if (this.lastSuggestions && !activatedManually) {
       const lastLoc = this.lastSuggestions.location
       const lastCol = getNormalizedCol(this.lastSuggestions.prefix, lastLoc.offset)
@@ -137,55 +214,69 @@ export class AutocompleteProvider implements ACP.AutocompleteProvider {
     }
 
     const client = await this.getClient(location.file)
-    const suggestions = await getSuggestionsInternal(client, location, prefix)
+    const suggestions = await getSuggestionsInternal({
+      client,
+      location,
+      triggerCharacter: activatedManually ? undefined : triggerCharacter,
+    })
 
     this.lastSuggestions = {
       client,
       location,
       prefix,
       suggestions,
+      details: new Map(),
     }
 
     return suggestions
   }
 }
 
-async function getSuggestionsInternal(
-  client: TSClient,
-  location: FileLocationQuery,
-  prefix: string,
-) {
+async function getSuggestionsInternal({
+  client,
+  location,
+  triggerCharacter,
+}: {
+  client: TSClient
+  location: FileLocationQuery
+  triggerCharacter?: CompletionsTriggerCharacter
+}) {
   if (parseInt(client.version.split(".")[0], 10) >= 3) {
     // use completionInfo
     const completions = await client.execute("completionInfo", {
-      prefix,
       includeExternalModuleExports: false,
       includeInsertTextCompletions: true,
+      triggerCharacter,
       ...location,
     })
-    return completions.body!.entries.map(completionEntryToSuggestion)
+    return completions.body!.entries.map(
+      completionEntryToSuggestion.bind(null, completions.body?.isMemberCompletion),
+    )
   } else {
     // use deprecated completions
     const completions = await client.execute("completions", {
-      prefix,
       includeExternalModuleExports: false,
       includeInsertTextCompletions: true,
       ...location,
     })
 
-    return completions.body!.map(completionEntryToSuggestion)
+    return completions.body!.map(completionEntryToSuggestion.bind(null, undefined))
   }
 }
 
+// this should more or less match ES6 specification for valid identifiers
+const identifierMatch = /(?:(?![\u{10000}-\u{10FFFF}])[\$_\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}])(?:(?![\u{10000}-\u{10FFFF}])[\$_\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}\u200C\u200D\p{Mn}\p{Mc}\p{Nd}\p{Pc}])*$/u
+
 // Decide what needs to be replaced in the editor buffer when inserting the completion
-function getReplacementPrefix(prefix: string, trimmed: string, replacement: string): string {
-  if (trimmed === "." || trimmed === "{" || prefix === " ") {
-    return ""
-  } else if (replacement.startsWith("$")) {
-    return "$" + prefix
-  } else {
-    return prefix
-  }
+function getPrefix(opts: ACP.SuggestionsRequestedEvent): string {
+  // see https://github.com/TypeStrong/atom-typescript/issues/1528
+  // for the motivating example.
+  const line = opts.editor
+    .getBuffer()
+    .getTextInRange([[opts.bufferPosition.row, 0], opts.bufferPosition])
+  const idMatch = line.match(identifierMatch)
+  if (idMatch) return idMatch[0]
+  else return ""
 }
 
 // When the user types each character in ".hello", we want to normalize the column such that it's
@@ -231,14 +322,40 @@ function containsScope(scopes: ReadonlyArray<string>, matchScope: string): boole
   return false
 }
 
-function completionEntryToSuggestion(entry: protocol.CompletionEntry): SuggestionWithDetails {
+function completionEntryToSuggestion(
+  isMemberCompletion: boolean | undefined,
+  entry: protocol.CompletionEntry,
+): SuggestionWithDetails {
   return {
     displayText: entry.name,
     text: entry.insertText !== undefined ? entry.insertText : entry.name,
     leftLabel: entry.kind,
     replacementRange: entry.replacementSpan ? spanToRange(entry.replacementSpan) : undefined,
     type: kindMap[entry.kind],
+    isMemberCompletion,
+    identifier: entry.source !== undefined ? {name: entry.name, source: entry.source} : entry.name,
+    hasAction: entry.hasAction,
   }
+}
+
+function parens(opts: ACP.SuggestionsRequestedEvent) {
+  const buffer = opts.editor.getBuffer()
+  const pt = opts.bufferPosition
+  const lookahead = buffer.getTextInRange([pt, [pt.row, buffer.lineLengthForRow(pt.row)]])
+  return !!lookahead.match(/\s*\(/)
+}
+
+function addCallableParens(
+  opts: ACP.SuggestionsRequestedEvent,
+  s: SuggestionWithDetails,
+): ACP.TextSuggestion | ACP.SnippetSuggestion {
+  if (
+    atom.config.get("atom-typescript.autocompleteParens") &&
+    ["function", "method"].includes(s.leftLabel!) &&
+    !parens(opts)
+  ) {
+    return {...s, snippet: `${s.text}($1)`, text: undefined}
+  } else return s
 }
 
 /** From :
@@ -294,4 +411,26 @@ const kindMap: {[key in protocol.ScriptElementKind]: ACPCompletionType | undefin
   call: undefined,
   index: undefined,
   construct: undefined,
+}
+
+// This may look strange, but it guarantees the list is consistent with the type
+const triggerCharactersMap: {[K in CompletionsTriggerCharacter]: null} = {
+  ".": null,
+  '"': null,
+  "'": null,
+  "`": null,
+  "/": null,
+  "@": null,
+  "<": null,
+  "#": null,
+}
+const triggerCharacters = new Set<CompletionsTriggerCharacter>(Object.keys(triggerCharactersMap))
+function getTrigger(prefix: string | undefined): CompletionsTriggerCharacter | undefined {
+  if (prefix === undefined) return undefined
+  if (!prefix) return undefined
+  const c = prefix.slice(-1)
+  if (triggerCharacters.has(c as CompletionsTriggerCharacter)) {
+    return c as CompletionsTriggerCharacter
+  }
+  return undefined
 }

@@ -1,37 +1,53 @@
 {
-  "_from": "https://www.atom.io/api/packages/atom-typescript/versions/13.2.1/tarball",
-  "_id": "atom-typescript@13.2.1",
+  "_from": "https://www.atom.io/api/packages/atom-typescript/versions/14.1.2/tarball",
+  "_id": "atom-typescript@14.1.2",
   "_inBundle": false,
-  "_integrity": "sha512-r7UoNoYRbOr83zwEWrmgjuWacEzRwOu5fDYqUgBwAxl3pU6kTSiElL/u+EfaVf1SCQXH7/eNxV5XyIyBIwb7Wg==",
+  "_integrity": "sha512-YHXGSvRvSGPeaVqBJPiXUCBRuwN5vBcKgc8X87JSUxggk47tGEtHdM2JMybXE1w504Av/5ckIOtE187O8q/jvg==",
   "_location": "/atom-typescript",
   "_phantomChildren": {},
   "_requested": {
     "type": "remote",
-    "raw": "https://www.atom.io/api/packages/atom-typescript/versions/13.2.1/tarball",
-    "rawSpec": "https://www.atom.io/api/packages/atom-typescript/versions/13.2.1/tarball",
-    "saveSpec": "https://www.atom.io/api/packages/atom-typescript/versions/13.2.1/tarball",
-    "fetchSpec": "https://www.atom.io/api/packages/atom-typescript/versions/13.2.1/tarball"
+    "raw": "https://www.atom.io/api/packages/atom-typescript/versions/14.1.2/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/atom-typescript/versions/14.1.2/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/atom-typescript/versions/14.1.2/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/atom-typescript/versions/14.1.2/tarball"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://www.atom.io/api/packages/atom-typescript/versions/13.2.1/tarball",
-  "_shasum": "93614ab9a5c2f149be94024d9e1d277acd383e70",
-  "_spec": "https://www.atom.io/api/packages/atom-typescript/versions/13.2.1/tarball",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119322-31756-eam2e3.ff9kg",
+  "_resolved": "https://www.atom.io/api/packages/atom-typescript/versions/14.1.2/tarball",
+  "_shasum": "dc4e9393c678c2e3da0d99de4aefe49ff3eb0f98",
+  "_spec": "https://www.atom.io/api/packages/atom-typescript/versions/14.1.2/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-2020118-18509-bjb3ul.22bwn",
   "activationCommands": {
     "atom-workspace": [
-      "typescript:initialize-config"
+      "typescript:initialize-config",
+      "typescript:activate"
     ]
   },
   "activationHooks": [
     "language-typescript:grammar-used"
   ],
   "atomTestRunner": "./node_modules/atom-ts-spec-runner/runner.js",
+  "atomTranspilers": [
+    {
+      "transpiler": "atom-ts-transpiler",
+      "glob": "{!(node_modules)/**/,}*.ts?(x)",
+      "options": {
+        "compilerOptions": {
+          "target": "es2017",
+          "module": "commonjs"
+        },
+        "cacheKeyFiles": [],
+        "verbose": false
+      }
+    }
+  ],
   "bugs": {
     "url": "https://github.com/TypeStrong/atom-typescript/issues"
   },
+  "bundle": "./dist/main.js",
   "bundleDependencies": false,
   "configSchema": {
     "unusedAsInfo": {
@@ -40,6 +56,13 @@
       "type": "boolean",
       "default": true,
       "order": 90
+    },
+    "checkAllFilesOnSave": {
+      "title": "Check all project files on save",
+      "description": "Enabling this will report all problems in the current project when the current file is saved (this can be slow if the project is big!).",
+      "type": "boolean",
+      "default": "false",
+      "order": 92
     },
     "autocompletionSuggestionPriority": {
       "description": "Snippets etc have priority of 1. Requires Atom restart",
@@ -96,6 +119,20 @@
       "default": "10",
       "order": 60
     },
+    "getErrDebounceTimeout": {
+      "title": "getErr Debounce Timeout",
+      "description": "During on-change check, how long to wait for new changes until checking for errors, in ms",
+      "type": "number",
+      "default": "150",
+      "order": 65
+    },
+    "occurrenceHighlightDebounceTimeout": {
+      "title": "Occurrence Highlight Debounce Timeout",
+      "description": "How long to wait before showing ocurrence highlights, in ms; low values may cause slowdowns on large projects",
+      "type": "number",
+      "default": "300",
+      "order": 66
+    },
     "showSemanticView": {
       "title": "Show semantic view",
       "description": "Show semantic view (outline) for typescript content",
@@ -132,6 +169,65 @@
       "default": "top",
       "order": 62
     },
+    "sigHelpDisplayOnChange": {
+      "title": "Display signature help tooltips on keystroke",
+      "description": "Will automatically show signature help (if any) after `(`, `,`, `<` keystroke",
+      "type": "boolean",
+      "default": true,
+      "order": 63
+    },
+    "autocompleteParens": {
+      "title": "Autocomplete parentheses",
+      "description": "Automatically insert parentheses after autocompleting functions and methods",
+      "type": "boolean",
+      "default": false,
+      "order": 65
+    },
+    "includeCompletionsForModuleExports": {
+      "description": "(EXPERIMENTAL) If enabled, TypeScript will search through all external modules' exports and add them to the completions list. This affects lone identifier completions but not completions on the right hand side of `obj.`.",
+      "type": "boolean",
+      "default": false,
+      "order": 66
+    },
+    "quotePreference": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "double",
+        "single"
+      ],
+      "default": "auto",
+      "order": 67
+    },
+    "importModuleSpecifierEnding": {
+      "type": "string",
+      "description": "Determines whether we import `foo/index.ts` as \"foo\", \"foo/index\", or \"foo/index.js\"",
+      "enum": [
+        "auto",
+        "minimal",
+        "index",
+        "js"
+      ],
+      "default": "auto",
+      "order": 68
+    },
+    "importModuleSpecifierPreference": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "relative",
+        "non-relative"
+      ],
+      "default": "auto",
+      "order": 69
+    },
+    "tsdkPath": {
+      "title": "Path to default TypeScript SDK",
+      "description": "TypeScript SDK found at the specified path will be preferred over the bundled one if TypeScript is not installed in node_modules as a project dependency. Ignored when empty",
+      "type": "string",
+      "default": "",
+      "order": 70
+    },
     "ignoredDiagnosticCodes": {
       "title": "Ignore diagnostics",
       "description": "List of diagnostic codes to ignore, comma-separated. Refer to [diagnosticMessages.json](https://github.com/Microsoft/TypeScript/blob/master/src/compiler/diagnosticMessages.json) for diagnostic codes",
@@ -148,6 +244,23 @@
       "type": "boolean",
       "default": "false",
       "order": 100
+    },
+    "ignoreNonSuggestionSuggestionDiagnostics": {
+      "title": "Ignore suggestion diagnostics that are not actionable suggestions",
+      "description": "TypeScript server reports some error-type diagnostics on the suggestion channel. Enabling this option will suppress those",
+      "type": "boolean",
+      "default": "false",
+      "order": 105
+    },
+    "ignoredSuggestionDiagnostics": {
+      "title": "Ignore suggestion diagnostics",
+      "description": "List of suggestion-type diagnostic codes to ignore, comma-separated. Refer to [diagnosticMessages.json](https://github.com/Microsoft/TypeScript/blob/master/src/compiler/diagnosticMessages.json) for diagnostic codes",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "order": 110
     },
     "suppressAllDiagnostics": {
       "title": "Suppress all diagnostics",
@@ -180,7 +293,9 @@
       "default": [
         ".js",
         ".jst",
-        ".jsx"
+        ".jsx",
+        ".mjs",
+        ".cjs"
       ],
       "order": 140
     },
@@ -255,16 +370,7 @@
     }
   },
   "dependencies": {
-    "atom-highlight": "^0.4.1",
-    "atom-package-deps": "^5.0.0",
-    "atom-select-list": "^0.7.2",
-    "byline": "^5.0.0",
-    "etch": "^0.14.0",
-    "fuzzaldrin": "^2.1.0",
-    "lodash": "^4.17.11",
-    "resolve": "^1.10.0",
-    "tslib": "^1.9.3",
-    "typescript": "^3.3.4000"
+    "typescript": "^4.0.3"
   },
   "deprecated": false,
   "description": "The only TypeScript plugin you will ever need.",
@@ -272,21 +378,37 @@
     "atomts-semantic-view/SemanticView": "deserializeSemanticView"
   },
   "devDependencies": {
-    "@types/atom": "^1.31.1",
-    "@types/byline": "^4.2.31",
-    "@types/chai": "^4.1.7",
-    "@types/fuzzaldrin": "^2.1.2",
-    "@types/lodash": "^4.14.123",
-    "@types/mocha": "^5",
-    "@types/node": "^8",
-    "@types/resolve": "^0.0.8",
+    "@parcel/transformer-typescript-tsc": "^2.0.0-beta.1",
+    "@types/atom": "^1.40.4",
+    "@types/byline": "^4.2.32",
+    "@types/chai": "^4.2.12",
+    "@types/fs-plus": "^3.0.1",
+    "@types/fuzzaldrin": "^2.1.3",
+    "@types/lodash": "^4.14.161",
+    "@types/mocha": "^8",
+    "@types/node": "^12.12.50",
+    "@types/resolve": "^1.17.1",
+    "atom-ide-base": "^1.3.0",
+    "atom-package-deps": "^6",
+    "atom-select-list": "^0.7.2",
     "atom-ts-spec-runner": "^1.1.1",
+    "atom-ts-transpiler": "^1.5.2",
+    "byline": "^5.0.0",
     "chai": "^4.2.0",
-    "prettier": "^1.16.4",
-    "ts-node": "^8.0.3",
-    "tslint": "^5.14.0",
+    "cross-env": "7.0.2",
+    "etch": "^0.14.1",
+    "fs-plus": "^3.1.1",
+    "fuzzaldrin": "^2.1.0",
+    "jsonc-parser": "^2.3.1",
+    "lodash": "^4.17.20",
+    "parcel": "^2.0.0-beta.1",
+    "prettier": "^2.1.2",
+    "resolve": "^1.17.0",
+    "ts-node": "^9.0.0",
+    "tslib": "^2.0.1",
+    "tslint": "^6.1.3",
     "tslint-use-atom-disposables": "0.0.1",
-    "typescript-tslint-plugin": "0.3.1"
+    "typescript-tslint-plugin": "0.5.5"
   },
   "engines": {
     "atom": ">=1.31.0 <2.0.0",
@@ -299,10 +421,10 @@
     "html"
   ],
   "license": "MIT",
-  "main": "./dist/main/atomts",
+  "main": "./loader.js",
   "name": "atom-typescript",
   "package-deps": [
-    "atom-ide-ui:0.5.3"
+    "atom-ide-ui:0.13.0"
   ],
   "preferGlobal": true,
   "providedServices": {
@@ -357,12 +479,29 @@
     "url": "git+https://github.com/TypeStrong/atom-typescript.git"
   },
   "scripts": {
-    "build": "tsc -p ./lib",
+    "build": "cross-env NODE_ENV=production parcel build --target bundle lib/main/atomts.ts",
+    "dev": "cross-env NODE_ENV=development parcel watch --target bundle lib/main/atomts.ts",
     "lint": "tslint --project ./lib && tslint --project ./spec",
     "prettier": "ts-node scripts/prettier.ts write",
     "prettier-check": "ts-node scripts/prettier.ts check",
     "test": "npm run typecheck && npm run lint && npm run prettier-check",
+    "tsc": "tsc -p ./lib",
     "typecheck": "tsc --noEmit -p ./lib && tsc --noEmit -p ./scripts && tsc --noEmit -p ./spec"
   },
-  "version": "13.2.1"
+  "targets": {
+    "bundle": {
+      "context": "electron-renderer",
+      "engines": {
+        "electron": ">=5.x"
+      },
+      "includeNodeModules": {
+        "atom": false,
+        "electron": false,
+        "typescript": false
+      },
+      "outputFormat": "commonjs",
+      "isLibrary": true
+    }
+  },
+  "version": "14.1.2"
 }

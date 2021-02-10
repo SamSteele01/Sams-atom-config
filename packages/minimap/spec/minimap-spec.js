@@ -1,9 +1,11 @@
 'use strict'
+process.env.NODE_ENV = 'test'
 
 require('./helpers/workspace')
 
 const fs = require('fs-plus')
-const Minimap = require('../lib/minimap')
+const { Minimap } = require('../dist/main')
+require('jasmine-expect')
 
 describe('Minimap', () => {
   let [editor, editorElement, minimap, largeSample, smallSample, minimapVerticalScaleFactor, minimapHorizontalScaleFactor] = []
@@ -24,9 +26,9 @@ describe('Minimap', () => {
     minimapVerticalScaleFactor = 5 / editor.getLineHeightInPixels()
     minimapHorizontalScaleFactor = 2 / editor.getDefaultCharWidth()
 
-    let dir = atom.project.getDirectories()[0]
+    const dir = atom.project.getDirectories()[0]
 
-    minimap = new Minimap({textEditor: editor})
+    minimap = new Minimap({ textEditor: editor })
     largeSample = fs.readFileSync(dir.resolve('large-file.coffee')).toString()
     smallSample = fs.readFileSync(dir.resolve('sample.coffee')).toString()
 
@@ -68,7 +70,7 @@ describe('Minimap', () => {
 
   it('measures the available minimap scroll', () => {
     editor.setText(largeSample)
-    let largeLineCount = editor.getScreenLineCount()
+    const largeLineCount = editor.getScreenLineCount()
 
     expect(minimap.getMaxScrollTop()).toEqual(largeLineCount * 5 - 50)
     expect(minimap.canScroll()).toBeTruthy()
@@ -83,18 +85,21 @@ describe('Minimap', () => {
   })
 
   it('relays change events from the text editor', () => {
-    let changeSpy = jasmine.createSpy('didChange')
+    const changeSpy = jasmine.createSpy('didChange')
     minimap.onDidChange(changeSpy)
 
     editor.setText('foo')
 
-    expect(changeSpy).toHaveBeenCalled()
+    // because of requestAnimation the change is relayed asynchronously.
+    setTimeout(() => {
+      expect(changeSpy).toHaveBeenCalled()
+    }, 1000)
   })
 
   it('relays scroll top events from the editor', () => {
     editor.setText(largeSample)
 
-    let scrollSpy = jasmine.createSpy('didScroll')
+    const scrollSpy = jasmine.createSpy('didScroll')
     minimap.onDidChangeScrollTop(scrollSpy)
 
     editorElement.setScrollTop(100)
@@ -105,7 +110,7 @@ describe('Minimap', () => {
   it('relays scroll left events from the editor', () => {
     editor.setText(largeSample)
 
-    let scrollSpy = jasmine.createSpy('didScroll')
+    const scrollSpy = jasmine.createSpy('didScroll')
     minimap.onDidChangeScrollLeft(scrollSpy)
 
     // Seems like text without a view aren't able to scroll horizontally
@@ -206,11 +211,11 @@ describe('Minimap', () => {
     })
 
     it('computes the first visible row in the minimap', () => {
-      expect(minimap.getFirstVisibleScreenRow()).toEqual(58)
+      expect(minimap.getFirstVisibleScreenRow()).toBeNear(58, 2)
     })
 
     it('computes the last visible row in the minimap', () => {
-      expect(minimap.getLastVisibleScreenRow()).toEqual(69)
+      expect(minimap.getLastVisibleScreenRow()).toBeNear(69, 2)
     })
 
     describe('down to the bottom', () => {
@@ -235,7 +240,7 @@ describe('Minimap', () => {
 
   describe('destroying the model', () => {
     it('emits a did-destroy event', () => {
-      let spy = jasmine.createSpy('destroy')
+      const spy = jasmine.createSpy('destroy')
       minimap.onDidDestroy(spy)
 
       minimap.destroy()
@@ -266,7 +271,7 @@ describe('Minimap', () => {
       })
 
       runs(() => {
-        const opts = {scopeSelector: '.source.js'}
+        const opts = { scopeSelector: '.source.js' }
 
         atom.config.set('minimap.charHeight', 8, opts)
         atom.config.set('minimap.charWidth', 4, opts)
@@ -328,11 +333,11 @@ describe('Minimap', () => {
       minimap.onDidChangeDecorationRange(changeSpy)
 
       marker = minimap.markBufferRange([[0, 6], [1, 11]])
-      decoration = minimap.decorateMarker(marker, {type: 'highlight', class: 'dummy'})
+      decoration = minimap.decorateMarker(marker, { type: 'highlight', class: 'dummy' })
     })
 
     it('creates a decoration for the given marker', () => {
-      expect(minimap.decorationsByMarkerId[marker.id]).toBeDefined()
+      expect(minimap.decorationsByMarkerId.get(marker.id)).toBeDefined()
     })
 
     it('creates a change corresponding to the marker range', () => {
@@ -343,7 +348,7 @@ describe('Minimap', () => {
 
     describe('when the marker range changes', () => {
       beforeEach(() => {
-        let markerChangeSpy = jasmine.createSpy('marker-did-change')
+        const markerChangeSpy = jasmine.createSpy('marker-did-change')
         marker.onDidChange(markerChangeSpy)
         marker.setBufferRange([[0, 6], [3, 11]])
 
@@ -363,7 +368,7 @@ describe('Minimap', () => {
       })
 
       it('removes the decoration from the render view', () => {
-        expect(minimap.decorationsByMarkerId[marker.id]).toBeUndefined()
+        expect(minimap.decorationsByMarkerId.get(marker.id)).toBeUndefined()
       })
 
       it('creates a change corresponding to the marker range', () => {
@@ -378,7 +383,7 @@ describe('Minimap', () => {
       })
 
       it('removes the decoration from the render view', () => {
-        expect(minimap.decorationsByMarkerId[marker.id]).toBeUndefined()
+        expect(minimap.decorationsByMarkerId.get(marker.id)).toBeUndefined()
       })
 
       it('creates a change corresponding to the marker range', () => {
@@ -393,7 +398,7 @@ describe('Minimap', () => {
       })
 
       it('removes the decoration from the render view', () => {
-        expect(minimap.decorationsByMarkerId[marker.id]).toBeUndefined()
+        expect(minimap.decorationsByMarkerId.get(marker.id)).toBeUndefined()
       })
 
       it('creates a change corresponding to the marker range', () => {
@@ -408,13 +413,13 @@ describe('Minimap', () => {
       })
 
       it('removes all the previously added decorations', () => {
-        expect(minimap.decorationsById).toEqual({})
-        expect(minimap.decorationsByMarkerId).toEqual({})
+        expect(minimap.decorationsById.size).toEqual(0)
+        expect(minimap.decorationsByMarkerId.size).toEqual(0)
       })
 
       it('prevents the creation of new decorations', () => {
         marker = editor.markBufferRange([[0, 6], [0, 11]])
-        decoration = minimap.decorateMarker(marker, {type: 'highlight', class: 'dummy'})
+        decoration = minimap.decorateMarker(marker, { type: 'highlight', class: 'dummy' })
 
         expect(decoration).toBeUndefined()
       })
@@ -428,8 +433,8 @@ describe('Minimap', () => {
       editor.setText(largeSample)
 
       function createDecoration (type, range) {
-        let marker = minimap.markBufferRange(range)
-        minimap.decorateMarker(marker, {type})
+        const marker = minimap.markBufferRange(range)
+        minimap.decorateMarker(marker, { type })
       }
 
       createDecoration('highlight', [[6, 0], [11, 0]])
@@ -448,19 +453,19 @@ describe('Minimap', () => {
 
     it('stores decorations by rows within each type objects', () => {
       expect(Object.keys(decorations['highlight-over']).sort())
-      .toEqual('1 2 6 7 8 9 10 11'.split(' ').sort())
+        .toEqual('1 2 6 7 8 9 10 11'.split(' ').sort())
 
-      expect(Object.keys(decorations['line']).sort())
-      .toEqual('3 4 12'.split(' ').sort())
+      expect(Object.keys(decorations.line).sort())
+        .toEqual('3 4 12'.split(' ').sort())
 
       expect(Object.keys(decorations['highlight-under']).sort())
-      .toEqual('0 1 2 3 4 5 6 7 8 9 10'.split(' ').sort())
+        .toEqual('0 1 2 3 4 5 6 7 8 9 10'.split(' ').sort())
     })
 
     it('stores the decorations spanning a row in the corresponding row array', () => {
       expect(decorations['highlight-over']['7'].length).toEqual(2)
 
-      expect(decorations['line']['3'].length).toEqual(1)
+      expect(decorations.line['3'].length).toEqual(1)
 
       expect(decorations['highlight-under']['5'].length).toEqual(1)
     })
@@ -499,7 +504,7 @@ describe('Stand alone minimap', () => {
     editorElement.setWidth(200)
     editor.setLineHeightInPixels(10)
 
-    let dir = atom.project.getDirectories()[0]
+    const dir = atom.project.getDirectories()[0]
 
     minimap = new Minimap({
       textEditor: editor,
@@ -564,7 +569,7 @@ describe('Stand alone minimap', () => {
 
   it('measures the available minimap scroll', () => {
     editor.setText(largeSample)
-    let largeLineCount = editor.getScreenLineCount()
+    const largeLineCount = editor.getScreenLineCount()
 
     expect(minimap.getMaxScrollTop()).toEqual(0)
     expect(minimap.canScroll()).toBeFalsy()
@@ -591,7 +596,7 @@ describe('Stand alone minimap', () => {
   it('does not relay scroll top events from the editor', () => {
     editor.setText(largeSample)
 
-    let scrollSpy = jasmine.createSpy('didScroll')
+    const scrollSpy = jasmine.createSpy('didScroll')
     minimap.onDidChangeScrollTop(scrollSpy)
 
     editorElement.setScrollTop(100)
@@ -602,7 +607,7 @@ describe('Stand alone minimap', () => {
   it('does not relay scroll left events from the editor', () => {
     editor.setText(largeSample)
 
-    let scrollSpy = jasmine.createSpy('didScroll')
+    const scrollSpy = jasmine.createSpy('didScroll')
     minimap.onDidChangeScrollLeft(scrollSpy)
 
     // Seems like text without a view aren't able to scroll horizontally
@@ -615,7 +620,7 @@ describe('Stand alone minimap', () => {
   })
 
   it('has a scroll top that is not bound to the text editor', () => {
-    let scrollSpy = jasmine.createSpy('didScroll')
+    const scrollSpy = jasmine.createSpy('didScroll')
     minimap.onDidChangeScrollTop(scrollSpy)
     minimap.setScreenHeightAndWidth(100, 100)
 
@@ -643,7 +648,7 @@ describe('Stand alone minimap', () => {
   })
 
   it('emits a config change event when a value is changed', () => {
-    let changeSpy = jasmine.createSpy('did-change')
+    const changeSpy = jasmine.createSpy('did-change')
     minimap.onDidChangeConfig(changeSpy)
 
     minimap.setCharWidth(8.5)

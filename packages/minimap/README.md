@@ -1,12 +1,10 @@
-[![Build Status](https://travis-ci.org/atom-minimap/minimap.svg?branch=master)](https://travis-ci.org/atom-minimap/minimap)
+![CI](https://github.com/atom-minimap/minimap/workflows/CI/badge.svg)
 [![APM Version](https://img.shields.io/apm/v/minimap.svg)](https://atom.io/packages/minimap)
 [![APM Downloads](https://img.shields.io/apm/dm/minimap.svg)](https://atom.io/packages/minimap)
 
 # Minimap package
 
 A preview of the full source code.
-
-This package is sponsored and maintained by [Kite](https://kite.com/docs?source=minimap).
 
 ![Minimap Screenshot](https://github.com/atom-minimap/minimap/blob/master/resources/screenshot.png?raw=true)
 <small>In the screenshot above the minimap-git-diff and minimap-highlight-selected plugins are activated.</small>
@@ -48,9 +46,9 @@ Package|Description
 
 ### Settings
 
-#### Auto Toggle
+#### Show Minimap on Atom Start
 
-If checked the Minimap is toggled on at startup. `(default=true)`
+If checked the Minimap is displayed on Atom startup. `(default=true)`
 
 #### Device Pixel Ratio Rounding
 

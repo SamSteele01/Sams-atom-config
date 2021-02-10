@@ -1,15 +1,20 @@
 'use strict'
 
-const {EventsDelegation, AncestorsMethods} = require('atom-utils')
-const DOMStylesReader = require('./mixins/dom-styles-reader')
-const CanvasDrawer = require('./mixins/canvas-drawer')
-const include = require('./decorators/include')
-const element = require('./decorators/element')
-const elementResizeDetector = require('element-resize-detector')({strategy: 'scroll'})
+import { CompositeDisposable, Disposable } from 'atom'
+import { EventsDelegation, AncestorsMethods } from 'atom-utils-plus'
+import elementResizeDetectorImport from 'element-resize-detector'
 
-let Main, MinimapQuickSettingsElement, CompositeDisposable, Disposable, overlayStyle
+import * as Main from './main'
+import CanvasDrawer from './mixins/canvas-drawer'
+import include from './decorators/include'
+import element from './decorators/element'
 
-const ensureOverlayStyle = () => {
+import MinimapQuickSettingsElement from './minimap-quick-settings-element'
+const elementResizeDetector = elementResizeDetectorImport({ strategy: 'scroll' })
+
+let overlayStyle
+
+function ensureOverlayStyle () {
   if (!overlayStyle) {
     overlayStyle = document.createElement('style')
     overlayStyle.setAttribute('context', 'atom-text-editor-minimap')
@@ -17,14 +22,14 @@ const ensureOverlayStyle = () => {
   }
 }
 
-const removeOverlayStyle = () => {
+function removeOverlayStyle () {
   if (overlayStyle) {
     overlayStyle.parentNode.removeChild(overlayStyle)
     overlayStyle = null
   }
 }
 
-const updateOverlayStyle = (basis) => {
+function updateOverlayStyle (basis) {
   if (overlayStyle) {
     overlayStyle.textContent = `
     atom-text-editor[with-minimap].editor > div,
@@ -53,7 +58,7 @@ const SPEC_MODE = atom.inSpecMode()
  */
 class MinimapElement {
   static initClass () {
-    include(this, DOMStylesReader, CanvasDrawer, EventsDelegation, AncestorsMethods)
+    include(this, CanvasDrawer, EventsDelegation, AncestorsMethods)
     return element(this, 'atom-text-editor-minimap')
   }
 
@@ -71,20 +76,13 @@ class MinimapElement {
    * @access private
    */
   createdCallback () {
-    if (!CompositeDisposable) {
-      ({CompositeDisposable, Disposable} = require('atom'))
-    }
-
     // Core properties
 
     /**
      * @access private
      */
     this.minimap = undefined
-    /**
-     * @access private
-     */
-    this.editorElement = undefined
+
     /**
      * @access private
      */
@@ -219,8 +217,8 @@ class MinimapElement {
 
     this.initializeContent()
 
-    return this.observeConfig({
-      'minimap.displayMinimapOnLeft': (displayMinimapOnLeft) => {
+    this.subscriptions.add(
+      atom.config.observe('minimap.displayMinimapOnLeft', (displayMinimapOnLeft) => {
         this.displayMinimapOnLeft = displayMinimapOnLeft
 
         displayMinimapOnLeft
@@ -228,9 +226,9 @@ class MinimapElement {
           : removeOverlayStyle()
         this.updateMinimapFlexPosition()
         this.measureHeightAndWidth(true, true)
-      },
+      }),
 
-      'minimap.minimapScrollIndicator': (minimapScrollIndicator) => {
+      atom.config.observe('minimap.minimapScrollIndicator', (minimapScrollIndicator) => {
         this.minimapScrollIndicator = minimapScrollIndicator
 
         if (this.minimapScrollIndicator && !(this.scrollIndicator != null) && !this.standAlone) {
@@ -240,9 +238,9 @@ class MinimapElement {
         }
 
         if (this.attached) { this.requestUpdate() }
-      },
+      }),
 
-      'minimap.displayPluginsControls': (displayPluginsControls) => {
+      atom.config.observe('minimap.displayPluginsControls', (displayPluginsControls) => {
         this.displayPluginsControls = displayPluginsControls
 
         if (this.displayPluginsControls && !(this.openQuickSettings != null) && !this.standAlone) {
@@ -250,21 +248,21 @@ class MinimapElement {
         } else if ((this.openQuickSettings != null)) {
           this.disposeOpenQuickSettings()
         }
-      },
+      }),
 
-      'minimap.textOpacity': (textOpacity) => {
+      atom.config.observe('minimap.textOpacity', (textOpacity) => {
         this.textOpacity = textOpacity
 
         if (this.attached) { this.requestForcedUpdate() }
-      },
+      }),
 
-      'minimap.displayCodeHighlights': (displayCodeHighlights) => {
+      atom.config.observe('minimap.displayCodeHighlights', (displayCodeHighlights) => {
         this.displayCodeHighlights = displayCodeHighlights
 
         if (this.attached) { this.requestForcedUpdate() }
-      },
+      }),
 
-      'minimap.smoothScrolling': (smoothScrolling) => {
+      atom.config.observe('minimap.smoothScrolling', (smoothScrolling) => {
         this.smoothScrolling = smoothScrolling
 
         if (this.attached) {
@@ -276,66 +274,66 @@ class MinimapElement {
             this.requestUpdate()
           }
         }
-      },
+      }),
 
-      'minimap.adjustMinimapWidthToSoftWrap': (adjustToSoftWrap) => {
+      atom.config.observe('minimap.adjustMinimapWidthToSoftWrap', (adjustToSoftWrap) => {
         this.adjustToSoftWrap = adjustToSoftWrap
 
         if (this.attached) { this.measureHeightAndWidth() }
-      },
+      }),
 
-      'minimap.adjustMinimapWidthOnlyIfSmaller': (adjustOnlyIfSmaller) => {
+      atom.config.observe('minimap.adjustMinimapWidthOnlyIfSmaller', (adjustOnlyIfSmaller) => {
         this.adjustOnlyIfSmaller = adjustOnlyIfSmaller
 
         if (this.attached) { this.measureHeightAndWidth() }
-      },
+      }),
 
-      'minimap.useHardwareAcceleration': (useHardwareAcceleration) => {
+      atom.config.observe('minimap.useHardwareAcceleration', (useHardwareAcceleration) => {
         this.useHardwareAcceleration = useHardwareAcceleration
 
         if (this.attached) { this.requestUpdate() }
-      },
+      }),
 
-      'minimap.absoluteMode': (absoluteMode) => {
+      atom.config.observe('minimap.absoluteMode', (absoluteMode) => {
         this.absoluteMode = absoluteMode
 
         this.classList.toggle('absolute', this.absoluteMode)
-      },
+      }),
 
-      'minimap.adjustAbsoluteModeHeight': (adjustAbsoluteModeHeight) => {
+      atom.config.observe('minimap.adjustAbsoluteModeHeight', (adjustAbsoluteModeHeight) => {
         this.adjustAbsoluteModeHeight = adjustAbsoluteModeHeight
 
         this.classList.toggle('adjust-absolute-height', this.adjustAbsoluteModeHeight)
 
         if (this.attached) { this.measureHeightAndWidth() }
-      },
+      }),
 
-      'minimap.ignoreWhitespacesInTokens': (ignoreWhitespacesInTokens) => {
+      atom.config.observe('minimap.ignoreWhitespacesInTokens', (ignoreWhitespacesInTokens) => {
         this.ignoreWhitespacesInTokens = ignoreWhitespacesInTokens
 
         if (this.attached) { this.requestForcedUpdate() }
-      },
+      }),
 
-      'editor.preferredLineLength': () => {
+      atom.config.observe('editor.preferredLineLength', () => {
         if (this.attached) { this.measureHeightAndWidth() }
-      },
+      }),
 
-      'editor.softWrap': () => {
+      atom.config.observe('editor.softWrap', () => {
         if (this.attached) { this.requestUpdate() }
-      },
+      }),
 
-      'editor.showInvisibles': () => {
+      atom.config.observe('editor.showInvisibles', () => {
         if (this.attached) { this.requestUpdate() }
-      },
+      }),
 
-      'editor.invisibles': () => {
+      atom.config.observe('editor.invisibles', () => {
         if (this.attached) { this.requestUpdate() }
-      },
+      }),
 
-      'editor.softWrapAtPreferredLineLength': () => {
+      atom.config.observe('editor.softWrapAtPreferredLineLength', () => {
         if (this.attached) { this.requestUpdate() }
-      }
-    })
+      })
+    )
   }
 
   /**
@@ -348,7 +346,7 @@ class MinimapElement {
       this.subscriptions.add(atom.views.pollDocument(() => { this.pollDOM() }))
     } else {
       this.intersectionObserver = new IntersectionObserver((entries) => {
-        const {intersectionRect} = entries[entries.length - 1]
+        const { intersectionRect } = entries[entries.length - 1]
         if (intersectionRect.width > 0 || intersectionRect.height > 0) {
           this.measureHeightAndWidth(true, true)
         }
@@ -361,33 +359,26 @@ class MinimapElement {
 
       const measureDimensions = () => { this.measureHeightAndWidth(false, false) }
       elementResizeDetector.listenTo(this, measureDimensions)
-      this.subscriptions.add(new Disposable(() => { elementResizeDetector.removeListener(this, measureDimensions) }))
+      window.addEventListener('resize', measureDimensions, { passive: true })
 
-      window.addEventListener('resize', measureDimensions)
-      this.subscriptions.add(new Disposable(() => { window.removeEventListener('resize', measureDimensions) }))
+      this.subscriptions.add(
+        new Disposable(() => { elementResizeDetector.removeListener(this, measureDimensions) }),
+        new Disposable(() => { window.removeEventListener('resize', measureDimensions) })
+      )
     }
 
     this.measureHeightAndWidth()
     this.updateMinimapFlexPosition()
     this.attached = true
-    this.attachedToTextEditor = this.queryParentSelector('atom-text-editor') === this.getTextEditorElement()
+    this.attachedToTextEditor = this.queryParentSelector('atom-text-editor') === this.minimap.getTextEditorElement()
 
     if (this.attachedToTextEditor) {
-      this.getTextEditorElement().setAttribute('with-minimap', '')
+      this.minimap.getTextEditorElement().setAttribute('with-minimap', '')
     }
 
-    /*
-      We use `atom.styles.onDidAddStyleElement` instead of
-      `atom.themes.onDidChangeActiveThemes`.
-      Why? Currently, The style element will be removed first, and then re-added
-      and the `change` event has not be triggered in the process.
-    */
-    this.subscriptions.add(atom.styles.onDidAddStyleElement(() => {
-      this.invalidateDOMStylesCache()
-      this.requestForcedUpdate()
-    }))
-
-    this.subscriptions.add(this.subscribeToMediaQuery())
+    this.subscriptions.add(
+      this.subscribeToMediaQuery()
+    )
   }
 
   /**
@@ -396,7 +387,7 @@ class MinimapElement {
    * @access private
    */
   detachedCallback () {
-    this.getTextEditorElement().removeAttribute('with-minimap')
+    this.minimap.getTextEditorElement().removeAttribute('with-minimap')
     this.attached = false
   }
 
@@ -430,8 +421,8 @@ class MinimapElement {
   attach (parent) {
     if (this.attached) { return }
 
-    const container = parent || this.getTextEditorElement()
-    let minimaps = container.querySelectorAll('atom-text-editor-minimap')
+    const container = parent || this.minimap.getTextEditorElement()
+    const minimaps = container.querySelectorAll('atom-text-editor-minimap')
     if (minimaps.length) {
       Array.prototype.forEach.call(minimaps, (el) => { el.destroy() })
     }
@@ -487,18 +478,30 @@ class MinimapElement {
     this.createVisibleArea()
     this.createControls()
 
-    this.subscriptions.add(this.subscribeTo(this, {
-      'mousewheel': (e) => {
-        if (!this.standAlone) {
-          this.minimap.onMouseWheel(e)
-        }
-      }
-    }))
+    this.subscriptions.add(
 
-    this.subscriptions.add(this.subscribeTo(this.getFrontCanvas(), {
-      'mousedown': (e) => { this.canvasPressed(this.extractMouseEventData(e)) },
-      'touchstart': (e) => { this.canvasPressed(this.extractTouchEventData(e)) }
-    }))
+      this.subscribeTo(
+        this,
+        {
+          mousewheel: (e) => {
+            if (!this.standAlone && this.minimap.onMouseWheel) {
+              this.minimap.onMouseWheel(e)
+            }
+          }
+        },
+        { passive: true }
+      ),
+
+      this.subscribeTo(
+        this.getFrontCanvas(),
+        {
+          mousedown: (e) => { this.canvasPressed(extractMouseEventData(e)) },
+          touchstart: (e) => { this.canvasPressed(extractTouchEventData(e)) }
+        },
+        { passive: true }
+      )
+
+    )
   }
 
   /**
@@ -513,9 +516,9 @@ class MinimapElement {
     this.visibleArea.classList.add('minimap-visible-area')
     this.appendChild(this.visibleArea)
     this.visibleAreaSubscription = this.subscribeTo(this.visibleArea, {
-      'mousedown': (e) => { this.startDrag(this.extractMouseEventData(e)) },
-      'touchstart': (e) => { this.startDrag(this.extractTouchEventData(e)) }
-    })
+      mousedown: (e) => { this.startDrag(extractMouseEventData(e)) },
+      touchstart: (e) => { this.startDrag(extractTouchEventData(e)) }
+    }, { passive: true })
 
     this.subscriptions.add(this.visibleAreaSubscription)
   }
@@ -600,11 +603,7 @@ class MinimapElement {
     this.controls.appendChild(this.openQuickSettings)
 
     this.openQuickSettingSubscription = this.subscribeTo(this.openQuickSettings, {
-      'mousedown': (e) => {
-        if (!MinimapQuickSettingsElement) {
-          MinimapQuickSettingsElement = require('./minimap-quick-settings-element')
-        }
-
+      mousedown: (e) => {
         e.preventDefault()
         e.stopPropagation()
 
@@ -618,14 +617,14 @@ class MinimapElement {
             this.quickSettingsElement = null
           })
 
-          let {top, left, right} = this.getFrontCanvas().getBoundingClientRect()
-          this.quickSettingsElement.style.top = top + 'px'
+          const { top, left, right } = this.getFrontCanvas().getBoundingClientRect()
+          this.quickSettingsElement.style.top = `${top}px`
           this.quickSettingsElement.attach()
 
           if (this.displayMinimapOnLeft) {
-            this.quickSettingsElement.style.left = (right) + 'px'
+            this.quickSettingsElement.style.left = `${right}px`
           } else {
-            this.quickSettingsElement.style.left = (left - this.quickSettingsElement.clientWidth) + 'px'
+            this.quickSettingsElement.style.left = `${left - this.quickSettingsElement.clientWidth}px`
           }
         }
       }
@@ -644,25 +643,6 @@ class MinimapElement {
     this.controls.removeChild(this.openQuickSettings)
     this.openQuickSettingSubscription.dispose()
     delete this.openQuickSettings
-  }
-
-  /**
-   * Returns the target `TextEditor` of the Minimap.
-   *
-   * @return {TextEditor} the minimap's text editor
-   */
-  getTextEditor () { return this.minimap.getTextEditor() }
-
-  /**
-   * Returns the `TextEditorElement` for the Minimap's `TextEditor`.
-   *
-   * @return {TextEditorElement} the minimap's text editor element
-   */
-  getTextEditorElement () {
-    if (this.editorElement) { return this.editorElement }
-
-    this.editorElement = atom.views.getView(this.getTextEditor())
-    return this.editorElement
   }
 
   //    ##     ##  #######  ########  ######## ##
@@ -687,47 +667,52 @@ class MinimapElement {
    * @return {Minimap} this element's Minimap
    */
   setModel (minimap) {
-    if (!Main) { Main = require('./main') }
-
     this.minimap = minimap
-    this.subscriptions.add(this.minimap.onDidChangeScrollTop(() => {
-      this.requestUpdate()
-    }))
-    this.subscriptions.add(this.minimap.onDidChangeScrollLeft(() => {
-      this.requestUpdate()
-    }))
-    this.subscriptions.add(this.minimap.onDidDestroy(() => {
-      this.destroy()
-    }))
-    this.subscriptions.add(this.minimap.onDidChangeConfig(() => {
-      if (this.attached) { return this.requestForcedUpdate() }
-    }))
 
-    this.subscriptions.add(this.minimap.onDidChangeStandAlone(() => {
-      this.setStandAlone(this.minimap.isStandAlone())
-      this.requestUpdate()
-    }))
+    this.subscriptions.add(
 
-    this.subscriptions.add(this.minimap.onDidChange((change) => {
-      this.pendingChanges.push(change)
-      this.requestUpdate()
-    }))
+      this.minimap.onDidChangeScrollTop(() => {
+        this.requestUpdate()
+      }),
 
-    this.subscriptions.add(this.minimap.onDidChangeDecorationRange((change) => {
-      const {type} = change
-      if (type === 'line' ||
-          type === 'highlight-under' ||
-          type === 'background-custom') {
-        this.pendingBackDecorationChanges.push(change)
-      } else {
-        this.pendingFrontDecorationChanges.push(change)
-      }
-      this.requestUpdate()
-    }))
+      this.minimap.onDidChangeScrollLeft(() => {
+        this.requestUpdate()
+      }),
 
-    this.subscriptions.add(Main.onDidChangePluginOrder(() => {
-      this.requestForcedUpdate()
-    }))
+      this.minimap.onDidDestroy(() => {
+        this.destroy()
+      }),
+
+      this.minimap.onDidChangeConfig(() => {
+        if (this.attached) { return this.requestForcedUpdate() }
+      }),
+
+      this.minimap.onDidChangeStandAlone(() => {
+        this.setStandAlone(this.minimap.isStandAlone())
+        this.requestUpdate()
+      }),
+
+      this.minimap.onDidChange((change) => {
+        this.pendingChanges.push(change)
+        this.requestUpdate()
+      }),
+
+      this.minimap.onDidChangeDecorationRange((change) => {
+        const { type } = change
+        if (type === 'line' ||
+            type === 'highlight-under' ||
+            type === 'background-custom') {
+          this.pendingBackDecorationChanges.push(change)
+        } else {
+          this.pendingFrontDecorationChanges.push(change)
+        }
+        this.requestUpdate()
+      }),
+
+      Main.onDidChangePluginOrder(() => {
+        this.requestForcedUpdate()
+      })
+    )
 
     this.setStandAlone(this.minimap.isStandAlone())
 
@@ -810,72 +795,74 @@ class MinimapElement {
     const visibleWidth = width + visibleAreaLeft
 
     if (this.adjustToSoftWrap && this.flexBasis) {
-      this.style.flexBasis = this.flexBasis + 'px'
-      this.style.width = this.flexBasis + 'px'
+      this.style.flexBasis = `${this.flexBasis}px`
+      this.style.width = `${this.flexBasis}px`
     } else {
       this.style.flexBasis = null
       this.style.width = null
     }
 
     if (SPEC_MODE) {
-      this.applyStyles(this.visibleArea, {
-        width: Math.round(visibleWidth) + 'px',
-        height: Math.round(minimap.getTextEditorScaledHeight()) + 'px',
-        top: Math.round(visibleAreaTop) + 'px',
-        'border-left-width': Math.round(visibleAreaLeft) + 'px'
+      applyStyles(this.visibleArea, {
+        width: `${Math.round(visibleWidth)}px`,
+        height: `${Math.round(minimap.getTextEditorScaledHeight())}px`,
+        top: `${Math.round(visibleAreaTop)}px`,
+        'border-left-width': `${Math.round(visibleAreaLeft)}px`
       })
     } else {
-      this.applyStyles(this.visibleArea, {
-        width: Math.round(visibleWidth) + 'px',
-        height: Math.round(minimap.getTextEditorScaledHeight()) + 'px',
-        transform: this.makeTranslate(0, visibleAreaTop),
-        'border-left-width': Math.round(visibleAreaLeft) + 'px'
+      applyStyles(this.visibleArea, {
+        width: `${Math.round(visibleWidth)}px`,
+        height: `${Math.round(minimap.getTextEditorScaledHeight())}px`,
+        transform: makeTranslate(0, visibleAreaTop, this.useHardwareAcceleration),
+        'border-left-width': `${Math.round(visibleAreaLeft)}px`
       })
     }
 
-    this.applyStyles(this.controls, {width: Math.round(width) + 'px'})
+    applyStyles(this.controls, { width: `${Math.round(width)}px` })
 
-    let canvasTop = minimap.getFirstVisibleScreenRow() * minimap.getLineHeight() - minimap.getScrollTop()
+    const canvasTop = minimap.getFirstVisibleScreenRow() * minimap.getLineHeight() - minimap.getScrollTop()
 
     if (this.smoothScrolling) {
       if (SPEC_MODE) {
-        this.applyStyles(this.backLayer.canvas, {top: canvasTop + 'px'})
-        this.applyStyles(this.tokensLayer.canvas, {top: canvasTop + 'px'})
-        this.applyStyles(this.frontLayer.canvas, {top: canvasTop + 'px'})
+        applyStyles(this.backLayer.canvas, { top: `${canvasTop}px` })
+        applyStyles(this.tokensLayer.canvas, { top: `${canvasTop}px` })
+        applyStyles(this.frontLayer.canvas, { top: `${canvasTop}px` })
       } else {
-        let canvasTransform = this.makeTranslate(0, canvasTop)
+        let canvasTransform = makeTranslate(0, canvasTop, this.useHardwareAcceleration)
         if (devicePixelRatio !== 1) {
-          canvasTransform += ' ' + this.makeScale(1 / devicePixelRatio)
+          const scale = 1 / devicePixelRatio
+          canvasTransform += ` ${makeScale(scale, scale, this.useHardwareAcceleration)}`
         }
-        this.applyStyles(this.backLayer.canvas, {transform: canvasTransform})
-        this.applyStyles(this.tokensLayer.canvas, {transform: canvasTransform})
-        this.applyStyles(this.frontLayer.canvas, {transform: canvasTransform})
+        applyStyles(this.backLayer.canvas, { transform: canvasTransform })
+        applyStyles(this.tokensLayer.canvas, { transform: canvasTransform })
+        applyStyles(this.frontLayer.canvas, { transform: canvasTransform })
       }
     } else {
-      const canvasTransform = this.makeScale(1 / devicePixelRatio)
-      this.applyStyles(this.backLayer.canvas, {transform: canvasTransform})
-      this.applyStyles(this.tokensLayer.canvas, {transform: canvasTransform})
-      this.applyStyles(this.frontLayer.canvas, {transform: canvasTransform})
+      const scale = 1 / devicePixelRatio
+      const canvasTransform = makeScale(scale, scale, this.useHardwareAcceleration)
+      applyStyles(this.backLayer.canvas, { transform: canvasTransform })
+      applyStyles(this.tokensLayer.canvas, { transform: canvasTransform })
+      applyStyles(this.frontLayer.canvas, { transform: canvasTransform })
     }
 
-    if (this.minimapScrollIndicator && minimap.canScroll() && !this.scrollIndicator) {
+    if (this.minimapScrollIndicator && !this.scrollIndicator && minimap.canScroll()) {
       this.initializeScrollIndicator()
     }
 
     if (this.scrollIndicator != null) {
-      let minimapScreenHeight = minimap.getScreenHeight()
-      let indicatorHeight = minimapScreenHeight * (minimapScreenHeight / minimap.getHeight())
-      let indicatorScroll = (minimapScreenHeight - indicatorHeight) * minimap.getScrollRatio()
+      const minimapScreenHeight = minimap.getScreenHeight()
+      const indicatorHeight = minimapScreenHeight * (minimapScreenHeight / minimap.getHeight())
+      const indicatorScroll = (minimapScreenHeight - indicatorHeight) * minimap.getScrollRatio()
 
       if (SPEC_MODE) {
-        this.applyStyles(this.scrollIndicator, {
-          height: indicatorHeight + 'px',
-          top: indicatorScroll + 'px'
+        applyStyles(this.scrollIndicator, {
+          height: `${indicatorHeight}px`,
+          top: `${indicatorScroll}px`
         })
       } else {
-        this.applyStyles(this.scrollIndicator, {
-          height: indicatorHeight + 'px',
-          transform: this.makeTranslate(0, indicatorScroll)
+        applyStyles(this.scrollIndicator, {
+          height: `${indicatorHeight}px`,
+          transform: makeTranslate(0, indicatorScroll, this.useHardwareAcceleration)
         })
       }
 
@@ -905,7 +892,7 @@ class MinimapElement {
    * @access private
    */
   pollDOM () {
-    let visibilityChanged = this.checkForVisibilityChange()
+    const visibilityChanged = this.checkForVisibilityChange()
     if (this.isVisible()) {
       if (!this.wasVisible) { this.requestForcedUpdate() }
 
@@ -956,7 +943,7 @@ class MinimapElement {
     const safeFlexBasis = this.style.flexBasis
     this.style.flexBasis = ''
 
-    let wasResized = this.width !== this.clientWidth || this.height !== this.clientHeight
+    const wasResized = this.width !== this.clientWidth || this.height !== this.clientHeight
 
     this.height = this.clientHeight
     this.width = this.clientWidth
@@ -974,10 +961,10 @@ class MinimapElement {
 
     if (wasResized || forceUpdate) {
       if (this.adjustToSoftWrap) {
-        let lineLength = atom.config.get('editor.preferredLineLength')
-        let softWrap = atom.config.get('editor.softWrap')
-        let softWrapAtPreferredLineLength = atom.config.get('editor.softWrapAtPreferredLineLength')
-        let width = lineLength * this.minimap.getCharWidth()
+        const lineLength = atom.config.get('editor.preferredLineLength')
+        const softWrap = atom.config.get('editor.softWrap')
+        const softWrapAtPreferredLineLength = atom.config.get('editor.softWrapAtPreferredLineLength')
+        const width = lineLength * this.minimap.getCharWidth()
 
         if (softWrap && softWrapAtPreferredLineLength && lineLength && (width <= this.width || !this.adjustOnlyIfSmaller)) {
           this.flexBasis = width
@@ -1029,20 +1016,6 @@ class MinimapElement {
   //    ########    ###    ######## ##    ##    ##     ######
 
   /**
-   * Helper method to register config observers.
-   *
-   * @param  {Object} configs={} an object mapping the config name to observe
-   *                             with the function to call back when a change
-   *                             occurs
-   * @access private
-   */
-  observeConfig (configs = {}) {
-    for (let config in configs) {
-      this.subscriptions.add(atom.config.observe(config, configs[config]))
-    }
-  }
-
-  /**
    * Callback triggered when the mouse is pressed on the MinimapElement canvas.
    *
    * @param  {number} y the vertical coordinate of the event
@@ -1050,14 +1023,14 @@ class MinimapElement {
    * @param  {boolean} isMiddleMouse was the middle mouse button pressed?
    * @access private
    */
-  canvasPressed ({y, isLeftMouse, isMiddleMouse}) {
+  canvasPressed ({ y, isLeftMouse, isMiddleMouse }) {
     if (this.minimap.isStandAlone()) { return }
     if (isLeftMouse) {
       this.canvasLeftMousePressed(y)
     } else if (isMiddleMouse) {
       this.canvasMiddleMousePressed(y)
-      let {top, height} = this.visibleArea.getBoundingClientRect()
-      this.startDrag({y: top + height / 2, isLeftMouse: false, isMiddleMouse: true})
+      const { top, height } = this.visibleArea.getBoundingClientRect()
+      this.startDrag({ y: top + height / 2, isLeftMouse: false, isMiddleMouse: true })
     }
   }
 
@@ -1075,7 +1048,7 @@ class MinimapElement {
     const row = Math.floor(deltaY / this.minimap.getLineHeight()) + this.minimap.getFirstVisibleScreenRow()
 
     const textEditor = this.minimap.getTextEditor()
-    const textEditorElement = this.getTextEditorElement()
+    const textEditorElement = this.minimap.getTextEditorElement()
 
     const scrollTop = row * textEditor.getLineHeightInPixels() - this.minimap.getTextEditorHeight() / 2
     const textEditorScrollTop = textEditorElement.pixelPositionForScreenPosition([row, 0]).top - this.minimap.getTextEditorHeight() / 2
@@ -1088,8 +1061,8 @@ class MinimapElement {
       const duration = atom.config.get('minimap.scrollAnimationDuration')
       const independentScroll = this.minimap.scrollIndependentlyOnMouseWheel()
 
-      let from = this.minimap.getTextEditorScrollTop()
-      let to = textEditorScrollTop
+      const from = this.minimap.getTextEditorScrollTop()
+      const to = textEditorScrollTop
       let step
 
       if (independentScroll) {
@@ -1097,13 +1070,17 @@ class MinimapElement {
         const minimapTo = Math.min(1, scrollTop / (this.minimap.getTextEditorMaxScrollTop() || 1)) * this.minimap.getMaxScrollTop()
 
         step = (now, t) => {
+          if (this.minimap === null) return // TODO why this happens in the tests?
           this.minimap.setTextEditorScrollTop(now, true)
           this.minimap.setScrollTop(minimapFrom + (minimapTo - minimapFrom) * t)
         }
-        this.animate({from: from, to: to, duration: duration, step: step})
+        animate({ from, to, duration, step })
       } else {
-        step = (now) => this.minimap.setTextEditorScrollTop(now)
-        this.animate({from: from, to: to, duration: duration, step: step})
+        step = (now) => {
+          if (this.minimap === null) return // TODO why this happens in the tests?
+          this.minimap.setTextEditorScrollTop(now)
+        }
+        animate({ from, to, duration, step })
       }
     } else {
       this.minimap.setTextEditorScrollTop(textEditorScrollTop)
@@ -1119,54 +1096,12 @@ class MinimapElement {
    * @access private
    */
   canvasMiddleMousePressed (y) {
-    const {top: offsetTop} = this.getBoundingClientRect()
+    const { top: offsetTop } = this.getBoundingClientRect()
     const deltaY = y - offsetTop - this.minimap.getTextEditorScaledHeight() / 2
 
     const ratio = deltaY / (this.minimap.getVisibleHeight() - this.minimap.getTextEditorScaledHeight())
 
     this.minimap.setTextEditorScrollTop(ratio * this.minimap.getTextEditorMaxScrollTop())
-  }
-
-  /**
-   * A method that extracts data from a `MouseEvent` which can then be used to
-   * process clicks and drags of the minimap.
-   *
-   * Used together with `extractTouchEventData` to provide a unified interface
-   * for `MouseEvent`s and `TouchEvent`s.
-   *
-   * @param  {MouseEvent} mouseEvent the mouse event object
-   * @access private
-   */
-  extractMouseEventData (mouseEvent) {
-    return {
-      x: mouseEvent.pageX,
-      y: mouseEvent.pageY,
-      isLeftMouse: mouseEvent.which === 1,
-      isMiddleMouse: mouseEvent.which === 2
-    }
-  }
-
-  /**
-   * A method that extracts data from a `TouchEvent` which can then be used to
-   * process clicks and drags of the minimap.
-   *
-   * Used together with `extractMouseEventData` to provide a unified interface
-   * for `MouseEvent`s and `TouchEvent`s.
-   *
-   * @param  {TouchEvent} touchEvent the touch event object
-   * @access private
-   */
-  extractTouchEventData (touchEvent) {
-    // Use the first touch on the target area. Other touches will be ignored in
-    // case of multi-touch.
-    let touch = touchEvent.changedTouches[0]
-
-    return {
-      x: touch.pageX,
-      y: touch.pageY,
-      isLeftMouse: true, // Touch is treated like a left mouse button click
-      isMiddleMouse: false
-    }
   }
 
   /**
@@ -1177,17 +1112,12 @@ class MinimapElement {
    * @access private
    */
   subscribeToMediaQuery () {
-    if (!Disposable) {
-      ({CompositeDisposable, Disposable} = require('atom'))
-    }
-
-    const query = 'screen and (-webkit-min-device-pixel-ratio: 1.5)'
-    const mediaQuery = window.matchMedia(query)
-    const mediaListener = (e) => { this.requestForcedUpdate() }
-    mediaQuery.addListener(mediaListener)
+    const mediaQuery = window.matchMedia('screen and (-webkit-min-device-pixel-ratio: 1.5)')
+    const mediaListener = () => { this.requestForcedUpdate() }
+    mediaQuery.addEventListener('change', mediaListener)
 
     return new Disposable(() => {
-      mediaQuery.removeListener(mediaListener)
+      mediaQuery.removeEventListener('change', mediaListener)
     })
   }
 
@@ -1208,43 +1138,38 @@ class MinimapElement {
    * @param  {boolean} isMiddleMouse was the middle mouse button pressed?
    * @access private
    */
-  startDrag ({y, isLeftMouse, isMiddleMouse}) {
-    if (!Disposable) {
-      ({CompositeDisposable, Disposable} = require('atom'))
-    }
-
+  startDrag ({ y, isLeftMouse, isMiddleMouse }) {
     if (!this.minimap) { return }
     if (!isLeftMouse && !isMiddleMouse) { return }
 
-    let {top} = this.visibleArea.getBoundingClientRect()
-    let {top: offsetTop} = this.getBoundingClientRect()
+    const initial = {
+      dragOffset: y - this.visibleArea.getBoundingClientRect().top,
+      offsetTop: this.getBoundingClientRect().top
+    }
 
-    let dragOffset = y - top
+    // TODO can we avoid adding and removing the listeners every time?
 
-    let initial = {dragOffset, offsetTop}
+    const mousemoveHandler = (e) => this.drag(extractMouseEventData(e), initial)
+    const dragendHandler = () => this.endDrag()
 
-    let mousemoveHandler = (e) => this.drag(this.extractMouseEventData(e), initial)
-    let mouseupHandler = (e) => this.endDrag()
+    const touchmoveHandler = (e) => this.drag(extractTouchEventData(e), initial)
 
-    let touchmoveHandler = (e) => this.drag(this.extractTouchEventData(e), initial)
-    let touchendHandler = (e) => this.endDrag()
+    document.body.addEventListener('mousemove', mousemoveHandler, { passive: true })
+    document.body.addEventListener('mouseup', dragendHandler, { passive: true })
+    document.body.addEventListener('mouseleave', dragendHandler, { passive: true })
 
-    document.body.addEventListener('mousemove', mousemoveHandler)
-    document.body.addEventListener('mouseup', mouseupHandler)
-    document.body.addEventListener('mouseleave', mouseupHandler)
-
-    document.body.addEventListener('touchmove', touchmoveHandler)
-    document.body.addEventListener('touchend', touchendHandler)
-    document.body.addEventListener('touchcancel', touchendHandler)
+    document.body.addEventListener('touchmove', touchmoveHandler, { passive: true })
+    document.body.addEventListener('touchend', dragendHandler, { passive: true })
+    document.body.addEventListener('touchcancel', dragendHandler, { passive: true })
 
     this.dragSubscription = new Disposable(function () {
       document.body.removeEventListener('mousemove', mousemoveHandler)
-      document.body.removeEventListener('mouseup', mouseupHandler)
-      document.body.removeEventListener('mouseleave', mouseupHandler)
+      document.body.removeEventListener('mouseup', dragendHandler)
+      document.body.removeEventListener('mouseleave', dragendHandler)
 
       document.body.removeEventListener('touchmove', touchmoveHandler)
-      document.body.removeEventListener('touchend', touchendHandler)
-      document.body.removeEventListener('touchcancel', touchendHandler)
+      document.body.removeEventListener('touchend', dragendHandler)
+      document.body.removeEventListener('touchcancel', dragendHandler)
     })
   }
 
@@ -1260,12 +1185,12 @@ class MinimapElement {
    *                                    of the drag start
    * @access private
    */
-  drag ({y, isLeftMouse, isMiddleMouse}, initial) {
+  drag ({ y, isLeftMouse, isMiddleMouse }, initial) {
     if (!this.minimap) { return }
     if (!isLeftMouse && !isMiddleMouse) { return }
-    let deltaY = y - initial.offsetTop - initial.dragOffset
+    const deltaY = y - initial.offsetTop - initial.dragOffset
 
-    let ratio = deltaY / (this.minimap.getVisibleHeight() - this.minimap.getTextEditorScaledHeight())
+    const ratio = deltaY / (this.minimap.getVisibleHeight() - this.minimap.getTextEditorScaledHeight())
 
     this.minimap.setTextEditorScrollTop(ratio * this.minimap.getTextEditorMaxScrollTop())
   }
@@ -1279,113 +1204,164 @@ class MinimapElement {
     if (!this.minimap) { return }
     this.dragSubscription.dispose()
   }
+}
 
-  //     ######   ######   ######
-  //    ##    ## ##    ## ##    ##
-  //    ##       ##       ##
-  //    ##        ######   ######
-  //    ##             ##       ##
-  //    ##    ## ##    ## ##    ##
-  //     ######   ######   ######
+const minimapElement = MinimapElement.initClass()
+export default minimapElement
 
-  /**
-   * Applies the passed-in styles properties to the specified element
-   *
-   * @param  {HTMLElement} element the element onto which apply the styles
-   * @param  {Object} styles the styles to apply
-   * @access private
-   */
-  applyStyles (element, styles) {
-    if (!element) { return }
+//    ######## ##     ## ######## ##    ## ########  ######
+//    ##       ##     ## ##       ###   ##    ##    ##    ##
+//    ##       ##     ## ##       ####  ##    ##    ##
+//    ######   ##     ## ######   ## ## ##    ##     ######
+//    ##        ##   ##  ##       ##  ####    ##          ##
+//    ##         ## ##   ##       ##   ###    ##    ##    ##
+//    ########    ###    ######## ##    ##    ##     ######
 
-    let cssText = ''
-    for (let property in styles) {
-      cssText += `${property}: ${styles[property]}; `
-    }
-
-    element.style.cssText = cssText
-  }
-
-  /**
-   * Returns a string with a CSS translation tranform value.
-   *
-   * @param  {number} [x = 0] the x offset of the translation
-   * @param  {number} [y = 0] the y offset of the translation
-   * @return {string} the CSS translation string
-   * @access private
-   */
-  makeTranslate (x = 0, y = 0) {
-    if (this.useHardwareAcceleration) {
-      return `translate3d(${x}px, ${y}px, 0)`
-    } else {
-      return `translate(${x}px, ${y}px)`
-    }
-  }
-
-  /**
-   * Returns a string with a CSS scaling tranform value.
-   *
-   * @param  {number} [x = 0] the x scaling factor
-   * @param  {number} [y = 0] the y scaling factor
-   * @return {string} the CSS scaling string
-   * @access private
-   */
-  makeScale (x = 0, y = x) {
-    if (this.useHardwareAcceleration) {
-      return `scale3d(${x}, ${y}, 1)`
-    } else {
-      return `scale(${x}, ${y})`
-    }
-  }
-
-  /**
-   * A method that return the current time as a Date.
-   *
-   * That method exist so that we can mock it in tests.
-   *
-   * @return {Date} the current time as Date
-   * @access private
-   */
-  getTime () { return new Date() }
-
-  /**
-   * A method that mimic the jQuery `animate` method and used to animate the
-   * scroll when clicking on the MinimapElement canvas.
-   *
-   * @param  {Object} param the animation data object
-   * @param  {[type]} param.from the start value
-   * @param  {[type]} param.to the end value
-   * @param  {[type]} param.duration the animation duration
-   * @param  {[type]} param.step the easing function for the animation
-   * @access private
-   */
-  animate ({from, to, duration, step}) {
-    const start = this.getTime()
-    let progress
-
-    const swing = function (progress) {
-      return 0.5 - Math.cos(progress * Math.PI) / 2
-    }
-
-    const update = () => {
-      if (!this.minimap) { return }
-
-      const passed = this.getTime() - start
-      if (duration === 0) {
-        progress = 1
-      } else {
-        progress = passed / duration
-      }
-      if (progress > 1) { progress = 1 }
-      const delta = swing(progress)
-      const value = from + (to - from) * delta
-      step(value, delta)
-
-      if (progress < 1) { requestAnimationFrame(update) }
-    }
-
-    update()
+/**
+ * A method that extracts data from a `MouseEvent` which can then be used to
+ * process clicks and drags of the minimap.
+ *
+ * Used together with `extractTouchEventData` to provide a unified interface
+ * for `MouseEvent`s and `TouchEvent`s.
+ *
+ * @param  {MouseEvent} mouseEvent the mouse event object
+ * @access private
+ */
+function extractMouseEventData (mouseEvent) {
+  return {
+    x: mouseEvent.pageX,
+    y: mouseEvent.pageY,
+    isLeftMouse: mouseEvent.button === 0,
+    isMiddleMouse: mouseEvent.button === 1
   }
 }
 
-module.exports = MinimapElement.initClass()
+/**
+ * A method that extracts data from a `TouchEvent` which can then be used to
+ * process clicks and drags of the minimap.
+ *
+ * Used together with `extractMouseEventData` to provide a unified interface
+ * for `MouseEvent`s and `TouchEvent`s.
+ *
+ * @param  {TouchEvent} touchEvent the touch event object
+ * @access private
+ */
+function extractTouchEventData (touchEvent) {
+  // Use the first touch on the target area. Other touches will be ignored in
+  // case of multi-touch.
+  const touch = touchEvent.changedTouches[0]
+
+  return {
+    x: touch.pageX,
+    y: touch.pageY,
+    isLeftMouse: true, // Touch is treated like a left mouse button click
+    isMiddleMouse: false
+  }
+}
+
+//     ######   ######   ######
+//    ##    ## ##    ## ##    ##
+//    ##       ##       ##
+//    ##        ######   ######
+//    ##             ##       ##
+//    ##    ## ##    ## ##    ##
+//     ######   ######   ######
+
+/**
+ * Applies the passed-in styles properties to the specified element
+ *
+ * @param  {HTMLElement} element the element onto which apply the styles
+ * @param  {Object} styles the styles to apply
+ * @access private
+ */
+function applyStyles (element, styles) {
+  if (!element) { return }
+
+  let cssText = ''
+  for (const property in styles) {
+    cssText += `${property}: ${styles[property]}; `
+  }
+
+  element.style.cssText = cssText
+}
+
+/**
+ * Returns a string with a CSS translation tranform value.
+ *
+ * @param  {number} [x = 0] the x offset of the translation
+ * @param  {number} [y = 0] the y offset of the translation
+ * @param  {boolean} [useHardwareAcceleration = false] use hardware acceleration
+ * @return {string} the CSS translation string
+ * @access private
+ */
+function makeTranslate (x = 0, y = 0, useHardwareAcceleration = false) {
+  if (useHardwareAcceleration) {
+    return `translate3d(${x}px, ${y}px, 0)`
+  } else {
+    return `translate(${x}px, ${y}px)`
+  }
+}
+
+/**
+ * Returns a string with a CSS scaling tranform value.
+ *
+ * @param  {number} [x = 0] the x scaling factor
+ * @param  {number} [y = 0] the y scaling factor
+ * @param  {boolean} [useHardwareAcceleration = false] use hardware acceleration
+ * @return {string} the CSS scaling string
+ * @access private
+ */
+function makeScale (x = 0, y = x, useHardwareAcceleration = false) {
+  if (useHardwareAcceleration) {
+    return `scale3d(${x}, ${y}, 1)`
+  } else {
+    return `scale(${x}, ${y})`
+  }
+}
+
+/**
+ * A method that mimic the jQuery `animate` method and used to animate the
+ * scroll when clicking on the MinimapElement canvas.
+ *
+ * @param  {Object} param the animation data object
+ * @param  {[type]} param.from the start value
+ * @param  {[type]} param.to the end value
+ * @param  {[type]} param.duration the animation duration
+ * @param  {[type]} param.step the easing function for the animation
+ * @access private
+ */
+function animate ({ from, to, duration, step }) {
+  const start = getTime()
+  let progress
+
+  const update = () => {
+    const passed = getTime() - start
+    if (duration === 0) {
+      progress = 1
+    } else {
+      progress = passed / duration
+    }
+    if (progress > 1) { progress = 1 }
+    const delta = swing(progress)
+    const value = from + (to - from) * delta
+    step(value, delta)
+
+    if (progress < 1) { requestAnimationFrame(update) }
+  }
+
+  update()
+}
+
+function swing (progress) {
+  return 0.5 - Math.cos(progress * Math.PI) / 2
+}
+
+/**
+ * A method that return the current time as a Date.
+ *
+ * That method exist so that we can mock it in tests.
+ *
+ * @return {Date} the current time as Date
+ * @access private
+ */
+function getTime () { return new Date() }

@@ -1,5 +1,5 @@
 import {Panel} from "atom"
-import SelectListView = require("atom-select-list")
+import SelectListView from "atom-select-list"
 import * as etch from "etch"
 import {handlePromise} from "../../../utils"
 
@@ -23,7 +23,7 @@ export async function selectListView<T>({
   let panel: Panel<SelectListView<T>> | undefined
   const currentFocus = document.activeElement as HTMLElement | void
   try {
-    return await new Promise<T | undefined>(resolve => {
+    return await new Promise<T | undefined>((resolve) => {
       let didChangeQuery
       let loadingMessage: string | undefined = "Loading..."
       let emptyMessage
@@ -66,7 +66,7 @@ export async function selectListView<T>({
       })
       if (typeof items !== "function") {
         handlePromise(
-          Promise.resolve(items).then(is => {
+          Promise.resolve(items).then((is) => {
             update({items: is, loadingMessage: undefined})
           }),
         )

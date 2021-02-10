@@ -1,25 +1,25 @@
 {
-  "_from": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
-  "_id": "kite@0.172.0",
+  "_from": "https://www.atom.io/api/packages/kite/versions/0.197.0/tarball",
+  "_id": "kite@0.197.0",
   "_inBundle": false,
-  "_integrity": "sha512-sZ3SpcAD1bB3SmjjQmc+bXfVip6ZsFTLaDBdZOYqO8LZ8uBxVPexAxN1iQEoY+O1VITtsYHQYBHmORz0vAIa9w==",
+  "_integrity": "sha512-sMr+89PbFJkUhOApJkAljtEqPgxtSDlehLJB8rX7k2lgE3sdkZkL7Ch6TfZeRFrQSWEHlkH28WkgDIqLOie47A==",
   "_location": "/kite",
   "_phantomChildren": {},
   "_requested": {
     "type": "remote",
-    "raw": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
-    "rawSpec": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
-    "saveSpec": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
-    "fetchSpec": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball"
+    "raw": "https://www.atom.io/api/packages/kite/versions/0.197.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/kite/versions/0.197.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/kite/versions/0.197.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/kite/versions/0.197.0/tarball"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
-  "_shasum": "2da22d709c487100ce7c49c5d64488a8480b86f2",
-  "_spec": "https://www.atom.io/api/packages/kite/versions/0.172.0/tarball",
-  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-119825-66883-2irhto.004ps",
+  "_resolved": "https://www.atom.io/api/packages/kite/versions/0.197.0/tarball",
+  "_shasum": "a7db7b574f424d376b2026ee9a37dbb21b9a4954",
+  "_spec": "https://www.atom.io/api/packages/kite/versions/0.197.0/tarball",
+  "_where": "/private/var/folders/v1/5jkv371936q4316w4dfqxsp40000gq/T/apm-install-dir-20201116-38409-p1mpv3.hrtb8",
   "bugs": {
     "url": "https://github.com/kiteco/atom-plugin/issues"
   },
@@ -71,7 +71,7 @@
     },
     "pollingInterval": {
       "type": "integer",
-      "default": 15000,
+      "default": 5000,
       "min": 1000,
       "max": 60000,
       "title": "Polling interval",
@@ -114,9 +114,9 @@
     "element-resize-detector": "^1.1.11",
     "fuzzaldrin-plus": "^0.4.1",
     "getmac": "1.2.1",
-    "kite-api": "=3.5.0",
-    "kite-connector": "=3.4.0",
-    "kite-installer": "=3.2.0",
+    "kite-api": "=3.18.0",
+    "kite-connector": "=3.12.0",
+    "kite-installer": "=3.16.0",
     "lodash": "^4.17.11",
     "md5": "^2.2.0",
     "rollbar": "^2.3.8",
@@ -124,7 +124,7 @@
     "underscore-plus": "^1"
   },
   "deprecated": false,
-  "description": "Python coding assistant featuring AI-powered autocompletions, advanced function signatures, and instant documentation",
+  "description": "Code faster, stay in flow. AI-powered coding assistant featuring line-of-code Python and JavaScript autocompletions, advanced function signatures, and instant documentation.",
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
@@ -140,6 +140,7 @@
     "eslint-plugin-prefer-object-spread": "^1.1.0",
     "eslint-plugin-react": "^5.2.2",
     "fbjs": "^0.8.6",
+    "file-loader": "^5.1.0",
     "javascript-obfuscator": "^0.8.3",
     "sinon": "^2.3.5",
     "webpack": "^4.30.0",
@@ -172,5 +173,5 @@
     "lint:fix": "eslint --fix .",
     "prepublishOnly": "rm -rf node_modules && rm -f package-lock.json && apm install && rm -rf dist && npm run build-prod"
   },
-  "version": "0.172.0"
+  "version": "0.197.0"
 }

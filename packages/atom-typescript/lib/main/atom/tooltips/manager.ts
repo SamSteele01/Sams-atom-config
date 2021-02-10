@@ -2,9 +2,9 @@
 // and https://atom.io/packages/ide-flow
 
 import * as Atom from "atom"
-import fs = require("fs")
+import fs from "fs"
 import {GetClientFunction} from "../../../client"
-import atomUtils = require("../utils")
+import * as atomUtils from "../utils"
 import {listen} from "../utils/element-listener"
 import {TooltipController} from "./controller"
 import {bufferPositionFromMouseEvent} from "./util"
@@ -22,7 +22,7 @@ export class TooltipManager {
 
   constructor(private getClientInternal: GetClientFunction) {
     this.subscriptions.add(
-      atom.workspace.observeTextEditors(editor => {
+      atom.workspace.observeTextEditors((editor) => {
         const rawView = atom.views.getView(editor)
         const lines = rawView.querySelector(".lines")!
         this.editorMap.set(editor, {
@@ -55,8 +55,14 @@ export class TooltipManager {
   public showExpressionAt(editor: Atom.TextEditor) {
     const pt = editor.getLastCursor().getBufferPosition()
     const view = atom.views.getView(editor)
-    const px = view.pixelPositionForBufferPosition(pt)
-    return this.showExpressionType(editor, this.mousePositionForPixelPosition(editor, px), pt)
+    let px
+    try {
+      px = view.pixelPositionForBufferPosition(pt)
+    } catch (e) {
+      console.warn(e)
+      return
+    }
+    this.showExpressionType(editor, this.mousePositionForPixelPosition(editor, px), pt)
   }
 
   private getClient = async (editor: Atom.TextEditor) => {

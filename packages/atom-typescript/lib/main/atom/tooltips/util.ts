@@ -5,10 +5,7 @@ export function bufferPositionFromMouseEvent(
   editor: TextEditor,
   event: {clientX: number; clientY: number},
 ) {
-  const sp = atom.views
-    .getView(editor)
-    .getComponent()
-    .screenPositionForMouseEvent(event)
+  const sp = atom.views.getView(editor).getComponent().screenPositionForMouseEvent(event)
   if (isNaN(sp.row) || isNaN(sp.column)) {
     return
   }
@@ -28,9 +25,16 @@ export function adjustElementPosition(
 
   let whiteSpace = ""
 
+  // need to reset any absolute positioning to get element width and height
+  element.style.left = ""
+  element.style.top = ""
+  element.style.right = ""
+  element.style.bottom = ""
+
   const clientWidth = parent.clientWidth
-  const offsetWidth = element.offsetWidth
-  const offsetHeight = element.offsetHeight
+  const sty = getComputedStyle(element)
+  const offsetWidth = parseInt(sty.width, 10)
+  const offsetHeight = parseInt(sty.height, 10)
 
   // X axis adjust
   if (left + offsetWidth >= clientWidth) {

@@ -16,7 +16,7 @@ export class SigHelpManager {
     },
   ) {
     this.subscriptions.add(
-      atom.workspace.observeTextEditors(editor => {
+      atom.workspace.observeTextEditors((editor) => {
         const disp = new Atom.CompositeDisposable()
         disp.add(
           editor.onDidDestroy(() => {
@@ -45,6 +45,16 @@ export class SigHelpManager {
     return this.showTooltip(editor, pt)
   }
 
+  public rotateSigHelp(editor: Atom.TextEditor, shift: number) {
+    const controller = this.editorMap.get(editor)
+    if (controller && !controller.isDisposed()) {
+      handlePromise(controller.rotateSigHelp(shift))
+      return true
+    } else {
+      return false
+    }
+  }
+
   public hideTooltipAt(editor: Atom.TextEditor): boolean {
     const controller = this.editorMap.get(editor)
     if (controller && !controller.isDisposed()) {
@@ -65,13 +75,14 @@ export class SigHelpManager {
   private stoppedChanging = (editor: Atom.TextEditor) => (
     event: Atom.BufferStoppedChangingEvent,
   ) => {
+    if (!atom.config.get("atom-typescript.sigHelpDisplayOnChange")) return
     const filePath = editor.getPath()
     if (filePath === undefined) return
     const pos = editor.getLastCursor().getBufferPosition()
-    const [ch] = event.changes.filter(x => x.newRange.containsPoint(pos)) as Array<
+    const [ch] = event.changes.filter((x) => x.newRange.containsPoint(pos)) as Array<
       Atom.TextChange | undefined
     >
-    if (ch && ch.newText.match(/[(,]/) !== null) {
+    if (ch && ch.newText.match(/[<(,]/) !== null) {
       handlePromise(this.showTooltip(editor, pos))
     }
   }

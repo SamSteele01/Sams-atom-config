@@ -1,18 +1,89 @@
 'use strict';
 
-const {CompositeDisposable} = require('atom');
-const {flatten, compact} = require('./utils');
-const DataLoader = require('./data-loader');
+const { CompositeDisposable } = require('atom');
+const { flatten, compact } = require('./utils');
 const KiteEditor = require('./kite-editor');
+const KiteAPI = require('kite-api');
 
 const EXTENSIONS_BY_LANGUAGES = {
-  python: [
-    'py',
+  bash: [
+    'sh',
+  ],
+  c: [
+    'c',
+    'h',
+  ],
+  cpp: [
+    'cc',
+    'cpp',
+    'hpp',
+  ],
+  csharp: [
+    'cs',
+  ],
+  css: [
+    'css',
+  ],
+  go: [
+    'go',
+  ],
+  html: [
+    'html',
+  ],
+  java: [
+    'java',
   ],
   javascript: [
     'js',
+    'jsx',
+    'vue',
+  ],
+  kotlin: [
+    'kt',
+  ],
+  less: [
+    'less',
+  ],
+  objectivec: [
+    'm',
+  ],
+  php: [
+    'php',
+  ],
+  python: [
+    'py',
+  ],
+  ruby: [
+    'rb',
+  ],
+  scala: [
+    'scala',
+  ],
+  typescript: [
+    'ts',
+    'tsx',
   ],
 };
+
+const SUPPORTED_LANGUAGES = [
+  'bash',
+  'c',
+  'cpp',
+  'csharp',
+  'css',
+  'go',
+  'html',
+  'java',
+  'javascript',
+  'kotlin',
+  'less',
+  'objectivec',
+  'php',
+  'python',
+  'ruby',
+  'scala',
+  'typescript',
+];
 
 module.exports = class KiteEditors {
   init(kite) {
@@ -22,7 +93,7 @@ module.exports = class KiteEditors {
     this.pathSubscriptionsByEditorID = {};
 
     this.subscriptions.add(atom.workspace.observeTextEditors(editor => {
-      // The grammar is known and supported, we cann subscribe to that editor
+      // The grammar is known and supported, we can subscribe to that editor
       if (this.isGrammarSupported(editor)) {
         this.subscribeToEditor(editor);
       }
@@ -52,9 +123,11 @@ module.exports = class KiteEditors {
       }
     }));
 
-    return DataLoader.getSupportedLanguages().then(languages => {
-      this.supportedLanguages = languages;
-    });
+    this.subscriptions.add(atom.workspace.observeActiveTextEditor((editor) => {
+      KiteAPI.getMaxFileSizeBytes().then(max => {
+        this.Kite.maxFileSize = max;
+      });
+    }));
   }
 
   dispose() {
@@ -97,7 +170,7 @@ module.exports = class KiteEditors {
   }
 
   getSupportedLanguages() {
-    return this.supportedLanguages;
+    return SUPPORTED_LANGUAGES;
   }
 
   hasSupportedFileOpen() {
@@ -111,17 +184,13 @@ module.exports = class KiteEditors {
 
   isGrammarSupported(editor) {
     return editor && (
-      this.supportedLanguages
-        ? new RegExp(this.getSupportedLanguagesRegExp(this.supportedLanguages))
-              .test(editor.getPath() || '')
-        : /\.py$/.test(editor.getPath() || '')
-      );
+      new RegExp(this.getSupportedLanguagesRegExp(this.getSupportedLanguages()))
+        .test(editor.getPath() || '')
+    );
   }
 
   getSupportedLanguagesRegExp(languages) {
-    return `\.(${
-      compact(flatten(languages.map(l => EXTENSIONS_BY_LANGUAGES[l]))).join('|')
-    })$`;
+    return `\.(${compact(flatten(languages.map(l => EXTENSIONS_BY_LANGUAGES[l]))).join('|')})$`;
   }
 
   getEditorsForPath(path) {

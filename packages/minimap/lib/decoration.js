@@ -1,7 +1,6 @@
 'use strict'
 
-const _ = require('underscore-plus')
-const {Emitter} = require('atom')
+import { Emitter } from 'atom'
 
 let idCounter = 0
 const nextId = function () { return idCounter++ }
@@ -11,8 +10,7 @@ const nextId = function () { return idCounter++ }
  *
  * It has the same API than the `Decoration` class of a text editor.
  */
-module.exports = class Decoration {
-
+export default class Decoration {
   /**
    * Returns `true` if the passed-in decoration properties matches the
    * specified type.
@@ -22,7 +20,7 @@ module.exports = class Decoration {
    * @return {boolean} whether the decoration properties match the type
    */
   static isType (decorationProperties, type) {
-    if (_.isArray(decorationProperties.type)) {
+    if (Array.isArray(decorationProperties.type)) {
       if (decorationProperties.type.indexOf(type) >= 0) { return true }
       return false
     } else {
@@ -167,10 +165,10 @@ module.exports = class Decoration {
   setProperties (newProperties) {
     if (this.destroyed) { return }
 
-    let oldProperties = this.properties
+    const oldProperties = this.properties
     this.properties = newProperties
     this.properties.id = this.id
 
-    this.emitter.emit('did-change-properties', {oldProperties, newProperties})
+    this.emitter.emit('did-change-properties', { oldProperties, newProperties })
   }
 }
